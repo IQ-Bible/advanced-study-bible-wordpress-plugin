@@ -1,0 +1,25 @@
+/* Theme: Default */
+:root {
+    /* General vars */
+    --background-color: #f8f9fa; /* Light gray */
+    --text-color: #343a40; /* Dark gray for text */
+    --hover-background-color: #e9ecef; /* Slightly darker hover effect */
+    
+    /* Tab vars */
+    --tab-button-background-color: #6c757d; /* Medium gray for tabs */
+    --tab-button-color: #fff; /* White text for contrast */
+    --tab-button-hover-background-color: #495057; /* Darker gray on hover */
+    --tab-active-background-color: #343a40; /* Dark gray for active tab */
+    --tab-border-color: #dee2e6; /* Light gray border for tabs */
+    
+    /* Form and btns vars */
+    --form-border-color: #ced4da; /* Light gray form border */
+    --button-background-color: #6c757d; /* Button with the same gray as tabs */
+    --button-color: #fff; /* Button with the same gray as tabs */
+    --button-hover-opacity: 0.85; /* Slight opacity change on hover */
+    --input-background-color: #ffffff; /* White background for inputs */
+    
+    /* Audio vars */
+    --audio-shadow-color: rgba(52, 58, 64, 0.2); /* Subtle shadow with dark gray */
+    --audio-controls-color: #495057; /* Controls with darker gray */
+}
