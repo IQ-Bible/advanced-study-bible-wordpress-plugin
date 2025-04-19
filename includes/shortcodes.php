@@ -99,19 +99,19 @@ function iq_bible_api_shortcode()
                 <span class="iqbible-tab-text"><?php echo iqbible_translate('Topics'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Parables" onclick="openTab('parables')">
+            <!-- <button class="iqbible-tab-button" title="Parables" onclick="openTab('parables')">
                 <span class="iqbible-tab-icon">
                     <img src="<?php echo esc_url(plugins_url('../assets/img/book-open.svg', __FILE__)); ?>" alt="Parables Icon">
                 </span>
                 <span class="iqbible-tab-text"><?php echo iqbible_translate('Parables'); ?></span>
-            </button>
+            </button> -->
 
-            <button class="iqbible-tab-button" title="Prophecies" onclick="openTab('prophecies')">
+            <!-- <button class="iqbible-tab-button" title="Prophecies" onclick="openTab('prophecies')">
                 <span class="iqbible-tab-icon">
                     <img src="<?php echo esc_url(plugins_url('../assets/img/zap.svg', __FILE__)); ?>" alt="Prophecies Icon">
                 </span>
                 <span class="iqbible-tab-text"><?php echo iqbible_translate('Prophecies'); ?></span>
-            </button>
+            </button> -->
 
             <button class="iqbible-tab-button" title="Get Help" onclick="openTab('help')">
                 <span class="iqbible-tab-icon">

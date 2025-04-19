@@ -2,6 +2,7 @@
     "books": [
       {
         "book": "Genesis",
+        "bookId": 1,
         "introduction": "The Book of Genesis, the first book of the Bible, serves as the foundational text for the biblical narrative. It begins with the creation of the world and covers early human history, from Adam and Eve in the Garden of Eden to the lineage of Noah and the great flood. Genesis introduces God's covenant with Abraham, marking the origins of Israel as God promises Abraham descendants, land, and blessings. Through the stories of Isaac, Jacob, and Joseph, Genesis highlights themes of faith, family, and the unfolding relationship between God and humanity. This book sets the stage for the rest of the Bible, laying the groundwork for God’s plan and covenant with His people.",
         "author": "Traditionally attributed to Moses",
         "date": "Approx. 1450-1400 BCE",
@@ -110,6 +111,7 @@
       },
       {
         "book": "Exodus",
+        "bookId": 2,
         "introduction": "The Book of Exodus recounts the dramatic story of Israel's liberation from slavery in Egypt, highlighting God's power and faithfulness. Led by Moses, the Israelites experience God’s deliverance through a series of plagues and the miraculous crossing of the Red Sea. In the wilderness, they receive the Ten Commandments and other laws at Mount Sinai, establishing a covenant that defines their identity as God's chosen people. Exodus also details the construction of the Tabernacle, a portable sanctuary symbolizing God’s presence among His people, and introduces themes of freedom, law, and worship central to the faith of Israel.",
         "author": "Traditionally attributed to Moses",
         "date": "Approx. 1450-1400 BCE"

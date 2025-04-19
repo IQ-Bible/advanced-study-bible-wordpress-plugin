@@ -2,6 +2,7 @@
 <h2>Prophecies Fulfilled in Jesus</h2>
 <?php 
 $prophecies_fulfilled_in_jesus = iq_bible_api_get_data('GetPropheciesFulfilledInJesus', array('language' => 'english'));
+print_r($prophecies_fulfilled_in_jesus);
 ?>
 <ol>
 <div class="iqbible-prophecies-container">

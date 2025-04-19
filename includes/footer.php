@@ -15,7 +15,7 @@
 <dialog class="iqbible-dialog" id="about-dialog">
     <div id="about-content" class="iqbible-dialog-content">
         <span class="iqbible-dialog-close" onclick="document.getElementById('about-dialog').close()">×</span>
-        <h2>IQBible API WordPress Open Source Plugin</h2>
+        <h2>IQBible Study Bible WordPress Open Source Plugin</h2>
         <hr>
         <small>Version: <?php echo GetLatestVersionFromChangelog() ?></small>
         <p>The IQBible Study Bible is a powerful tool designed to enrich your biblical studies and spiritual journey. With an intuitive interface, this plugin allows users to explore the Bible with ease, search for specific passages, and access detailed definitions through the Bible Dictionary. It also features Strong's Concordance for deeper insights, an extensive collection of Bible stories, and customizable reading plans that cater to your personal schedule</p>
@@ -26,7 +26,7 @@
 <dialog class="iqbible-dialog" id="cross-references-dialog">
     <div id="cross-references-content" class="iqbible-dialog-content">
         <span class="iqbible-dialog-close" onclick="document.getElementById('cross-references-dialog').close()">×</span>
-        <h2>Cross References</h2>
+        <h2>Cross References</h2>John 3:16
         <div id="cross-references"></div>
     </div>
 </dialog>
@@ -35,7 +35,7 @@
 <dialog class="iqbible-dialog" id="original-text-dialog">
     <div class="iqbible-dialog-content">
         <span class="iqbible-dialog-close" onclick="document.getElementById('original-text-dialog').close()">×</span>
-        <h2>Original Text</h2>
+        <h2>Original Text</h2>John 3:16
         <div id="original-text"></div>
     </div>
 </dialog>
@@ -75,3 +75,21 @@
         <div id="commentary-text"></div>
     </div>
 </dialog>
+
+<!-- Dialog Box for Book Information -->
+<dialog class="iqbible-dialog" id="book-intro-dialog">
+    <div id="book-intro-content" class="iqbible-dialog-content">
+        <span class="iqbible-dialog-close" onclick="document.getElementById('book-intro-dialog').close()">×</span>
+        <h2>Information</h2>
+        <hr>
+        <!-- Content will be dynamically inserted here -->
+    </div>
+</dialog>
+
+
+
+
+
+
+
+

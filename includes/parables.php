@@ -2,6 +2,7 @@
 <h2>Parables</h2>
 <?php 
 $parables = iq_bible_api_get_data('GetParables', array('language' => 'english'));
+print_r($parables);
 ?>
 <div class="iqbible-parables-container">
     <?php if (!empty($parables) && is_array($parables)) : ?>

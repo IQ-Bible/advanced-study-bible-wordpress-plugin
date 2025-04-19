@@ -6,6 +6,14 @@ The shortcode for this plugin is [IQBible].
 ## Unreleased
 - N/A
 
+## [1.0.0-alpha-1] - 2024-04-19
+### Added
+- Implemented AJAX Nonce Security (Crucial):
+  - Modified `enqueue.php` to generate (`wp_create_nonce`) and pass nonce via `wp_localize_script`.
+  - Modified `scripts.js` to send the nonce parameter (`security`) with all relevant AJAX requests.
+  - Modified `functions.php` to add nonce verification (`check_ajax_referer`) to all relevant AJAX handler functions.
+
+
 ## [0.14.1-alpha] - 2024-11-09
 ### Fixed
 - Edit API Key button not working in admin > IQBible - Study Bible settings.

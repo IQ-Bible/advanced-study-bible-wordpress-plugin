@@ -513,6 +513,7 @@ dialog::backdrop {
 
 /* Dialog Container */
 .iqbible-dialog {
+    z-index: 1000; /* Modal z-index */
     margin-top: 75px;
     border: 1px solid var(--background-color);
     border-radius: 15px;
@@ -899,3 +900,5 @@ input:checked+.iqbible-slider:before {
         display: none;
     }
 }
+
+

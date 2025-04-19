@@ -1,7 +1,9 @@
 <!-- Bible Stories -->
 <h2>Bible Stories</h2>
+
 <div class="iqbible-bible-stories-container">
-    <?php 
+
+ <?php 
     if ($stories && is_array($stories)) {
         $ct = 0; ?>
 

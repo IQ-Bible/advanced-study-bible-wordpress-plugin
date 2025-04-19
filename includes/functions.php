@@ -185,6 +185,11 @@ function get_user_info()
 // --------------------------
 function iq_bible_search_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
     $query = isset($_POST['query']) ? sanitize_text_field($_POST['query']) : '';
     $count = '';
     $versionId = isset($_POST['versionId']) ? sanitize_text_field($_POST['versionId']) : 'kjv'; // Default to 'kjv'
@@ -252,6 +257,11 @@ function iq_bible_search_ajax_handler()
 // -------------------------
 function iq_bible_define_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
     // Check if query is set and sanitize it
     $query = isset($_POST['iqbible-definition-query']) ? sanitize_text_field($_POST['iqbible-definition-query']) : '';
 
@@ -264,7 +274,7 @@ function iq_bible_define_ajax_handler()
     }
 
     // Fetch the biblical definition using the API
-    $_SESSION['dictionaryId']='smiths';
+    $_SESSION['dictionaryId'] = 'smiths';
     $_SESSION['dictionaryIdFullName'] = "Smith's Bible Dictionary";
     $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => $_SESSION['dictionaryId']));
 
@@ -301,6 +311,11 @@ function iq_bible_define_ajax_handler()
 // ----------------------------------
 function iq_bible_strongs_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
     // Check if lexicon and id are set
     $lexicon = isset($_POST['lexicon']) ? sanitize_text_field($_POST['lexicon']) : '';
     $id = isset($_POST['id']) ? sanitize_text_field($_POST['id']) : '';
@@ -323,7 +338,7 @@ function iq_bible_strongs_ajax_handler()
             echo '</div>';
         }
     } else {
-        echo 'No results found.';
+        echo 'No concordance results found.';
     }
     wp_die();
 }
@@ -332,6 +347,11 @@ function iq_bible_strongs_ajax_handler()
 // ---------------------------------
 function iq_bible_get_cross_references_handler()
 {
+
+        // ---> Verify Nonce <---
+        check_ajax_referer('iqbible_ajax_nonce', 'security');
+        // ---> End Verify Nonce <---
+
     $verseId = isset($_POST['verseId']) ? sanitize_text_field($_POST['verseId']) : '';
     if (empty($verseId)) {
         echo json_encode(array('error' => 'Verse ID is required.'));
@@ -392,6 +412,11 @@ function iq_bible_get_cross_references_handler()
 // ----------------------------
 function iq_bible_get_original_text_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
     // Check if verseId is set and sanitize it
     $verseId = isset($_POST['verseId']) ? sanitize_text_field($_POST['verseId']) : '';
 
@@ -482,6 +507,12 @@ function iq_bible_get_original_text_ajax_handler()
 // -----------------------------
 function iq_bible_plans_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
+
     // Get form data from the AJAX request
     $days = isset($_POST['days']) ? sanitize_text_field($_POST['days']) : '365';
     $requestedStartDate = isset($_POST['requestedStartDate']) ? sanitize_text_field($_POST['requestedStartDate']) : '2023-01-01';
@@ -669,6 +700,12 @@ function iq_bible_plans_ajax_handler()
 // Topics AJAX handler
 function iq_bible_topics_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
+
     // Check if the topic is set
     $topic = isset($_POST['topic']) ? sanitize_text_field($_POST['topic']) : '';
 
@@ -696,7 +733,7 @@ function iq_bible_topics_ajax_handler()
 
                 // Create a link with data attributes 
                 $verseLinks[] = sprintf(
-                    '<small><a href="javascript:void(0);" class="topic-verse-link" data-book-id="%s" data-chapter-id="%s" data-verse-id="%s">%s</a></small>',
+                    '<small><a href="#" class="topic-verse-link" data-book-id="%s" data-chapter-id="%s" data-verse-id="%s">%s</a></small>',
                     esc_attr($bookId),
                     esc_attr($chapterId),
                     esc_attr($firstVerseId),
@@ -720,6 +757,12 @@ function iq_bible_topics_ajax_handler()
 // Bible Chapter AJAX handler
 function iq_bible_chapter_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
+
     $bookId = isset($_POST['bookId']) ? sanitize_text_field($_POST['bookId']) : '';
     $chapterId = isset($_POST['chapterId']) ? sanitize_text_field($_POST['chapterId']) : '';
     $versionId = isset($_POST['versionId']) ? sanitize_text_field($_POST['versionId']) : 'kjv';
@@ -823,7 +866,7 @@ function iq_bible_chapter_ajax_handler()
         </button>
         
         <button class='option-button' onclick='showCrossReferences(\"$verseId\")'>
-            <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/crosshair.svg') . "' alt='Cross References Icon'> Cross Refs
+            <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/crosshair.svg') . "' alt='Cross References Icon'> Cross References
         </button>";
 
 
@@ -844,7 +887,7 @@ function iq_bible_chapter_ajax_handler()
             $response['chapterContent'] .= "</div>"; // Close verse div
         }
     } else {
-        $response['chapterContent'] = 'No results found.';
+        $response['chapterContent'] = 'No chapter content results found.';
     }
 
     // Send the response as JSON
@@ -860,6 +903,12 @@ function iq_bible_chapter_ajax_handler()
 // AJAX handler to fetch chapter count for the selected book
 function iq_bible_chapter_count_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
+
     // Clear previous book data
     unset($_SESSION['bookId']);
     unset($_SESSION['chapterData']);
@@ -922,6 +971,10 @@ function iq_bible_ensure_books_session()
 // AJAX handler to fetch the book names and output them in HTML
 function iq_bible_books_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
 
     if (empty($_SESSION['books'])) {
@@ -1018,6 +1071,11 @@ function iq_bible_clear_plugin_cache_form()
 // AJAX handler for fetching Bible versions
 function iq_bible_get_versions()
 {
+
+        // ---> Verify Nonce <---
+        check_ajax_referer('iqbible_ajax_nonce', 'security');
+        // ---> End Verify Nonce <---
+
     $versions = iq_bible_api_get_data('GetVersions');
 
     if (!empty($versions)) {
@@ -1039,6 +1097,11 @@ add_action('wp_ajax_nopriv_iq_bible_get_versions', 'iq_bible_get_versions');
 // Handle the check for audio narration availability
 function iq_bible_audio_check()
 {
+
+       // ---> Verify Nonce <---
+       check_ajax_referer('iqbible_ajax_nonce', 'security');
+       // ---> End Verify Nonce <---
+
     $bookId = isset($_POST['bookId']) ? sanitize_text_field($_POST['bookId']) : '';
     $chapterId = isset($_POST['chapterId']) ? sanitize_text_field($_POST['chapterId']) : '';
     $versionId = isset($_POST['versionId']) ? sanitize_text_field($_POST['versionId']) : '';
@@ -1073,6 +1136,11 @@ add_action('wp_ajax_nopriv_iq_bible_audio_check', 'iq_bible_audio_check');
 // Create/Save Note
 function iq_bible_save_note()
 {
+
+       // ---> Verify Nonce <---
+       check_ajax_referer('iqbible_ajax_nonce', 'security');
+       // ---> End Verify Nonce <---
+
     if (!is_user_logged_in()) {
         wp_send_json_error('User not logged in');
     }
@@ -1112,6 +1180,11 @@ add_action('wp_ajax_iq_bible_save_note', 'iq_bible_save_note');
 // Update Note function
 function iq_bible_update_note()
 {
+
+       // ---> Verify Nonce <---
+       check_ajax_referer('iqbible_ajax_nonce', 'security');
+       // ---> End Verify Nonce <---
+
     if (!is_user_logged_in()) {
         wp_send_json_error('User not logged in');
     }
@@ -1155,6 +1228,11 @@ add_action('wp_ajax_iq_bible_update_note', 'iq_bible_update_note');
 // -------------------------
 function iq_bible_get_saved_notes()
 {
+
+       // ---> Verify Nonce <---
+       check_ajax_referer('iqbible_ajax_nonce', 'security');
+       // ---> End Verify Nonce <---
+
     if (!is_user_logged_in()) {
         wp_send_json_error('User not logged in');
     }
@@ -1188,6 +1266,11 @@ add_action('wp_ajax_iq_bible_get_saved_notes', 'iq_bible_get_saved_notes');
 // ---------------------
 function iq_bible_delete_note()
 {
+
+       // ---> Verify Nonce <---
+       check_ajax_referer('iqbible_ajax_nonce', 'security');
+       // ---> End Verify Nonce <---
+
     if (!is_user_logged_in()) {
         wp_send_json_error('User not logged in');
     }
@@ -1217,6 +1300,11 @@ add_action('wp_ajax_iq_bible_delete_note', 'iq_bible_delete_note');
 // Commentary Ajax handler
 function iq_bible_commentary_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
     $verseId = isset($_POST['verseId']) ? sanitize_text_field($_POST['verseId']) : '';
 
     // Fetch the commentary using the iq_bible_api_get_data function
@@ -1239,6 +1327,11 @@ add_action('wp_ajax_nopriv_iq_bible_commentary_ajax_handler', 'iq_bible_commenta
 
 function iq_bible_save_verse_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
     // Check if the user is logged in
     if (!is_user_logged_in()) {
         echo json_encode(array('success' => false, 'error' => 'User not logged in.'));
@@ -1304,6 +1397,11 @@ add_action('wp_ajax_iq_bible_save_verse', 'iq_bible_save_verse_ajax_handler');
 // PHP AJAX handler for getting saved verses
 function iq_bible_get_saved_verses_ajax_handler()
 {
+
+       // ---> Verify Nonce <---
+       check_ajax_referer('iqbible_ajax_nonce', 'security');
+       // ---> End Verify Nonce <---
+
     if (!is_user_logged_in()) {
         echo json_encode(array('success' => false, 'error' => 'User not logged in.'));
         wp_die();
@@ -1373,6 +1471,11 @@ function iq_bible_get_book_name($bookId, $chapterId)
 // Add new AJAX handler for verse deletion
 function iq_bible_delete_saved_verse_ajax_handler()
 {
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
     if (!is_user_logged_in()) {
         echo json_encode(array('success' => false, 'error' => 'User not logged in.'));
         wp_die();
@@ -1416,6 +1519,11 @@ add_action('wp_ajax_iq_bible_delete_saved_verse', 'iq_bible_delete_saved_verse_a
 
 function clear_books_session()
 {
+
+       // ---> Verify Nonce <---
+       check_ajax_referer('iqbible_ajax_nonce', 'security');
+       // ---> End Verify Nonce <---
+       
     if (isset($_POST['language'])) {
         $language = sanitize_text_field($_POST['language']);
         // Handle the language as needed, e.g., store it in the session or perform other actions
@@ -1596,3 +1704,115 @@ function iqbible_login_form()
     return ob_get_clean();
 }
 add_shortcode('iqbible_login', 'iqbible_login_form');
+
+
+
+
+
+function iq_bible_book_intro_ajax_handler()
+{
+
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
+
+    // Check if bookId is provided in the request
+    $bookId = isset($_POST['bookId']) ? sanitize_text_field($_POST['bookId']) : null;
+
+    // If no bookId is provided, return an error
+    if (!$bookId) {
+        echo '<p>Error: No book ID provided.</p>';
+        wp_die();
+    }
+
+    // Default language (can be dynamic if needed)
+    $language = 'english';
+
+    // Fetch book info using the GetBookInfo API
+    $bookInfo = iq_bible_api_get_data('GetBookInfo', array(
+        'bookId' => $bookId,
+        'language' => $language
+    ));
+
+    // Check if we got a valid response
+    if (!empty($bookInfo)) {
+        echo '<div class="book-intro-content">';
+
+        // Introduction
+        if (isset($bookInfo['introduction'])) {
+            echo '<h2>Introduction</h2>';
+            echo '<p>' . esc_html($bookInfo['introduction']) . '</p>';
+        }
+
+        // Long Introduction
+        if (isset($bookInfo['introduction_long'])) {
+            echo '<h2>Long Introduction</h2>';
+            echo '<p>' . esc_html($bookInfo['introduction_long']) . '</p>';
+        }
+
+        // Author
+        if (isset($bookInfo['author'])) {
+            echo '<h3>Author</h3>';
+            echo '<p>' . esc_html($bookInfo['author']) . '</p>';
+        }
+
+        // Date
+        if (isset($bookInfo['date'])) {
+            echo '<h3>Date</h3>';
+            echo '<p>' . esc_html($bookInfo['date']) . '</p>';
+        }
+
+        // Word Origin
+        if (isset($bookInfo['word_origin'])) {
+            echo '<h3>Word Origin</h3>';
+            echo '<p>' . esc_html($bookInfo['word_origin']) . '</p>';
+        }
+
+        // Genre
+        if (isset($bookInfo['genre'])) {
+            echo '<h3>Genre</h3>';
+            echo '<p>' . esc_html($bookInfo['genre']) . '</p>';
+        }
+
+        // Theological Details (if available)
+        if (isset($bookInfo['theological_introduction'])) {
+            echo '<h2>Theological Introduction</h2>';
+            echo '<p>' . esc_html($bookInfo['theological_introduction']) . '</p>';
+        }
+
+        // Additional Keys
+        foreach ($bookInfo as $key => $value) {
+            if (!in_array($key, ['introduction', 'introduction_long', 'author', 'date', 'word_origin', 'genre', 'theological_introduction'])) {
+                echo '<h3>' . esc_html(ucwords(str_replace('_', ' ', $key))) . '</h3>';
+                if (is_array($value)) {
+                    echo '<ul>';
+                    foreach ($value as $item) {
+                        if (is_array($item)) {
+                            echo '<li>';
+                            foreach ($item as $subKey => $subValue) {
+                                echo '<strong>' . esc_html(ucwords(str_replace('_', ' ', $subKey))) . ':</strong> ' . esc_html($subValue) . '<br>';
+                            }
+                            echo '</li>';
+                        } else {
+                            echo '<li>' . esc_html($item) . '</li>';
+                        }
+                    }
+                    echo '</ul>';
+                } else {
+                    echo '<p>' . esc_html($value) . '</p>';
+                }
+            }
+        }
+
+        echo '</div>';
+    } else {
+        echo '<p>No introduction found for this book.</p>';
+    }
+
+    wp_die(); // End the AJAX request
+}
+
+
+// Register the AJAX action for logged-in and guest users
+add_action('wp_ajax_iq_bible_book_intro', 'iq_bible_book_intro_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_book_intro', 'iq_bible_book_intro_ajax_handler');
