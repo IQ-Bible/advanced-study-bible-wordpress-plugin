@@ -41,10 +41,13 @@ function iq_bible_api_settings_page()
     <div class="wrap">
         <h1>IQBible - Study Bible</h1>
 
+        <!-- Manual Cache Clear Form -->
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="iqbible_clear_plugin_cache" />
-            <?php submit_button('Manually Clear Plugin Cache'); ?>
-            <!-- Reminder: Add Nonce field here in the next step -->
+            <?php 
+             wp_nonce_field('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
+             submit_button('Manually Clear Plugin Cache'); 
+             ?>
         </form>
 
         <form method="post" action="options.php">

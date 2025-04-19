@@ -1509,8 +1509,8 @@ function saveVerse (verseId) {
           var existingIcon = verseElement.querySelector('.saved-icon')
           if (!existingIcon) {
             var savedIcon = document.createElement('img')
-            savedIcon.src = iqbible_ajax.plugin_url + 'assets/img/bookmark.svg'
-            savedIcon.alt = 'Saved'
+            savedIcon.src = iqbible_ajax.plugin_url + '../assets/img/bookmark.svg'
+            savedIcon.alt = 'Saved!'
             savedIcon.classList.add('saved-icon')
             savedIcon.title = 'Verse saved!'
 

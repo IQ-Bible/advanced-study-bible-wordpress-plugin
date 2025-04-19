@@ -1050,6 +1050,13 @@ add_action('admin_post_iqbible_clear_plugin_cache', 'iq_bible_clear_plugin_cache
 
 function iq_bible_clear_plugin_cache_form()
 {
+
+    check_admin_referer('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
+
+    if (!current_user_can('manage_options')) {
+         wp_die('You do not have sufficient permissions to perform this action.');
+    }
+
     global $wpdb;
 
     // Clear all transients related to the IQBible plugin
@@ -1523,7 +1530,7 @@ function clear_books_session()
        // ---> Verify Nonce <---
        check_ajax_referer('iqbible_ajax_nonce', 'security');
        // ---> End Verify Nonce <---
-       
+
     if (isset($_POST['language'])) {
         $language = sanitize_text_field($_POST['language']);
         // Handle the language as needed, e.g., store it in the session or perform other actions
