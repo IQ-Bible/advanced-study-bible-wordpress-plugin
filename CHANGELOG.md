@@ -11,8 +11,11 @@ The shortcode for this plugin is [IQBible].
 ### Added
 - SECURITY: Added sanitization callbacks (`sanitize_text_field`, `absint`, `esc_url_raw`) to `register_setting` calls for plugin options (`iq_bible_api_key`, `iq_bible_api_cache`, `iq_bible_custom_login_url`) to ensure safe data handling.
 - SECURITY: Added Nonce verification (`wp_nonce_field`, `check_admin_referer`) to the manual cache clearing action for enhanced security.
+- Nonce Security to Profile Updates
 ### Fixed
 - Fixed API paramater handling in GET requests: Modified the iq_bible_api_get_data function to use add_query_arg($params, $url) to correctly append parameters to the URL for GET requests, instead of incorrectly placing them in the 'body'.
+### Removed
+- kill_session() (dangerous and redundant for cache clearing)
 
 ## [1.0.0-alpha-1] - 2025-04-19
 ### Added

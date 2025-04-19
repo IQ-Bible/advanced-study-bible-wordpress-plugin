@@ -45,39 +45,7 @@ function GetLatestVersionFromChangelog()
 }
 
 
-function kill_session()
-{
-    // Start the session if not already started
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
 
-    // Clear all session variables
-    $_SESSION = [];
-
-    // Destroy the session
-    session_destroy();
-
-    // Clear session cookie if needed
-    if (ini_get("session.use_cookies")) {
-        $params = session_get_cookie_params();
-        setcookie(
-            session_name(),
-            '',
-            time() - 42000,
-            $params["path"],
-            $params["domain"],
-            $params["secure"],
-            $params["httponly"]
-        );
-    }
-
-    // Delete all WordPress transients
-    global $wpdb;
-    $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_%'");
-
-    return "Session data and all cache transients have been cleared successfully.";
-}
 
 
 
@@ -132,7 +100,7 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
 
 
 
-    
+
         // Build the base API URL
         $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint; 
         $url_with_params = add_query_arg($params, $base_url);
@@ -1671,13 +1639,21 @@ function iqbible_profile_form()
             <input type="text" name="last_name" value="<?php echo esc_attr($current_user->last_name); ?>">
         </p>
         <p>
+
+            <?php wp_nonce_field('iqbible_update_profile_action', 'iqbible_profile_nonce');?>
+
             <input type="submit" name="update_profile" value="Update Profile">
+
         </p>
     </form>
     <?php
 
     // Handle profile update
     if (isset($_POST['update_profile'])) {
+
+        // Verify Nonce
+        check_admin_referer('iqbible_update_profile_action', 'iqbible_profile_nonce');
+        
         wp_update_user(array(
             'ID'         => $current_user->ID,
             'user_email' => sanitize_email($_POST['email']),
