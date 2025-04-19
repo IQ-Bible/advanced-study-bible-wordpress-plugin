@@ -6,7 +6,7 @@ The shortcode for this plugin is [IQBible].
 ## Unreleased
 - N/A
 
-## [1.0.0-alpha-1] - 2024-04-19
+## [1.0.0-alpha-1] - 2025-04-19
 ### Added
 - Implemented AJAX Nonce Security (Crucial):
   - Modified `enqueue.php` to generate (`wp_create_nonce`) and pass nonce via `wp_localize_script`.
