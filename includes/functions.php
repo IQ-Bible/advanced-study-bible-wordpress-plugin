@@ -117,17 +117,38 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
     }
 
     // Build the API URL
-    $url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
-    error_log('Requesting URL: ' . $url);
+    // $url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
+    // error_log('Requesting URL: ' . $url);
 
-    // Make the API request
-    $response = wp_remote_get($url, array(
-        'headers' => array(
-            'x-rapidapi-host' => 'iq-bible.p.rapidapi.com',
-            'x-rapidapi-key' => $api_key
-        ),
-        'body' => $params
-    ));
+    // // Make the API request
+    // $response = wp_remote_get($url, array(
+    //     'headers' => array(
+    //         'x-rapidapi-host' => 'iq-bible.p.rapidapi.com',
+    //         'x-rapidapi-key' => $api_key
+    //     ),
+    //     'body' => $params
+    // ));
+
+
+
+
+    
+        // Build the base API URL
+        $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint; 
+        $url_with_params = add_query_arg($params, $base_url);
+        error_log('Requesting URL: ' . $url_with_params); 
+        $args = array(
+            'headers' => array(
+                'x-rapidapi-host' => 'iq-bible.p.rapidapi.com',
+                'x-rapidapi-key' => $api_key
+            ),
+            'timeout' => 15 
+        );
+        $response = wp_remote_get($url_with_params, $args); 
+
+
+
+
 
     // Handle any errors in the request
     if (is_wp_error($response)) {
