@@ -1,13 +1,38 @@
 <?php
 /*
 Plugin Name:    IQBible - Study Bible
-Description:    A custom plugin to display a Study Bible and other features via the IQBible API. Use the shortcode [IQBible] to display on any page. For settings, go to Settings > IQBible.
+Description:    A WordPress plugin to display a Study Bible and other features via the IQBible API. Use the shortcode [IQBible] to display on any page. For settings, go to Settings > IQBible.
 Version:        1.0.0-alpha-14
 Text-Domain:    iqbible
 Domain Path:    /languages
 Author:         Jody Pike Méndez
 Author URI:     https://jodypm.com
 */
+
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+
+// --- START I18N SETUP ---
+/**
+ * Load plugin textdomain.
+ * @since 1.0.0 // version
+ */
+function iqbible_load_textdomain() {
+    load_plugin_textdomain(
+        'iqbible', // Your text domain (must match header and translation functions)
+        false,     // Deprecated argument
+        dirname( plugin_basename( __FILE__ ) ) . '/languages/' // Path to language files relative to this file
+    );
+}
+add_action( 'plugins_loaded', 'iqbible_load_textdomain' );
+// --- END I18N SETUP ---
+
+
+
 
 // Start the session
 function start_session()
@@ -75,5 +100,68 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions.php';
 require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 
+
+
+/* Registries
+---------------- */
+
 // Register shortcode
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
+
+/* Session */
+add_action('init', 'start_session', 1);
+
+/* Shortcode */
+add_shortcode('IQBible', 'iq_bible_api_shortcode');
+
+/* Frontend Styles and Scripts */
+add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
+
+/* Admin Styles and Scripts */
+add_action('admin_enqueue_scripts', 'iq_bible_enqueue_admin_assets');
+
+/* Dashicons */
+add_action('wp_enqueue_scripts', 'enqueue_dashicons');
+
+/*Search */
+add_action('wp_ajax_iq_bible_search', 'iq_bible_search_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_search', 'iq_bible_search_ajax_handler');
+
+/* Bible Reading Plans */
+add_action('wp_ajax_iq_bible_plans', 'iq_bible_plans_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_plans', 'iq_bible_plans_ajax_handler');
+
+/* Defs */
+add_action('wp_ajax_iq_bible_define', 'iq_bible_define_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_define', 'iq_bible_define_ajax_handler');
+
+/* Strong's */
+add_action('wp_ajax_iq_bible_strongs_ajax_handler', 'iq_bible_strongs_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_strongs_ajax_handler', 'iq_bible_strongs_ajax_handler');
+
+/* Cross Refs */
+add_action('wp_ajax_iq_bible_get_cross_references', 'iq_bible_get_cross_references_handler');
+add_action('wp_ajax_nopriv_iq_bible_get_cross_references', 'iq_bible_get_cross_references_handler');
+
+/* Original Text (Hebrew, Greek, or Aramaic)*/
+add_action('wp_ajax_iq_bible_get_original_text', 'iq_bible_get_original_text_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_get_original_text', 'iq_bible_get_original_text_ajax_handler');
+
+/* Topics */
+add_action('wp_ajax_iq_bible_topics_ajax_handler', 'iq_bible_topics_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_topics_ajax_handler', 'iq_bible_topics_ajax_handler');
+
+/* Chapter AJAX */
+add_action('wp_ajax_iq_bible_chapter_ajax_handler', 'iq_bible_chapter_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_chapter_ajax_handler', 'iq_bible_chapter_ajax_handler');
+
+/* Books AJAX */
+add_action('wp_ajax_iq_bible_books_ajax_handler', 'iq_bible_books_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_books_ajax_handler', 'iq_bible_books_ajax_handler');
+
+/* Chapter counts AJAX */
+add_action('wp_ajax_iq_bible_chapter_count_ajax_handler', 'iq_bible_chapter_count_ajax_handler');
+add_action('wp_ajax_nopriv_iq_bible_chapter_count_ajax_handler', 'iq_bible_chapter_count_ajax_handler');
+
+// Hook to clear cache when the API key is updated
+add_action('update_option_iq_bible_api_key', 'iq_bible_clear_plugin_cache', 10, 2);

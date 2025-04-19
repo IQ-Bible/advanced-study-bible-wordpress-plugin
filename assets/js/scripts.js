@@ -79,6 +79,69 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+/**
+ * Shows a message in the custom dialog.
+ * @param {string} message The text message to display.
+ * @param {string} type 'success', 'error', or 'info' (default) for styling.
+ * @param {number} autoCloseDelay Milliseconds to auto-close after opening (0 or null/undefined for manual close).
+ */
+function showMessageDialog(message, type = 'info', autoCloseDelay = 0) {
+  const dialog = document.getElementById('iqbible-message-dialog');
+  const messageTextElement = document.getElementById('iqbible-message-text');
+  // Get the inner content div for styling
+  const contentArea = dialog ? dialog.querySelector('.iqbible-message-dialog-content') : null;
+
+  if (!dialog || !messageTextElement || !contentArea) {
+      console.error('Message dialog elements not found. Falling back to alert.');
+      alert(message); // Fallback if dialog elements are missing
+      return;
+  }
+
+  // Set message text using textContent to prevent HTML injection
+  messageTextElement.textContent = message;
+
+  // Remove previous type classes and add the new one for styling
+  contentArea.classList.remove('iqbible-message-success', 'iqbible-message-error', 'iqbible-message-info');
+  if (type === 'success') {
+      contentArea.classList.add('iqbible-message-success');
+  } else if (type === 'error') {
+      contentArea.classList.add('iqbible-message-error');
+  } else {
+      // Default to info style
+      contentArea.classList.add('iqbible-message-info');
+  }
+
+  // Ensure dialog is not already open before showing
+  if (!dialog.open) {
+     try {
+          dialog.showModal();
+     } catch (e) {
+         console.error("Error showing message dialog: ", e);
+         alert(message); // Fallback
+     }
+  }
+
+  // Auto-close logic (if specified)
+  if (autoCloseDelay && autoCloseDelay > 0) {
+      setTimeout(() => {
+          // Check if the dialog is still open before trying to close
+          if (dialog.open) {
+             try {
+                 dialog.close();
+             } catch(e) {
+                 // Ignore errors if dialog already closed somehow
+             }
+          }
+      }, autoCloseDelay);
+  }
+}
+
+
+
+
+
+
+
 
 // Global VersionId
 // ------------------
@@ -294,7 +357,9 @@ document.addEventListener('DOMContentLoaded', function () {
       // Validate custom days if custom is selected
       if (days === 'custom') {
         if (!customDays || isNaN(customDays) || customDays <= 0) {
-          alert('Please enter a valid number of days.')
+
+          showMessageDialog(iqbible_ajax.i18n.enterValidDays, 'error');
+
           return
         }
         days = customDays // Use the custom number of days provided by the user
@@ -536,7 +601,9 @@ function showCrossReferences (verseId) {
       // Open the dialog
       document.getElementById('cross-references-dialog').showModal()
     } else {
-      alert('An error occurred while fetching cross references:', xhr.status)
+
+      showMessageDialog(iqbible_ajax.i18n.errorFetchCrossRefs + ' ' + xhr.status, 'error');
+
     }
   }
   xhr.send(
@@ -556,9 +623,9 @@ function showOriginalText (verseId) {
       document.getElementById('original-text').innerHTML = xhr.responseText // Use innerHTML
       document.getElementById('original-text-dialog').showModal() // Show the modal
     } else {
-      alert(
-        'An error occurred while retrieving the original text: ' + xhr.status
-      )
+
+showMessageDialog(iqbible_ajax.i18n.errorFetchOriginalText + ' ' + xhr.status, 'error');
+
     }
   }
   xhr.send(
@@ -657,8 +724,9 @@ function copyVerse (
   // Update message
   var messageDiv = document.getElementById('verse-message-' + verseId)
   if (messageDiv) {
-    messageDiv.innerHTML =
-      '<span id="iqbible-success-text">Verse copied to clipboard</span>'
+
+    showMessageDialog(iqbible_ajax.i18n.verseCopied, 'success', 3000);
+
     setTimeout(() => {
       messageDiv.textContent = ''
     }, 3000)
@@ -1268,7 +1336,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var noteContent = tinymce.get('iqbible_editor').getContent()
 
     if (!noteContent.trim()) {
-      alert('Note content cannot be empty')
+      
+      showMessageDialog(iqbible_ajax.i18n.noteNotEmpty, 'error');
+
       return
     }
 
@@ -1286,14 +1356,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     xhr.onload = function () {
       if (xhr.status === 200) {
-        alert('Note Saved!')
+     
+        showMessageDialog('Note saved!', 'error');
+        
         var response = JSON.parse(xhr.responseText)
 
         if (response.success) {
           loadSavedNotes()
           resetEditor()
         } else {
-          alert('Error saving note: ' + response.error)
+       
+          showMessageDialog(iqbible_ajax.i18n.errorSavingNote + ' ' + response.error, 'error');
+
         }
       }
     }
@@ -1360,8 +1434,8 @@ document.addEventListener('DOMContentLoaded', function () {
                           <div class="note-title">${noteTextTitle}</div>            
                             <div class="note-content" style='display:none;'>${noteTextDecoded}</div>
                             <small>Created: ${note.created_at} | Updated: ${note.updated_at}</small>
-                            <button class="edit-note-btn" data-note-id="${note.id}">Edit</button>
-                            <button class="delete-note-btn" data-note-id="${note.id}">Delete</button>
+                            <button class="edit-note-btn" data-note-id="${note.id}">${iqbible_ajax.i18n.edit}</button></button>
+                            <button class="delete-note-btn" data-note-id="${note.id}">${iqbible_ajax.i18n.delete}</button>
                            
                         `
             notesList.appendChild(noteDiv)
@@ -1375,8 +1449,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.addEventListener('click', deleteNote)
           })
         } else {
-          document.getElementById('iqbible-notes-list').innerHTML =
-            '<p>No notes found.</p>'
+          document.getElementById('iqbible-notes-list').innerHTML = '<p>' + iqbible_ajax.i18n.noNotesFound + '</p>'
         }
       }
     }
@@ -1404,7 +1477,8 @@ document.addEventListener('DOMContentLoaded', function () {
   function deleteNote () {
     var noteId = this.getAttribute('data-note-id')
 
-    if (confirm('Are you sure you want to delete this note?')) {
+    if (confirm(iqbible_ajax.i18n.confirmDeleteNote)) {
+
       var xhr = new XMLHttpRequest()
       xhr.open('POST', iqbible_ajax.ajaxurl, true)
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -1416,7 +1490,9 @@ document.addEventListener('DOMContentLoaded', function () {
             loadSavedNotes()
             resetEditor()
           } else {
-            alert('Error deleting note: ' + response.error)
+    
+            showMessageDialog(iqbible_ajax.i18n.errorDeletingNote + ' ' + response.error, 'error');
+
           }
         }
       }
@@ -1474,8 +1550,9 @@ function saveVerse (verseId) {
   // Check if the user is logged in
   if (iqbible_ajax.isUserLoggedIn !== '1') {
     if (messageDiv) {
-      messageDiv.innerHTML =
-        '<span id="iqbible-error-text">You must be logged in to save verses</span>'
+
+      showMessageDialog(iqbible_ajax.i18n.loginToSave, 'error');
+
       setTimeout(() => {
         messageDiv.innerHTML = ''
       }, 3000)
@@ -1496,8 +1573,11 @@ function saveVerse (verseId) {
       if (response.success) {
         // Update message
         if (messageDiv) {
-          messageDiv.innerHTML =
-            '<span id="iqbible-success-text">Verse saved</span>'
+
+            
+
+            showMessageDialog(iqbible_ajax.i18n.verseSaved, 'success', 3000);
+
           setTimeout(() => {
             messageDiv.textContent = ''
           }, 3000)
@@ -1509,7 +1589,7 @@ function saveVerse (verseId) {
           var existingIcon = verseElement.querySelector('.saved-icon')
           if (!existingIcon) {
             var savedIcon = document.createElement('img')
-            savedIcon.src = iqbible_ajax.plugin_url + '../assets/img/bookmark.svg'
+            savedIcon.src = iqbible_ajax.plugin_url + 'assets/img/bookmark.svg'
             savedIcon.alt = 'Saved!'
             savedIcon.classList.add('saved-icon')
             savedIcon.title = 'Verse saved!'
@@ -1521,8 +1601,9 @@ function saveVerse (verseId) {
       } else {
         // Update message
         if (messageDiv) {
-          messageDiv.innerHTML =
-            '<span id="iqbible-error-text">Verse already saved</span>'
+
+showMessageDialog(iqbible_ajax.i18n.verseAlreadySaved, 'info');
+
           setTimeout(() => {
             messageDiv.textContent = ''
           }, 3000)
@@ -1588,7 +1669,7 @@ function loadSavedVerses () {
         window.savedVerses = response.savedVerses
         displayVerses('date-new') // Default sort
       } else {
-        savedVersesContainer.innerHTML = '<p>No saved verses.</p>'
+savedVersesContainer.innerHTML = '<p>' + iqbible_ajax.i18n.noSavedVerses + '</p>'
       }
     }
   }
@@ -1634,10 +1715,12 @@ function displayVerses (sortOrder) {
     )} 
                     <span class="version-id">(${verse.versionId.toUpperCase()})</span>
                 </div>
-                <div class="saved-date"><small>Saved on ${formattedDate}</small></div>
+
+                <div class="saved-date"><small>${iqbible_ajax.i18n.savedOn} ${formattedDate}</small></div>
+
                 <button onclick="deleteVerse('${
                   verse.verseId
-                }')" class="delete-verse">Remove</button>
+                }')" class="delete-verse">${iqbible_ajax.i18n.remove}</button>
                 <p></p>
             </div>
         `
@@ -1653,11 +1736,7 @@ function sortVerses (sortOrder) {
 // Delete Verse
 // --------------
 function deleteVerse (verseId) {
-  if (
-    !confirm(
-      'Are you sure you want to remove this verse from your saved verses?'
-    )
-  ) {
+    if (confirm(iqbible_ajax.i18n.confirmDeleteVerse)) {
     return
   }
 
@@ -1694,10 +1773,15 @@ function deleteVerse (verseId) {
             '<p>No saved verses.</p>'
         }
       } else {
-        alert('Error removing verse: ' + response.error)
+   
+
+        showMessageDialog(iqbible_ajax.i18n.errorRemovingVerse + ' ' + response.error, 'error');
+
       }
     } else {
-      alert('Error removing verse. Please try again.')
+
+      showMessageDialog(iqbible_ajax.i18n.errorRemovingVerseRetry, 'error');
+
     }
   }
 
@@ -1733,15 +1817,17 @@ function shareVerse (verseId) {
       .then(() => {
         var messageDiv = document.getElementById('verse-message-' + verseId)
         if (messageDiv) {
-          messageDiv.innerHTML =
-            '<span id="iqbible-success-text">Link copied to clipboard</span>'
+
+          showMessageDialog(iqbible_ajax.i18n.linkCopied, 'success', 3000);
+
           setTimeout(() => {
             messageDiv.textContent = ''
           }, 3000)
         }
       })
       .catch(error => {
-        alert('Failed to copy the link. Please try again.')
+        showMessageDialog(iqbible_ajax.i18n.errorCopyLink, 'error');
+
       })
   }
 }

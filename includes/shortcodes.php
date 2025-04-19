@@ -1,5 +1,5 @@
 <?php // Include the FPDF library for PDF generation
-require_once('lib/FPDF-master/fpdf.php');
+require_once('lib/FPDF-master/fpdf.php'); // Consider loading this conditionally later
 
 function iq_bible_api_shortcode()
 {
@@ -12,12 +12,15 @@ function iq_bible_api_shortcode()
         // 'version' is present, thus the key is VALID
     } else {
         // 'version' is not present, thus the key is INVALID
-        echo "<div class='iqbible-main'>
-       <h2>There was a problem. Please contact the administrator of this site and let them know of the missing or invalid IQBible API Key.</h2>
-        <hr> 
-        <p><sup>10</sup> Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness. - Isaiah 41:10 (KJV)
-        </p>
-        </div>";
+        // --- I18N for Error Message ---
+        echo "<div class='iqbible-main'>";
+        echo "<h2>" . esc_html__('There was a problem. Please contact the administrator of this site and let them know of the missing or invalid IQBible API Key.', 'iqbible') . "</h2>";
+        echo "<hr>";
+        // Note: Translating scripture itself is generally not done, but the surrounding text could be.
+        // Keeping the Isaiah quote as is for now. If needed, the reference text could be translated.
+        echo "<p><sup>10</sup> Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness. - Isaiah 41:10 (KJV)</p>";
+        echo "</div>";
+        // --- End I18N ---
         return ob_get_clean(); // Return the output buffer content
     }
 
@@ -27,12 +30,15 @@ function iq_bible_api_shortcode()
     $_SESSION['siteName'] = get_bloginfo('name'); // Get the site name
 
     // Set default language to 'english' if not already set
+    // This session logic might need replacing later with user meta/options
     if (!isset($_SESSION['language'])) {
-        $_SESSION['language'] = 'english'; 
+        $_SESSION['language'] = 'english';
     }
 
     // Fetch stories
-    $stories = iq_bible_api_get_data('GetStories', array('language' => 'english'));
+    $current_language = isset($_SESSION['language']) ? $_SESSION['language'] : 'english'; // Defensive check
+    $stories = iq_bible_api_get_data('GetStories', array('language' => $current_language));
+
     $stories_by_verse = array();
     if (is_array($stories)) {
         foreach ($stories as $story) {
@@ -42,7 +48,7 @@ function iq_bible_api_shortcode()
             $stories_by_verse[$story['verse_id']] = $story['story'];
         }
     }
-    $_SESSION['stories_by_verse'] = $stories_by_verse;
+    $_SESSION['stories_by_verse'] = $stories_by_verse; // Consider replacing session with Transients
 ?>
 
     <div class="iqbible-main" id="iqbible-main">
@@ -50,88 +56,92 @@ function iq_bible_api_shortcode()
         <!-- Tab Navigation -->
         <div class="iqbible-tabs">
 
-            <button class="iqbible-tab-button active" title="Read the Bible" onclick="openTab('bible')">
+            <button class="iqbible-tab-button active" title="<?php esc_attr_e('Read the Bible', 'iqbible'); ?>" onclick="openTab('bible')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/book-open.svg', __FILE__)); ?>" alt="Book Open Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/book-open.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Book Open Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Bible'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Bible', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Search the Bible" onclick="openTab('search')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('Search the Bible', 'iqbible'); ?>" onclick="openTab('search')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/search.svg', __FILE__)); ?>" alt="Search Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/search.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Search Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Search'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Search', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Access the Bible Dictionary" onclick="openTab('dictionary')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('Access the Bible Dictionary', 'iqbible'); ?>" onclick="openTab('dictionary')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/book.svg', __FILE__)); ?>" alt="Dictionary Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/book.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Dictionary Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Dictionary'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Dictionary', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Explore Strong's Concordance" onclick="openTab('strongs')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('Explore Strong\'s Concordance', 'iqbible'); ?>" onclick="openTab('strongs')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/zap.svg', __FILE__)); ?>" alt="Strongs Concordance Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/zap.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Strongs Concordance Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Concordance'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Concordance', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Explore Bible Stories" onclick="openTab('stories')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('Explore Bible Stories', 'iqbible'); ?>" onclick="openTab('stories')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/file-text.svg', __FILE__)); ?>" alt="Document Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/file-text.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Document Icon for Stories', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Stories'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Stories', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Generate Reading Plans" onclick="openTab('plans')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('Generate Reading Plans', 'iqbible'); ?>" onclick="openTab('plans')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/calendar.svg', __FILE__)); ?>" alt="Calendar Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/calendar.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Calendar Icon for Plans', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Reading Plans'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Reading Plans', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Topics" onclick="openTab('topics')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('Explore Topics', 'iqbible'); ?>" onclick="openTab('topics')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/book.svg', __FILE__)); ?>" alt="Topics Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/book.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Topics Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Topics'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Topics', 'iqbible'); ?></span>
             </button>
 
-            <!-- <button class="iqbible-tab-button" title="Parables" onclick="openTab('parables')">
+            <!-- Parables Button (Commented Out for Beta)
+            <button class="iqbible-tab-button" title="<?php // esc_attr_e('Explore Parables', 'iqbible'); ?>" onclick="openTab('parables')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/book-open.svg', __FILE__)); ?>" alt="Parables Icon">
+                    <img src="<?php // echo esc_url(plugins_url('../assets/img/book-open.svg', __FILE__)); ?>" alt="<?php // esc_attr_e('Parables Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Parables'); ?></span>
-            </button> -->
+                <span class="iqbible-tab-text"><?php // esc_html_e('Parables', 'iqbible'); ?></span>
+            </button>
+            -->
 
-            <!-- <button class="iqbible-tab-button" title="Prophecies" onclick="openTab('prophecies')">
+            <!-- Prophecies Button (Commented Out for Beta)
+            <button class="iqbible-tab-button" title="<?php // esc_attr_e('Explore Prophecies', 'iqbible'); ?>" onclick="openTab('prophecies')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/zap.svg', __FILE__)); ?>" alt="Prophecies Icon">
+                    <img src="<?php // echo esc_url(plugins_url('../assets/img/zap.svg', __FILE__)); ?>" alt="<?php // esc_attr_e('Prophecies Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Prophecies'); ?></span>
-            </button> -->
+                <span class="iqbible-tab-text"><?php // esc_html_e('Prophecies', 'iqbible'); ?></span>
+            </button>
+            -->
 
-            <button class="iqbible-tab-button" title="Get Help" onclick="openTab('help')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('Get Help', 'iqbible'); ?>" onclick="openTab('help')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/help-circle.svg', __FILE__)); ?>" alt="Help Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/help-circle.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Help Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('Help'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('Help', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Notes" onclick="openTab('notes')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('My Notes', 'iqbible'); ?>" onclick="openTab('notes')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/edit.svg', __FILE__)); ?>" alt="Notes Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/edit.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Notes Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('My Notes'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('My Notes', 'iqbible'); ?></span>
             </button>
 
-            <button class="iqbible-tab-button" title="Profile" onclick="openTab('profile')">
+            <button class="iqbible-tab-button" title="<?php esc_attr_e('My Profile', 'iqbible'); ?>" onclick="openTab('profile')">
                 <span class="iqbible-tab-icon">
-                    <img src="<?php echo esc_url(plugins_url('../assets/img/user.svg', __FILE__)); ?>" alt="Profile Icon">
+                    <img src="<?php echo esc_url(plugins_url('../assets/img/user.svg', __FILE__)); ?>" alt="<?php esc_attr_e('Profile Icon', 'iqbible'); ?>">
                 </span>
-                <span class="iqbible-tab-text"><?php echo iqbible_translate('My Profile'); ?></span>
+                <span class="iqbible-tab-text"><?php esc_html_e('My Profile', 'iqbible'); ?></span>
             </button>
 
         </div>
@@ -159,15 +169,15 @@ function iq_bible_api_shortcode()
             <div id="help" class="tab-content">
                 <?php include('help.php'); ?>
             </div>
-            <div id="parables" class="tab-content">
-                <?php include('parables.php'); ?>
-            </div>
+            <!-- <div id="parables" class="tab-content">
+                <?php //include('parables.php'); ?>
+            </div> -->
             <div id="topics" class="tab-content">
                 <?php include('topics.php'); ?>
             </div>
-            <div id="prophecies" class="tab-content">
-                <?php include('prophecies.php'); ?>
-            </div>
+            <!-- <div id="prophecies" class="tab-content">
+                <?php //include('prophecies.php'); ?>
+            </div> -->
             <div id="extra-biblical" class="tab-content">
                 <?php include('extra-biblical.php'); ?>
             </div>
@@ -181,70 +191,9 @@ function iq_bible_api_shortcode()
         </div>
 
         <hr>
-        <?php include('footer.php'); ?>
+        <?php include('footer.php'); // Remember to internationalize strings in footer.php too ?>
     </div>
 
 <?php
     return ob_get_clean(); // Return the output buffer content
 }
-
-/* Registries
----------------- */
-
-/* Session */
-add_action('init', 'start_session', 1);
-
-/* Shortcode */
-add_shortcode('IQBible', 'iq_bible_api_shortcode');
-
-/* Frontend Styles and Scripts */
-add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
-
-/* Admin Styles and Scripts */
-add_action('admin_enqueue_scripts', 'iq_bible_enqueue_admin_assets');
-
-/* Dashicons */
-add_action('wp_enqueue_scripts', 'enqueue_dashicons');
-
-/*Search */
-add_action('wp_ajax_iq_bible_search', 'iq_bible_search_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_search', 'iq_bible_search_ajax_handler');
-
-/* Bible Reading Plans */
-add_action('wp_ajax_iq_bible_plans', 'iq_bible_plans_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_plans', 'iq_bible_plans_ajax_handler');
-
-/* Defs */
-add_action('wp_ajax_iq_bible_define', 'iq_bible_define_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_define', 'iq_bible_define_ajax_handler');
-
-/* Strong's */
-add_action('wp_ajax_iq_bible_strongs_ajax_handler', 'iq_bible_strongs_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_strongs_ajax_handler', 'iq_bible_strongs_ajax_handler');
-
-/* Cross Refs */
-add_action('wp_ajax_iq_bible_get_cross_references', 'iq_bible_get_cross_references_handler');
-add_action('wp_ajax_nopriv_iq_bible_get_cross_references', 'iq_bible_get_cross_references_handler');
-
-/* Original Text (Hebrew, Greek, or Aramaic)*/
-add_action('wp_ajax_iq_bible_get_original_text', 'iq_bible_get_original_text_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_get_original_text', 'iq_bible_get_original_text_ajax_handler');
-
-/* Topics */
-add_action('wp_ajax_iq_bible_topics_ajax_handler', 'iq_bible_topics_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_topics_ajax_handler', 'iq_bible_topics_ajax_handler');
-
-/* Chapter AJAX */
-add_action('wp_ajax_iq_bible_chapter_ajax_handler', 'iq_bible_chapter_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_chapter_ajax_handler', 'iq_bible_chapter_ajax_handler');
-
-/* Books AJAX */
-add_action('wp_ajax_iq_bible_books_ajax_handler', 'iq_bible_books_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_books_ajax_handler', 'iq_bible_books_ajax_handler');
-
-/* Chapter counts AJAX */
-add_action('wp_ajax_iq_bible_chapter_count_ajax_handler', 'iq_bible_chapter_count_ajax_handler');
-add_action('wp_ajax_nopriv_iq_bible_chapter_count_ajax_handler', 'iq_bible_chapter_count_ajax_handler');
-
-// Hook to clear cache when the API key is updated
-add_action('update_option_iq_bible_api_key', 'iq_bible_clear_plugin_cache', 10, 2);

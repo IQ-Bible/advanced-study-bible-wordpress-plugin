@@ -11,6 +11,20 @@
 <!-- Dialogs 
  ---------------- -->
 
+
+ <!-- ========= NEW: Dialog Box for General Messages ========= -->
+<dialog class="iqbible-dialog iqbible-message-dialog" id="iqbible-message-dialog">
+    <div class="iqbible-dialog-content iqbible-message-dialog-content">
+        <!-- Close button 'x' -->
+        <span class="iqbible-dialog-close iqbible-message-dialog-close" onclick="this.closest('dialog').close()">×</span>
+        <!-- Message content area -->
+        <div id="iqbible-message-text" style="margin-bottom: 15px;"></div>
+         <!-- Explicit OK button -->
+         <button type="button" class="iqbible-message-dialog-close-btn button" onclick="this.closest('dialog').close()"><?php esc_html_e('OK', 'iqbible'); ?></button>
+    </div>
+</dialog>
+<!-- ========= END: Dialog Box for General Messages ========= -->
+
 <!-- Dialog Box for About -->
 <dialog class="iqbible-dialog" id="about-dialog">
     <div id="about-content" class="iqbible-dialog-content">
