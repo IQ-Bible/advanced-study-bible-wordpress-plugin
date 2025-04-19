@@ -727,9 +727,6 @@ function copyVerse (
 
     showMessageDialog(iqbible_ajax.i18n.verseCopied, 'success', 3000);
 
-    setTimeout(() => {
-      messageDiv.textContent = ''
-    }, 3000)
   }
 }
 
@@ -1357,7 +1354,7 @@ document.addEventListener('DOMContentLoaded', function () {
     xhr.onload = function () {
       if (xhr.status === 200) {
      
-        showMessageDialog('Note saved!', 'error');
+        showMessageDialog(iqbible_ajax.i18n.noteSaved, 'success', 3000);
         
         var response = JSON.parse(xhr.responseText)
 
@@ -1578,9 +1575,8 @@ function saveVerse (verseId) {
 
             showMessageDialog(iqbible_ajax.i18n.verseSaved, 'success', 3000);
 
-          setTimeout(() => {
-            messageDiv.textContent = ''
-          }, 3000)
+
+
         }
 
         // Add saved icon after the verse
@@ -1736,8 +1732,9 @@ function sortVerses (sortOrder) {
 // Delete Verse
 // --------------
 function deleteVerse (verseId) {
-    if (confirm(iqbible_ajax.i18n.confirmDeleteVerse)) {
-    return
+
+  if (!confirm(iqbible_ajax.i18n.confirmDeleteVerse)) { 
+      return; 
   }
 
   var xhr = new XMLHttpRequest()
@@ -1820,9 +1817,7 @@ function shareVerse (verseId) {
 
           showMessageDialog(iqbible_ajax.i18n.linkCopied, 'success', 3000);
 
-          setTimeout(() => {
-            messageDiv.textContent = ''
-          }, 3000)
+
         }
       })
       .catch(error => {
