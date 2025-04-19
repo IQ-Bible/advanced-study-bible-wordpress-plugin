@@ -6,13 +6,16 @@ The shortcode for this plugin is [IQBible].
 ## Unreleased
 - N/A
 
+## [1.0.0-alpha-2] - 2025-04-19
+### Added
+- SECURITY: Added sanitization callbacks (`sanitize_text_field`, `absint`, `esc_url_raw`) to `register_setting` calls for plugin options (`iq_bible_api_key`, `iq_bible_api_cache`, `iq_bible_custom_login_url`) to ensure safe data handling.
+
 ## [1.0.0-alpha-1] - 2025-04-19
 ### Added
-- Implemented AJAX Nonce Security (Crucial):
+- SECURITY: Implemented AJAX Nonce Security (Crucial):
   - Modified `enqueue.php` to generate (`wp_create_nonce`) and pass nonce via `wp_localize_script`.
   - Modified `scripts.js` to send the nonce parameter (`security`) with all relevant AJAX requests.
   - Modified `functions.php` to add nonce verification (`check_ajax_referer`) to all relevant AJAX handler functions.
-
 
 ## [0.14.1-alpha] - 2024-11-09
 ### Fixed
