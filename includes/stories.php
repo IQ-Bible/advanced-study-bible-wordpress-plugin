@@ -1,4 +1,5 @@
 <!-- Bible Stories -->
+ 
 <h2><?php esc_html_e('Bible Stories', 'iqbible'); ?></h2>
 
 <div class="iqbible-bible-stories-container">

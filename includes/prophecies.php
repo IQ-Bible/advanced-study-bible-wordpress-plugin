@@ -1,4 +1,5 @@
 <!-- Prophecies -->
+ 
 <h2><?php esc_html_e('Prophecies Fulfilled in Jesus', 'iqbible'); ?></h2>
 <?php 
 $prophecies_fulfilled_in_jesus = iq_bible_api_get_data('GetPropheciesFulfilledInJesus', array('language' => 'english'));

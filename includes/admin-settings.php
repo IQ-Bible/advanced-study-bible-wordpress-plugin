@@ -1,5 +1,5 @@
-<?php
-// Register settings (No translatable strings here)
+<?php // Admin Settings
+
 function iq_bible_api_register_settings()
 {
     register_setting( 'iq_bible_api_options', 'iq_bible_api_key', 'sanitize_text_field' );

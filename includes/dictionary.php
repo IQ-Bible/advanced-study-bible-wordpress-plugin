@@ -1,4 +1,5 @@
 <!-- Dictionary -->
+ 
 <h2><?php esc_html_e('Bible Dictionary', 'iqbible'); // Translate heading ?></h2>
 
 <form id="iqbible-dictionary-form" class="iqbible-search-form">

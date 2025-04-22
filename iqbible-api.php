@@ -23,15 +23,13 @@ if (!defined('ABSPATH')) {
  */
 function iqbible_load_textdomain() {
     load_plugin_textdomain(
-        'iqbible', // Your text domain (must match header and translation functions)
-        false,     // Deprecated argument
-        dirname( plugin_basename( __FILE__ ) ) . '/languages/' // Path to language files relative to this file
+        'iqbible', 
+        false, 
+        dirname( plugin_basename( __FILE__ ) ) . '/languages/'
     );
 }
 add_action( 'plugins_loaded', 'iqbible_load_textdomain' );
 // --- END I18N SETUP ---
-
-
 
 
 // Start the session
@@ -41,7 +39,6 @@ function start_session()
         session_start();
     }
 }
-
 
 // Create notes table on plugin activation
 function iqbible_create_notes_table()
@@ -101,7 +98,6 @@ require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 
 
-
 /* Registries
 ---------------- */
 
@@ -130,7 +126,6 @@ add_action('wp_ajax_nopriv_iq_bible_search', 'iq_bible_search_ajax_handler');
 /* Bible Reading Plans */
 add_action('wp_ajax_iq_bible_plans', 'iq_bible_plans_ajax_handler');
 add_action('wp_ajax_nopriv_iq_bible_plans', 'iq_bible_plans_ajax_handler');
-
 
 
 /* Defs */

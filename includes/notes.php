@@ -1,4 +1,5 @@
 <!-- Notes -->
+ 
 <h2><?php esc_html_e( 'My Notes', 'iqbible' ); ?></h2>
 <div class="iqbible-notes-container">
     <?php if ( is_user_logged_in() ) : ?>

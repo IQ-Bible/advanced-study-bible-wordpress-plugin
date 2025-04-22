@@ -1,4 +1,5 @@
 <!-- Topics -->
+ 
 <h2><?php esc_html_e('Topics', 'iqbible'); ?></h2>
 
 <div class="iqbible-topics-container">

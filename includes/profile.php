@@ -1,4 +1,5 @@
 <!-- Profile -->
+ 
 <h2><?php esc_html_e('My Profile', 'iqbible'); ?></h2>
 
 <div class="iqbible-profile-container">

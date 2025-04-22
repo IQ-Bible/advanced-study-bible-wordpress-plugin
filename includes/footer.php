@@ -1,4 +1,5 @@
 <!-- Footer -->
+
 <div class="iqbible-footer">
     <span><?php
            // Use sprintf to allow the link within the translatable string
@@ -13,9 +14,7 @@
     <?php printf(esc_html__('Plugin: %s', 'iqbible'), esc_html(GetLatestVersionFromChangelog())); // Translate "Plugin:" label ?>
      | 
     <?php
-       // Only show API version if available from $info (assuming $info is available here)
-       // If $info isn't available in footer.php, this part needs context from shortcodes.php
-       global $info; // Attempt to access global $info if set in shortcodes.php
+       global $info; 
        if (isset($info['version'])) {
             printf(esc_html__('API: %s', 'iqbible'), esc_html($info['version'])); // Translate "API:" label
        }
@@ -29,18 +28,16 @@
 <!-- Dialogs
  ---------------- -->
 
-
- <!-- ========= NEW: Dialog Box for General Messages ========= -->
+ <!-- Dialog Box for Message -->
 <dialog class="iqbible-dialog iqbible-message-dialog" id="iqbible-message-dialog">
     <div class="iqbible-dialog-content iqbible-message-dialog-content">
         <span class="iqbible-dialog-close iqbible-message-dialog-close" onclick="this.closest('dialog').close()">×</span>
         <div id="iqbible-message-text" style="margin-bottom: 15px;"></div>
          <button type="button" class="iqbible-message-dialog-close-btn button" onclick="this.closest('dialog').close()">
-             <?php esc_html_e('OK', 'iqbible'); // Already translated - OK ?>
+             <?php esc_html_e('OK', 'iqbible');  ?>
          </button>
     </div>
 </dialog>
-<!-- ========= END: Dialog Box for General Messages ========= -->
 
 <!-- Dialog Box for About -->
 <dialog class="iqbible-dialog" id="about-dialog">

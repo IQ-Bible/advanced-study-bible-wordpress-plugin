@@ -1,4 +1,5 @@
 <!-- Help -->
+ 
 <h2><?php esc_html_e( 'Help', 'iqbible' ); ?></h2>
 <div class="iqbible-help-container">
     <p><?php esc_html_e( 'Thank you for choosing the IQBible Plugin to enhance your biblical experience. This help page is designed to guide you through the plugin’s features, ensuring you get the most out of your journey with scripture. Whether you\'re looking to explore the Bible, search for definitions, or create custom reading plans.', 'iqbible' ); ?></p>

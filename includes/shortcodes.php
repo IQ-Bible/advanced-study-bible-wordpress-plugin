@@ -1,4 +1,4 @@
-<?php 
+<?php // Shortcodes
 
 function iq_bible_api_shortcode()
 {

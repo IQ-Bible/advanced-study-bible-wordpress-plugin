@@ -1,6 +1,6 @@
 <?php
 // Enqueue plugin styles and scripts for the front end
-// --------------------------------------------------------
+
 function iq_bible_api_enqueue_assets()
 {
     $enable_caching = get_option('iq_bible_api_cache');

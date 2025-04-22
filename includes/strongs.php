@@ -1,4 +1,5 @@
 <!-- Strong's Concordance -->
+
 <h2><?php esc_html_e('Strong\'s Concordance', 'iqbible'); ?></h2>
 <form id="iqbible-strongs-form" class="iqbible-search-form">
     <div class="iqbible-search-container">
@@ -9,5 +10,4 @@
     </div>
 </form>
 
-<!-- Container for displaying search results -->
 <div id="iqbible-strongs-results"></div>
