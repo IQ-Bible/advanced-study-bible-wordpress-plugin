@@ -131,6 +131,8 @@ add_action('wp_ajax_nopriv_iq_bible_search', 'iq_bible_search_ajax_handler');
 add_action('wp_ajax_iq_bible_plans', 'iq_bible_plans_ajax_handler');
 add_action('wp_ajax_nopriv_iq_bible_plans', 'iq_bible_plans_ajax_handler');
 
+
+
 /* Defs */
 add_action('wp_ajax_iq_bible_define', 'iq_bible_define_ajax_handler');
 add_action('wp_ajax_nopriv_iq_bible_define', 'iq_bible_define_ajax_handler');
@@ -165,3 +167,5 @@ add_action('wp_ajax_nopriv_iq_bible_chapter_count_ajax_handler', 'iq_bible_chapt
 
 // Hook to clear cache when the API key is updated
 add_action('update_option_iq_bible_api_key', 'iq_bible_clear_plugin_cache', 10, 2);
+
+

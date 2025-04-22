@@ -1,5 +1,5 @@
 <!-- Profile -->
-<h2>My Profile</h2>
+<h2><?php esc_html_e('My Profile', 'iqbible'); ?></h2>
 
 <div class="iqbible-profile-container">
 
@@ -22,7 +22,8 @@
 
     ?>
 
-        <h3>My Saved Verses</h3>
+        <h3><?php esc_html_e('My Saved Verses', 'iqbible'); ?></h3>
+        
         <div class="my-saved-verses"></div>
 
         <?php } else {

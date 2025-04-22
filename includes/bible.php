@@ -17,8 +17,8 @@
 <hr>
 <!-- Prev/Next -->
 <div id="iqbible-prev-next">
-    <span id="prev-chapter"> &lt; prev </span> |
-    <span id="next-chapter"> next &gt; </span>
+    <span id="prev-chapter"> < <?php esc_html_e('prev', 'iqbible'); ?> </span> | 
+    <span id="next-chapter"> <?php esc_html_e('next', 'iqbible'); ?> > </span> 
 </div>
 
 

@@ -1,5 +1,4 @@
-<?php // Include the FPDF library for PDF generation
-require_once('lib/FPDF-master/fpdf.php'); // Consider loading this conditionally later
+<?php 
 
 function iq_bible_api_shortcode()
 {

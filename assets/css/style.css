@@ -25,6 +25,8 @@
  * Media Queries
  */
 
+ @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 /**
 *
 * Import
@@ -46,6 +48,9 @@
 * General Styles 
 *
 */
+
+
+
 .iqbible-main {
     background-color: var(--background-color);
     color: var(--text-color);
@@ -62,7 +67,13 @@ a {
 }
 
 
+/* [class*="iqbible-"] {
+    color: red;
+  }
 
+[id^="iqbible-"] {
+    color: blue;
+  } */
 
 
 /**
@@ -264,6 +275,12 @@ margin-top:30px; */
     padding:10px;
     color: green;
 } */
+
+
+/* Prev | Next btns
+-------------------- */
+#iqbible-prev-next span.disabled { color: #999; cursor: default; text-decoration: none; }
+#iqbible-prev-next span.disabled:hover { text-decoration: none; }
 
 
 /**

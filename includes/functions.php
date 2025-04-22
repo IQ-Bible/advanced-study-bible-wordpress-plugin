@@ -1,6 +1,5 @@
 <?php
 
-
 function GetLatestVersionFromChangelog()
 {
     // Get the path to the root of the plugin directory
@@ -21,8 +20,6 @@ function GetLatestVersionFromChangelog()
         return "v0.0.0";
     }
 }
-
-
 
 
 // Book icons
@@ -60,38 +57,19 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
         }
     }
 
-    // Build the API URL
-    // $url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
-    // error_log('Requesting URL: ' . $url);
 
-    // // Make the API request
-    // $response = wp_remote_get($url, array(
-    //     'headers' => array(
-    //         'x-rapidapi-host' => 'iq-bible.p.rapidapi.com',
-    //         'x-rapidapi-key' => $api_key
-    //     ),
-    //     'body' => $params
-    // ));
-
-
-
-
-
-        // Build the base API URL
-        $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint; 
-        $url_with_params = add_query_arg($params, $base_url);
-        error_log('Requesting URL: ' . $url_with_params); 
-        $args = array(
-            'headers' => array(
-                'x-rapidapi-host' => 'iq-bible.p.rapidapi.com',
-                'x-rapidapi-key' => $api_key
-            ),
-            'timeout' => 15 
-        );
-        $response = wp_remote_get($url_with_params, $args); 
-
-
-
+    // Build the base API URL
+    $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
+    $url_with_params = add_query_arg($params, $base_url);
+    error_log('Requesting URL: ' . $url_with_params);
+    $args = array(
+        'headers' => array(
+            'x-rapidapi-host' => 'iq-bible.p.rapidapi.com',
+            'x-rapidapi-key' => $api_key
+        ),
+        'timeout' => 15
+    );
+    $response = wp_remote_get($url_with_params, $args);
 
 
     // Handle any errors in the request
@@ -120,8 +98,6 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
     // Return the fresh data
     return $decoded_response;
 }
-
-
 
 
 
@@ -162,7 +138,7 @@ function iq_bible_search_ajax_handler()
     // Call the API with the query
     $searchResults = iq_bible_api_get_data('GetSearch', array('query' => $query, 'versionId' => $versionId));
 
-    echo "<h3>" . count($searchResults) . "&nbsp;Search Results for '{$query}'</h3>";
+    echo sprintf('<h3>%1$d %2$s \'%3$s\'</h3>', count($searchResults), esc_html__('Search Results for ', 'iqbible'), esc_html($query));
 
     // Check if the API returned any results
     if (!empty($searchResults)) {
@@ -180,15 +156,13 @@ function iq_bible_search_ajax_handler()
 
             $books = $_SESSION['books'];
 
-            $bookName = 'Unknown Book Name';
+            $bookName = __('Unknown Book Name', 'iqbible');
             foreach ($books as $book) {
                 if ($book['b'] == $bookId) {
                     $bookName = esc_html($book['n']);
                     break;
                 }
             }
-
-
 
 
             $boldText = preg_replace(
@@ -209,9 +183,9 @@ function iq_bible_search_ajax_handler()
 
         echo "</ol>";
     } else {
-        echo "<p>No results found for '{$query}'.</p>";
+        echo '<p>' . sprintf(esc_html__('No results found for: \'%s\'.', 'iqbible'), esc_html($query)) . '</p>';
         if (count($searchResults) == 0) {
-            echo "<i>Remember, you are using the " . strtoupper($versionId) . " version. Check your spelling for the appropriate version!</i>";
+            echo '<i>' . sprintf(esc_html__('Remember, you are using the %s version. Check your spelling for the appropriate version!', 'iqbible'), strtoupper(esc_html($versionId))) . '</i>';
         }
     }
 
@@ -234,18 +208,18 @@ function iq_bible_define_ajax_handler()
     $query = strtolower($query);
 
     if (empty($query)) {
-        echo 'Please enter a biblical word to define.';
+        esc_html_e('Please enter a biblical word to define.', 'iqbible');
         wp_die();
     }
 
     // Fetch the biblical definition using the API
     $_SESSION['dictionaryId'] = 'smiths';
-    $_SESSION['dictionaryIdFullName'] = "Smith's Bible Dictionary";
+    $_SESSION['dictionaryIdFullName'] = __('Smith\'s Bible Dictionary', 'iqbible');
     $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => $_SESSION['dictionaryId']));
 
     if (!empty($definition_biblical)) {
 
-        echo "<small><i>From " . esc_html($_SESSION['dictionaryIdFullName']) . ":</i></small><br>";
+        echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'), esc_html($_SESSION['dictionaryIdFullName'])) . '</i></small><br>';
 
         // Display the word being defined
         echo '<h3>' . esc_html($definition_biblical['word']) . '</h3>';
@@ -266,7 +240,7 @@ function iq_bible_define_ajax_handler()
         // Output the cleaned-up definition text
         echo esc_html($definition_text) . '<br>';
     } else {
-        echo 'No biblical definition found for ' . esc_html($query) . '.';
+        echo sprintf(esc_html__('No biblical definition found for %s.', 'iqbible'), esc_html($query));
     }
 
     wp_die();
@@ -286,7 +260,7 @@ function iq_bible_strongs_ajax_handler()
     $id = isset($_POST['id']) ? sanitize_text_field($_POST['id']) : '';
 
     if (empty($lexicon) || empty($id)) {
-        echo 'Invalid input.';
+        esc_html_e('Invalid input.', 'iqbible');
         wp_die();
     }
 
@@ -297,13 +271,13 @@ function iq_bible_strongs_ajax_handler()
     if (!empty($strongs)) {
         foreach ($strongs as $entry) {
             echo '<div class="strongs-entry">';
-            echo '<small><i>Strong\'s ID: ' . esc_html($entry['strongs_id']) . '</i></small>';
+            echo '<small><i>' . esc_html__('Strong\'s ID:', 'iqbible') . ' ' . esc_html($entry['strongs_id']) . '</i></small>';
             echo '<h3>' . esc_html($entry['word']) . '</h3>';
             echo '<p>' . esc_html($entry['glossary']) . '</p>';
             echo '</div>';
         }
     } else {
-        echo 'No concordance results found.';
+        esc_html_e('No concordance results found.', 'iqbible');
     }
     wp_die();
 }
@@ -313,13 +287,13 @@ function iq_bible_strongs_ajax_handler()
 function iq_bible_get_cross_references_handler()
 {
 
-        // ---> Verify Nonce <---
-        check_ajax_referer('iqbible_ajax_nonce', 'security');
-        // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     $verseId = isset($_POST['verseId']) ? sanitize_text_field($_POST['verseId']) : '';
     if (empty($verseId)) {
-        echo json_encode(array('error' => 'Verse ID is required.'));
+        wp_send_json_error(['error' => __('Verse ID is required.', 'iqbible')]);
         wp_die();
     }
 
@@ -340,7 +314,7 @@ function iq_bible_get_cross_references_handler()
             $verseNumber = intval(substr($sv, 5, 3));   // Last three digits represent the verse number
 
             // Find the book name in the session data
-            $bookName = '';
+            $bookName = __('Unknown Book', 'iqbible');
             foreach ($books as $book) {
                 if ($book['b'] == intval($bookId)) {
                     $bookName = $book['n'];
@@ -366,7 +340,7 @@ function iq_bible_get_cross_references_handler()
         $referencesList .= '</ul>';
         echo $referencesList;
     } else {
-        echo "No cross references found.";
+        esc_html_e('No cross references found.', 'iqbible');
     }
     wp_die();
 }
@@ -386,7 +360,7 @@ function iq_bible_get_original_text_ajax_handler()
     $verseId = isset($_POST['verseId']) ? sanitize_text_field($_POST['verseId']) : '';
 
     if (empty($verseId)) {
-        echo 'Invalid verse ID.';
+        esc_html_e('Invalid verse ID.', 'iqbible');
         wp_die();
     }
 
@@ -399,9 +373,10 @@ function iq_bible_get_original_text_ajax_handler()
 
     // Display language header
     if ($isHebrew) {
-        echo 'Hebrew<br><small><i>Original Hebrew is read from right to left &larr;</i></small>';
+        esc_html_e('Hebrew', 'iqbible');
+        echo '<br><small><i>' . esc_html__('Original Hebrew is read from right to left &larr;', 'iqbible') . '</i></small>';
     } else {
-        echo 'Greek';
+        esc_html_e('Greek', 'iqbible');
     }
 
     // Display original text with numbers
@@ -439,26 +414,26 @@ function iq_bible_get_original_text_ajax_handler()
 
             if ($isHebrew) {
                 // All details in LTR, only the Hebrew word itself is RTL
-                echo '<div style="direction: ltr; text-align: left;">';
-                echo '<strong>#' . $ct . ': </strong>';
+
+                echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . ' </strong>';
                 // Just the Hebrew word is RTL
                 echo '<span style="direction: rtl; display: inline-block;">' . esc_html($originalText['word']) . '</span><br>';
-                echo '<strong>Pronunciation:</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-                echo '<strong>Strong\'s ID:</strong> ' . $lexicon . esc_html($originalText['strongs']) . '<br>';
-                echo '<strong>Strong\'s Glossary:</strong> ' . $glossary . '<br>';
+                echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+                echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . $lexicon . esc_html($originalText['strongs']) . '<br>';
+                echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . esc_html($glossary) . '<br>';
                 echo '</div>';
             } else {
                 // Greek word details (all LTR)
-                echo '<strong>#' . $ct . ':</strong> ' . esc_html($originalText['word']) . '<br>';
-                echo '<strong>Pronunciation:</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-                echo '<strong>Strong\'s ID:</strong> ' . $lexicon . esc_html($originalText['strongs']) . '<br>';
-                echo '<strong>Strong\'s Glossary:</strong> ' . $glossary . '<br>';
+                echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ' . esc_html($originalText['word']) . '<br>';
+                echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+                echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($originalText['strongs']) . '<br>';
+                echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . $glossary . '<br>';
             }
 
             echo '</div>';
         }
     } else {
-        echo 'No original text found for the specified verse ID.';
+        esc_html_e('No original text found for the specified verse ID.', 'iqbible');
     }
 
     wp_die();
@@ -470,194 +445,417 @@ function iq_bible_get_original_text_ajax_handler()
 
 // Reading Plans Ajax Handler
 // -----------------------------
-function iq_bible_plans_ajax_handler()
-{
+// function iq_bible_plans_ajax_handler()
+// {
+
+//     // ---> Verify Nonce <---
+//     check_ajax_referer('iqbible_ajax_nonce', 'security');
+//     // ---> End Verify Nonce <---
+
+
+//     // Get form data from the AJAX request
+//     $days = isset($_POST['days']) ? sanitize_text_field($_POST['days']) : '365';
+//     $requestedStartDate = isset($_POST['requestedStartDate']) ? sanitize_text_field($_POST['requestedStartDate']) : '2023-01-01';
+//     $sections = isset($_POST['sections']) ? sanitize_text_field($_POST['sections']) : 'all';
+//     $requestedAge = isset($_POST['requestedAge']) ? intval($_POST['requestedAge']) : 15;
+//     $planName = isset($_POST['iqbible-planName']) ? sanitize_text_field($_POST['iqbible-planName']) : __('Default Plan', 'iqbible');
+//     $planName = esc_html(stripslashes($planName));
+
+//     // Handle custom days if selected
+//     if ($days === 'custom') {
+//         $customDays = isset($_POST['customDays']) ? intval($_POST['customDays']) : 0;
+//         if ($customDays > 0) {
+//             $days = $customDays; // Use the custom number of days provided by the user
+//         } else {
+//             wp_send_json_error(array('message' => __('Invalid number of days.', 'iqbible')));
+//             return;
+//         }
+//     } else {
+//         $days = intval($days);
+//         if ($days <= 0) {
+//             $days = 365; // Default value if invalid
+//         }
+//     }
+
+//     // Call the API with the provided form data (excluding planName)
+//     $planResults = iq_bible_api_get_data(
+//         'GetBibleReadingPlan',
+//         array(
+//             'days' => $days,
+//             'requestedStartDate' => $requestedStartDate,
+//             'sections' => $sections,
+//             'requestedAge' => $requestedAge
+//         )
+//     );
+
+//     // Function to create reading plan HTML and PDF details from the API response
+//     function create_plan_list_html($planResults, $planName)
+//     {
+//         // URL for the PDF maker (FPDF):
+//         define('MY_PLUGIN_URL', plugin_dir_url(__FILE__));
+//         define('MY_PLUGIN_PATH', plugin_dir_path(__FILE__));
+//         $plugin_url = MY_PLUGIN_URL;
+//         $plans_pdf_url = $plugin_url . 'plans-pdf.php';
+
+//         // Access books from session
+//         iq_bible_ensure_books_session();
+//         $books = isset($_SESSION['books']) ? $_SESSION['books'] : array();
+
+//         if (empty($planResults)) {
+//             return '<p>' . esc_html__('No plan results found for your request.', 'iqbible') . '</p>';
+//         }
+
+//         // Extract plan details
+//         $planDetails = $planResults[0]['datesInfo'];
+//         $startDate = new DateTime($planDetails['startDate']);
+//         $endDate = new DateTime($planDetails['endDate']);
+//         $duration = $startDate->diff($endDate)->days;
+//         $testaments = $planResults[0]['sections'];
+
+//         // Create plan details for HTML (display on page)
+//         $planDetailsHTML = "<div class='plan-details' id='plan-details'>";
+//         $planDetailsHTML .= "<h2>'" . $planName . "' <span><small>" . esc_html__('Bible Reading Plan:', 'iqbible') . "</small></span></h2>";
+
+
+//         $planDetailsHTML .= "<p><strong>" . esc_html__('Start Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $startDate->getTimestamp()) . "</p>";
+
+//         $planDetailsHTML .= "<p><strong>" . esc_html__('End Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $endDate->getTimestamp()) . "</p>";
+
+
+//         $planDetailsHTML .= "<p><strong>" . esc_html__('Duration:', 'iqbible') . "</strong> " . sprintf(_n('%d day', '%d days', $duration, 'iqbible'), $duration) . "</p>";
+//         $planDetailsHTML .= "</div>";
+
+//         // Create plan details for PDF (to be sent to PDF maker)
+//         $planDetailsPDF = sprintf(__('Plan Name: %s', 'iqbible'), $planName) . "\n";
+//         $planDetailsPDF .= sprintf(__('Start Date: %s', 'iqbible'), $startDate->format(get_option('date_format'))) . "\n";
+
+//         $planDetailsPDF .= sprintf(__('End Date: %s', 'iqbible'), $endDate->format(get_option('date_format'))) . "\n";
+
+//         $planDetailsPDF .= sprintf(__('Duration: %s', 'iqbible'), sprintf(_n('%d day', '%d days', $duration, 'iqbible'), $duration)) . "\n";
+
+//         // Begin creating the list HTML
+//         $planListHTML = "<div class='reading-plan-list'>";
+//         $planListPDF = ""; // For PDF content
+
+//         $currentDate = clone $startDate;
+//         $currentMonth = $currentDate->format('F');
+//         $currentYear = $currentDate->format('Y');
+//         $planListHTML .= "<h3>$currentMonth, $currentYear</h3><ul>";
+
+//         $planListPDF .= "<b>" . sprintf(__('Month: %s, %s', 'iqbible'), $currentMonth, $currentYear) . "\n</b>";
+
+//         // Generate the list of readings
+//         while ($currentDate <= $endDate) {
+//             if ($currentDate->format('F') != $currentMonth) {
+//                 $currentMonth = $currentDate->format('F');
+//                 $currentYear = $currentDate->format('Y');
+//                 $planListHTML .= "</ul><h3>$currentMonth, $currentYear</h3><ul>";
+//                 $planListPDF .= "\n<b>Month: $currentMonth, $currentYear\n</b>";
+//             }
+
+//             $dayContentHTML = '';
+//             $dayContentPDF = '';
+//             $ct = 0;
+
+//             foreach ($planResults as $entry) {
+//                 if ($entry['date'] === $currentDate->format('Y-m-d')) {
+//                     $verseListHTML = [];
+//                     $verseListPDF = [];
+//                     foreach ($entry['bookAndChapterIds'] as $id) {
+//                         $id = str_pad($id, 5, '0', STR_PAD_LEFT);
+//                         $bookId = intval(substr($id, 0, 2));
+//                         $chapterId = intval(substr($id, -3));
+//                         $bookName = __('Unknown Book', 'iqbible');
+//                         foreach ($books as $book) {
+//                             if ($book['b'] == $bookId) {
+//                                 $bookName = $book['n'];
+//                                 break;
+//                             }
+//                         }
+
+//                         // Construct the URL using add_query_arg()
+//                         $url = add_query_arg(
+//                             array(
+//                                 'bookId' => $bookId,
+//                                 'chapterId' => $chapterId,
+//                                 'versionId' => $_SESSION['versionId']
+//                             ),
+//                             $_SESSION['baseUrl']
+//                         );
+//                         // Append the verse ID as a fragment
+//                         $url .= '#' . $verseId;
+
+//                         $verseListHTML[] = sprintf(
+//                             '<label class="chapter-checkbox-label">
+//                                 <input type="checkbox" class="chapter-checkbox" 
+//                                     data-book-id="%s" 
+//                                     data-chapter-id="%s" 
+//                                     data-chapter-ref="%s %s">
+//                                 <a href="#" class="reading-plan-link" data-book-id="%s" data-chapter-id="%s">%s %s</a>
+//                             </label>',
+//                             esc_attr($bookId),
+//                             esc_attr($chapterId),
+//                             esc_html($bookName),
+//                             $chapterId,
+//                             esc_attr($bookId),
+//                             esc_attr($chapterId),
+//                             esc_html($bookName),
+//                             $chapterId
+//                         );
+
+//                         $verseListPDF[] = "$bookName $chapterId";
+//                     }
+//                     $dayContentHTML = implode(', ', $verseListHTML);
+//                     $dayContentPDF = implode(', ', $verseListPDF);
+//                     break;
+//                 }
+//                 $ct++;
+//             }
+
+//             $planListHTML .= "<small>" . sprintf(esc_html__('Day #%d', 'iqbible'), $ct) . "</small><li style='list-style-type:none;'><strong>" . date_i18n( 'l, ' . get_option( 'date_format' ), $currentDate->getTimestamp() ) . "</strong><br>$dayContentHTML</li><hr>";
+
+//             $planListPDF .= sprintf(__('Day #%1$d: %2$s - %3$s', 'iqbible'), $ct, $currentDate->format(get_option('date_format')), $dayContentPDF) . "\n";
+
+//             $currentDate->modify('+1 day');
+//         }
+
+//         $planListHTML .= "</ul></div>";
+//         $planListPDF .= "\n";
+
+//         // Form to pass data to the PDF generator
+//         $planDetailsDownloadOrPrint = "
+//         <div id='reading-plan-output'>
+//             <form id='generate-pdf' action='" . esc_url($plans_pdf_url) . "' method='post' target='_blank'>
+//                 <input type='hidden' name='planName' value='" . esc_html($planName) . "'>
+//                 <input type='hidden' name='startDate' value='" . esc_html($startDate->format('F j, Y')) . "'>
+//                 <input type='hidden' name='endDate' value='" . esc_html($endDate->format('F j, Y')) . "'>
+//                 <input type='hidden' name='duration' value='" . esc_html($duration) . "'>
+//                 <input type='hidden' name='testaments' value='" . esc_html($testaments) . "'>
+//                 <input type='hidden' name='planDetails' value='" . esc_html($planListPDF) . "'>
+//             </form>
+//             </div>";
+
+//             echo "<button id='print-reading-plan-btn'>OUTPUT</button>";
+
+//         return $planDetailsDownloadOrPrint . $planDetailsHTML . $planListHTML;
+//     }
+
+//     // Output the plan list HTML
+//     echo create_plan_list_html($planResults, $planName);
+
+//     wp_die(); // Terminate immediately and return the proper response
+// }
+
+
+
+
+
+
+
+// Reading Plans Ajax Handler
+// -----------------------------
+function iq_bible_plans_ajax_handler() {
 
     // ---> Verify Nonce <---
-    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    check_ajax_referer( 'iqbible_ajax_nonce', 'security' );
     // ---> End Verify Nonce <---
 
 
-    // Get form data from the AJAX request
+    $day_count=1;
+
+    // --- Get form data ---
     $days = isset($_POST['days']) ? sanitize_text_field($_POST['days']) : '365';
-    $requestedStartDate = isset($_POST['requestedStartDate']) ? sanitize_text_field($_POST['requestedStartDate']) : '2023-01-01';
+    $requestedStartDateInput = isset($_POST['requestedStartDate']) ? sanitize_text_field($_POST['requestedStartDate']) : date('Y-m-d');
+    try {
+        $startDateCheck = new DateTime($requestedStartDateInput);
+        $requestedStartDate = $startDateCheck->format('Y-m-d');
+    } catch (Exception $e) {
+        $requestedStartDate = date('Y-m-d');
+    }
     $sections = isset($_POST['sections']) ? sanitize_text_field($_POST['sections']) : 'all';
     $requestedAge = isset($_POST['requestedAge']) ? intval($_POST['requestedAge']) : 15;
-    $planName = isset($_POST['iqbible-planName']) ? sanitize_text_field($_POST['iqbible-planName']) : 'Default Plan';
-    $planName = esc_html(stripslashes($planName));
+    $planNameInput = isset($_POST['iqbible-planName']) ? stripslashes($_POST['iqbible-planName']) : __('Default Plan', 'iqbible');
 
-    // Handle custom days if selected
+    // --- Handle custom days ---
     if ($days === 'custom') {
         $customDays = isset($_POST['customDays']) ? intval($_POST['customDays']) : 0;
-        if ($customDays > 0) {
-            $days = $customDays; // Use the custom number of days provided by the user
-        } else {
-            wp_send_json_error(array('message' => 'Invalid number of days.'));
-            return;
-        }
+        if ($customDays > 0) { $days = $customDays; }
+        else { wp_send_json_error( array( 'message' => __( 'Invalid number of days.', 'iqbible' ) ) ); return; }
     } else {
         $days = intval($days);
-        if ($days <= 0) {
-            $days = 365; // Default value if invalid
-        }
+        if ($days <= 0) { $days = 365; }
     }
+    $days = min($days, 365 * 5); // Limit duration
 
-    // Call the API with the provided form data (excluding planName)
+
+    // --- Call API ---
     $planResults = iq_bible_api_get_data(
         'GetBibleReadingPlan',
         array(
-            'days' => $days,
+            'days'             => $days,
             'requestedStartDate' => $requestedStartDate,
-            'sections' => $sections,
-            'requestedAge' => $requestedAge
+            'sections'         => $sections,
+            'requestedAge'     => $requestedAge,
         )
     );
 
-    // Function to create reading plan HTML and PDF details from the API response
-    function create_plan_list_html($planResults, $planName)
-    {
-        // URL for the PDF maker (FPDF):
-        define('MY_PLUGIN_URL', plugin_dir_url(__FILE__));
-        define('MY_PLUGIN_PATH', plugin_dir_path(__FILE__));
-        $plugin_url = MY_PLUGIN_URL;
-        $plans_pdf_url = $plugin_url . 'plans-pdf.php';
-
-        // Access books from session
-        iq_bible_ensure_books_session();
-        $books = isset($_SESSION['books']) ? $_SESSION['books'] : array();
-
-        if (empty($planResults)) {
-            return '<p>No plan results found for your request.</p>';
-        }
-
-        // Extract plan details
-        $planDetails = $planResults[0]['datesInfo'];
-        $startDate = new DateTime($planDetails['startDate']);
-        $endDate = new DateTime($planDetails['endDate']);
-        $duration = $startDate->diff($endDate)->days;
-        $testaments = $planResults[0]['sections'];
-
-        // Create plan details for HTML (display on page)
-        $planDetailsHTML = "<div class='plan-details' id='plan-details'>";
-        $planDetailsHTML .= "<h2>'" . $planName . "' <span><small>Bible Reading Plan</small></span></h2>";
-        $planDetailsHTML .= "<p><strong>Start Date:</strong> " . $startDate->format('F j, Y') . "</p>";
-        $planDetailsHTML .= "<p><strong>End Date:</strong> " . $endDate->format('F j, Y') . "</p>";
-        $planDetailsHTML .= "<p><strong>Duration:</strong> " . $duration . " days</p>";
-        $planDetailsHTML .= "</div>";
-
-        // Create plan details for PDF (to be sent to PDF maker)
-        $planDetailsPDF = "Plan Name: $planName\n";
-        $planDetailsPDF .= "Start Date: " . $startDate->format('F j, Y') . "\n";
-        $planDetailsPDF .= "End Date: " . $endDate->format('F j, Y') . "\n";
-        $planDetailsPDF .= "Duration: " . $duration . " days\n";
-
-        // Begin creating the list HTML
-        $planListHTML = "<div class='reading-plan-list'>";
-        $planListPDF = ""; // For PDF content
-
-        $currentDate = clone $startDate;
-        $currentMonth = $currentDate->format('F');
-        $currentYear = $currentDate->format('Y');
-        $planListHTML .= "<h3>$currentMonth, $currentYear</h3><ul>";
-        $planListPDF .= "<b>Month: $currentMonth, $currentYear\n</b>";
-
-        // Generate the list of readings
-        while ($currentDate <= $endDate) {
-            if ($currentDate->format('F') != $currentMonth) {
-                $currentMonth = $currentDate->format('F');
-                $currentYear = $currentDate->format('Y');
-                $planListHTML .= "</ul><h3>$currentMonth, $currentYear</h3><ul>";
-                $planListPDF .= "\n<b>Month: $currentMonth, $currentYear\n</b>";
-            }
-
-            $dayContentHTML = '';
-            $dayContentPDF = '';
-            $ct = 0;
-
-            foreach ($planResults as $entry) {
-                if ($entry['date'] === $currentDate->format('Y-m-d')) {
-                    $verseListHTML = [];
-                    $verseListPDF = [];
-                    foreach ($entry['bookAndChapterIds'] as $id) {
-                        $id = str_pad($id, 5, '0', STR_PAD_LEFT);
-                        $bookId = intval(substr($id, 0, 2));
-                        $chapterId = intval(substr($id, -3));
-                        $bookName = 'Unknown Book';
-                        foreach ($books as $book) {
-                            if ($book['b'] == $bookId) {
-                                $bookName = $book['n'];
-                                break;
-                            }
-                        }
-
-                        // Construct the URL using add_query_arg()
-                        $url = add_query_arg(
-                            array(
-                                'bookId' => $bookId,
-                                'chapterId' => $chapterId,
-                                'versionId' => $_SESSION['versionId']
-                            ),
-                            $_SESSION['baseUrl']
-                        );
-                        // Append the verse ID as a fragment
-                        $url .= '#' . $verseId;
-
-                        $verseListHTML[] = sprintf(
-                            '<label class="chapter-checkbox-label">
-                                <input type="checkbox" class="chapter-checkbox" 
-                                    data-book-id="%s" 
-                                    data-chapter-id="%s" 
-                                    data-chapter-ref="%s %s">
-                                <a href="#" class="reading-plan-link" data-book-id="%s" data-chapter-id="%s">%s %s</a>
-                            </label>',
-                            esc_attr($bookId),
-                            esc_attr($chapterId),
-                            esc_html($bookName),
-                            $chapterId,
-                            esc_attr($bookId),
-                            esc_attr($chapterId),
-                            esc_html($bookName),
-                            $chapterId
-                        );
-
-                        $verseListPDF[] = "$bookName $chapterId";
-                    }
-                    $dayContentHTML = implode(', ', $verseListHTML);
-                    $dayContentPDF = implode(', ', $verseListPDF);
-                    break;
-                }
-                $ct++;
-            }
-
-            $planListHTML .= "<small>Day #$ct</small><li style='list-style-type:none;'><strong>{$currentDate->format('l')}, {$currentDate->format('F jS, Y')}</strong><br>$dayContentHTML</li><hr>";
-            $planListPDF .= "Day #$ct: {$currentDate->format('l, F jS, Y')} - $dayContentPDF\n";
-
-            $currentDate->modify('+1 day');
-        }
-
-        $planListHTML .= "</ul></div>";
-        $planListPDF .= "\n";
-
-        // Form to pass data to the PDF generator
-        $planDetailsDownloadOrPrint = "
-            <form id='generate-pdf' action='" . esc_url($plans_pdf_url) . "' method='post' target='_blank'>
-                <input type='hidden' name='planName' value='" . esc_html($planName) . "'>
-                <input type='hidden' name='startDate' value='" . esc_html($startDate->format('F j, Y')) . "'>
-                <input type='hidden' name='endDate' value='" . esc_html($endDate->format('F j, Y')) . "'>
-                <input type='hidden' name='duration' value='" . esc_html($duration) . "'>
-                <input type='hidden' name='testaments' value='" . esc_html($testaments) . "'>
-                <input type='hidden' name='planDetails' value='" . esc_html($planListPDF) . "'>
-                <button type='submit'>Download or Print</button>
-            </form>";
-
-        return $planDetailsDownloadOrPrint . $planDetailsHTML . $planListHTML;
+    // --- Validate API Response ---
+    if ( empty( $planResults ) || ! is_array( $planResults ) || ! isset( $planResults[0]['datesInfo'] ) || ! is_array( $planResults[0]['datesInfo'] ) || ! isset( $planResults[0]['datesInfo']['startDate'] ) || ! isset( $planResults[0]['datesInfo']['endDate'] ) ) {
+         // Log error for server admin if needed: error_log('IQBible Plan Error: Invalid API response structure.');
+         wp_send_json_error( array('message' => esc_html__( 'Invalid plan data received from API. Please try again.', 'iqbible' )) );
+         return;
     }
 
-    // Output the plan list HTML
-    echo create_plan_list_html($planResults, $planName);
+    // --- Prepare HTML Output ---
+    ob_start();
 
-    wp_die(); // Terminate immediately and return the proper response
-}
+    // Extract and Validate Dates
+    $planDetails = $planResults[0]['datesInfo'];
+    $startDate   = null;
+    $endDate     = null;
+    try {
+        $startDate = new DateTime( $planDetails['startDate'] );
+        $endDate   = new DateTime( $planDetails['endDate'] );
+    } catch ( Exception $e ) {
+        ob_end_clean();
+         // Log error for server admin if needed: error_log('IQBible Plan Error: Failed to parse dates from API - ' . $e->getMessage());
+        wp_send_json_error( array('message' => esc_html__( 'Error processing plan dates.', 'iqbible' )) );
+        return;
+    }
+    $duration = $startDate->diff($endDate)->days;
+
+
+    // --- Print Button ---
+    echo '<div class="iqbible-print-plan-action" style="margin-bottom: 15px; text-align: right;">';
+    echo '<button id="print-reading-plan-btn" class="button button-secondary">' . esc_html__( 'Print This Plan', 'iqbible' ) . '</button>';
+    echo '</div>';
+
+    // --- Plan Header ---
+    echo "<div id='printable-plan-content'>"; // Start wrapper
+    echo "<div class='plan-details' id='plan-details'>";
+    echo "<h2>" . esc_html( $planNameInput ) . " <span><small>" . esc_html__( 'Bible Reading Plan:', 'iqbible' ) . "</small></span></h2>";
+    echo "<p><strong>" . esc_html__( 'Start Date:', 'iqbible' ) . "</strong> " . date_i18n( get_option( 'date_format' ), $startDate->getTimestamp() ) . "</p>";
+    echo "<p><strong>" . esc_html__( 'End Date:', 'iqbible' ) . "</strong> " . date_i18n( get_option( 'date_format' ), $endDate->getTimestamp() ) . "</p>";
+    echo "<p><strong>" . esc_html__( 'Duration:', 'iqbible' ) . "</strong> " . sprintf( _n( '%d day', '%d days', $duration, 'iqbible' ), $duration ) . "</p>";
+    echo "</div>"; // End plan-details
+
+    // --- Generate Reading List HTML ---
+    echo "<div class='reading-plan-list'>"; // Start list container
+
+    // Prepare book map safely
+    iq_bible_ensure_books_session(); // Call function to load book data if needed
+    $books = $_SESSION['books'] ?? array();
+    $book_map = array();
+    // Ensure $books is a non-empty array before proceeding
+    if (is_array($books) && !empty($books)) {
+        // Filter out invalid book entries before creating the map
+        $valid_books = array_filter($books, function($book) {
+            return is_array($book) && isset($book['b']) && isset($book['n']);
+        });
+        // Create map only if there are valid books
+        if (!empty($valid_books)) {
+             $book_map = array_column($valid_books, 'n', 'b');
+        }
+    } // If $books wasn't valid or empty, $book_map remains an empty array
+
+    $currentDate  = clone $startDate;
+    $loopEndDate  = clone $endDate;
+    $output_started = false;
+    $prev_month_year = null;
+
+    // ** Main Loop for Days **
+    while ( $currentDate <= $loopEndDate ) {
+        $current_ymd = $currentDate->format( 'Y-m-d' );
+        $day_entry   = null;
+
+        // Find the API entry for the current date safely
+        foreach ( $planResults as $entry ) {
+            if ( is_array($entry) && isset( $entry['date'] ) && $entry['date'] === $current_ymd ) {
+                $day_entry = $entry;
+                break;
+            }
+        }
+
+        // Month/Year Header
+        $month_year = date_i18n( 'F, Y', $currentDate->getTimestamp() );
+        if ( ! $output_started || ( $month_year !== $prev_month_year ) ) {
+            if ( $output_started ) { echo '</ul>'; } // Close previous list if needed
+            echo "<h3>" . esc_html( $month_year ) . "</h3><ul>"; // Start new month list
+            $output_started  = true;
+            $prev_month_year = $month_year;
+        }
+
+        // Day's Reading Item
+     
+        $day_of_week = date_i18n( 'l', $currentDate->getTimestamp() );
+        $day_label   = date_i18n( get_option( 'date_format' ), $currentDate->getTimestamp() );
+        echo "<li style='list-style-type:none;'>Day ".$day_count.": <strong>" . esc_html( $day_of_week ) . ", " . esc_html( $day_label ) . "</strong><br>";
+
+        // Check day_entry and bookAndChapterIds structure defensively
+        if ( $day_entry && isset($day_entry['bookAndChapterIds']) && is_array($day_entry['bookAndChapterIds']) && !empty($day_entry['bookAndChapterIds'])) {
+            $readings_html = [];
+             foreach ($day_entry['bookAndChapterIds'] as $id) {
+                 // Ensure ID is usable
+                 if (!is_scalar($id)) { continue; } // Skip non-scalar IDs
+
+                $id_str    = str_pad( (string)$id, 5, '0', STR_PAD_LEFT );
+                $bookId    = intval( substr( $id_str, 0, 2 ) );
+                $chapterId = intval( substr( $id_str, -3 ) );
+                // Use book map safely with null coalescing operator ??
+                $bookName  = $book_map[$bookId] ?? __( 'Unknown Book', 'iqbible' );
+
+                $readings_html[] = sprintf(
+                    '<label class="chapter-checkbox-label" style="margin-right: 10px;">
+                        <input type="checkbox" class="chapter-checkbox" data-reading-ref="%1$s-%2$s">
+                        <a href="#" class="reading-plan-link" data-book-id="%1$s" data-chapter-id="%2$s">%3$s %2$s</a>
+                    </label>',
+                    esc_attr( $bookId ),
+                    esc_attr( $chapterId ),
+                    esc_html( $bookName )
+                );
+             } // End foreach $id
+
+             // Only implode if there's something to implode
+             if (!empty($readings_html)) {
+                echo implode( ' ', $readings_html );
+             } else {
+                 // This case might occur if all IDs inside were invalid scalars
+                 echo '<span>' . esc_html__( 'No valid readings found for this day.', 'iqbible' ) . '</span>';
+             }
+
+        } else {
+            // No readings assigned for this day
+            echo '<span>' . esc_html__( 'No reading assigned for this day.', 'iqbible' ) . '</span>';
+        }
+        echo "</li><hr>"; // End list item
+
+        $currentDate->modify( '+1 day' ); // Increment day
+       $day_count++;
+    } // ** End while loop **
+
+    // ** Close Final Tags **
+    if ( $output_started ) { echo '</ul>'; } // Close the last month's list
+    echo "</div>"; // End reading-plan-list
+    echo "</div>"; // End #printable-plan-content
+
+    // --- Get Buffered HTML ---
+    $output_html = ob_get_clean();
+
+    // --- Send JSON Success Response ---
+    // Ensure the HTML isn't empty before sending success
+    if (empty(trim($output_html))) {
+         // Log error for server admin if needed: error_log('IQBible Plan Error: Generated HTML was empty.');
+        wp_send_json_error( array('message' => esc_html__( 'Failed to generate plan content.', 'iqbible' )) );
+    } else {
+        wp_send_json_success( array( 'html' => $output_html ) );
+    }
+
+    // wp_die() is called implicitly
+} 
+
+
+
+
 
 
 
@@ -675,7 +873,7 @@ function iq_bible_topics_ajax_handler()
     $topic = isset($_POST['topic']) ? sanitize_text_field($_POST['topic']) : '';
 
     if (empty($topic)) {
-        echo 'Invalid input.';
+        esc_html_e('Invalid input.', 'iqbible');
         wp_die();
     }
 
@@ -712,7 +910,7 @@ function iq_bible_topics_ajax_handler()
 
         echo '<hr></div>';
     } else {
-        echo 'No results found for this topic.';
+        esc_html_e('No results found for this topic.', 'iqbible');
     }
     wp_die();
 }
@@ -733,9 +931,13 @@ function iq_bible_chapter_ajax_handler()
     $versionId = isset($_POST['versionId']) ? sanitize_text_field($_POST['versionId']) : 'kjv';
 
     if (empty($bookId) || empty($chapterId)) {
-        echo json_encode(array('error' => 'Invalid book ID or chapter ID.'));
+        wp_send_json_error(['error' => __('Invalid book ID or chapter ID.', 'iqbible')]);
         wp_die();
     }
+
+    // Fetch Total Chapters for the *specific book requested*
+    $chapterCountData = iq_bible_api_get_data('GetChapterCount', array('bookId' => $bookId));
+    $totalChapters = isset($chapterCountData['chapterCount']) ? intval($chapterCountData['chapterCount']) : 0;
 
     // Get current user ID
     $user_id = get_current_user_id();
@@ -772,13 +974,14 @@ function iq_bible_chapter_ajax_handler()
     ));
 
     // Extract the book name from the response
-    $bookName = isset($bookNameResponse[0]['n']) ? $bookNameResponse[0]['n'] : 'Unknown Book';
+    $bookName = isset($bookNameResponse[0]['n']) ? $bookNameResponse[0]['n'] : __('Unknown Book', 'iqbible');
 
     // Prepare the response
     $response = array(
         'chapterContent' => '',
         'bookName' => $bookName,
-        'savedVerses' => $saved_verses // Add saved verses to response
+        'totalChapters' => $totalChapters,
+        'savedVerses' => $saved_verses
     );
 
     // Fetch stories from session
@@ -804,61 +1007,97 @@ function iq_bible_chapter_ajax_handler()
 
             // Add saved icon if verse is saved
             if (in_array($verseId, $saved_verses)) {
-                $response['chapterContent'] .= '&nbsp;<img src="' . esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg') . '" alt="Saved" class="saved-icon" title="Verse saved!">';
+                $response['chapterContent'] .= '&nbsp;<img src="' . esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg') . '" alt="' . esc_attr__('Saved Verse Icon', 'iqbible') . '" class="saved-icon" title="' . esc_attr__('Saved Verse', 'iqbible') . '" >';
             }
 
             // Add verse options
             $chapterNumber = $paddedChapterId;
             $siteName = $_SESSION['siteName'];
 
-            // Verse options section
-            $response['chapterContent'] .= "
-<div class='verse-options'>
-    <button class='option-button' onclick='copyVerse(\"$verseId\", \"$bookName\", $chapterNumber, \"$versionId\", \"$siteName\", \"" . $_SESSION['language'] . "\")'>
-        <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/clipboard.svg') . "' alt='Copy Icon'> Copy
-    </button>";
+
+            // Verse options section - Using sprintf for cleaner I18N
+            $copy_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/clipboard.svg');
+            $key_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/key.svg');
+            $comment_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/message-square.svg');
+            $crosshair_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/crosshair.svg');
+            $share_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/share.svg');
+            $bookmark_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg');
+            // Ensure session language is escaped if used directly in JS onclick
+            $session_lang_esc = esc_js($_SESSION['language']);
+            // Ensure base URL is clean for data attribute
+            $base_url_esc = esc_url($_SESSION['baseUrl']);
+            // Build share URL components safely
+            $share_url = add_query_arg([
+                'bookId' => $bookId,
+                'chapterId' => $chapterId,
+                'versionId' => $versionId
+            ], $base_url_esc) . '#verse-' . $verseId;
 
 
-            // Show additional options only for non-'extra' canon
-
-            $response['chapterContent'] .= "
-        <button class='option-button' onclick='showOriginalText(\"$verseId\")'>
-            <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/key.svg') . "' alt='Original Text Icon'> Original Text
-        </button>
-        
-        <button class='option-button' onclick='showCommentary(\"$verseId\")'>
-            <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/message-square.svg') . "' alt='Commentary Icon'> Commentary
-        </button>
-        
-        <button class='option-button' onclick='showCrossReferences(\"$verseId\")'>
-            <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/crosshair.svg') . "' alt='Cross References Icon'> Cross References
-        </button>";
-
-
-            $response['chapterContent'] .= "
-            <button class='option-button' onclick='shareVerse(\"$verseId\")' data-url='" . $_SESSION['baseUrl'] . "?bookId=$bookId&chapterId=$chapterId&versionId=$versionId#verse-$verseId'>
-                <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/share.svg') . "' alt='Share Icon'> Share
-            </button>
-        
-    <button class='option-button' onclick='saveVerse(\"$verseId\")'>
-        <img src='" . esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg') . "' alt='Bookmark Icon'> Bookmark
-    </button>
-
-    <div class='verse-message' id='verse-message-$verseId'></div>
-</div>"; // Close verse-options div
+            $response['chapterContent'] .= sprintf(
+                '<div class="verse-options">
+                    <button class="option-button" onclick="copyVerse(\'%1$s\', \'%2$s\', %3$d, \'%4$s\', \'%5$s\', \'%6$s\')">
+                        <img src="%7$s" alt="%8$s"> %9$s
+                    </button>
+                    <button class="option-button" onclick="showOriginalText(\'%1$s\')">
+                        <img src="%10$s" alt="%11$s"> %12$s
+                    </button>
+                    <button class="option-button" onclick="showCommentary(\'%1$s\')">
+                        <img src="%13$s" alt="%14$s"> %15$s
+                    </button>
+                    <button class="option-button" onclick="showCrossReferences(\'%1$s\')">
+                        <img src="%16$s" alt="%17$s"> %18$s
+                    </button>
+                    <button class="option-button" onclick="shareVerse(\'%1$s\')" data-url="%19$s">
+                        <img src="%20$s" alt="%21$s"> %22$s
+                    </button>
+                    <button class="option-button" onclick="saveVerse(\'%1$s\')">
+                        <img src="%23$s" alt="%24$s"> %25$s
+                    </button>
+                    <div class="verse-message" id="verse-message-%1$s"></div>
+                </div>',
+                esc_js($verseId),                      // %1$s - verseId (escaped for JS)
+                esc_js($bookName),                     // %2$s - bookName (escaped for JS)
+                intval($chapterNumber),                // %3$d - chapterNumber (integer)
+                esc_js($versionId),                    // %4$s - versionId (escaped for JS)
+                esc_js($siteName),                     // %5$s - siteName (escaped for JS)
+                $session_lang_esc,                     // %6$s - session language (already escaped)
+                $copy_icon_url,                        // %7$s - copy icon URL
+                esc_attr__('Copy Icon', 'iqbible'),    // %8$s - copy icon alt text
+                esc_html__('Copy', 'iqbible'),         // %9$s - copy button text
+                $key_icon_url,                         // %10$s - key icon URL
+                esc_attr__('Original Text Icon', 'iqbible'), // %11$s - key icon alt text
+                esc_html__('Original Text', 'iqbible'), // %12$s - key button text
+                $comment_icon_url,                     // %13$s - comment icon URL
+                esc_attr__('Commentary Icon', 'iqbible'), // %14$s - comment icon alt text
+                esc_html__('Commentary', 'iqbible'),   // %15$s - comment button text
+                $crosshair_icon_url,                   // %16$s - crosshair icon URL
+                esc_attr__('Cross References Icon', 'iqbible'), // %17$s - crosshair icon alt text
+                esc_html__('Cross References', 'iqbible'), // %18$s - crosshair button text
+                esc_url($share_url),                   // %19$s - share URL (already built and escaped)
+                $share_icon_url,                       // %20$s - share icon URL
+                esc_attr__('Share Icon', 'iqbible'),   // %21$s - share icon alt text
+                esc_html__('Share', 'iqbible'),        // %22$s - share button text
+                $bookmark_icon_url,                    // %23$s - bookmark icon URL
+                esc_attr__('Bookmark Icon', 'iqbible'), // %24$s - bookmark icon alt text
+                esc_html__('Bookmark', 'iqbible')      // %25$s - bookmark button text
+            );
 
             $response['chapterContent'] .= "</div>"; // Close verse div
 
             $response['chapterContent'] .= "</div>"; // Close verse div
         }
     } else {
-        $response['chapterContent'] = 'No chapter content results found.';
+        $response['chapterContent'] = esc_html__('No chapter content results found.', 'iqbible');
     }
 
     // Send the response as JSON
     echo json_encode($response);
     wp_die();
 }
+
+
+
 
 
 
@@ -886,7 +1125,7 @@ function iq_bible_chapter_count_ajax_handler()
     error_log('Book ID sent to API: ' . $bookId);
 
     if (empty($bookId)) {
-        echo json_encode(array('error' => 'Invalid book ID.'));
+        echo json_encode(array('error' => __('Invalid book ID.', 'iqbible')));
         wp_die();
     }
 
@@ -965,7 +1204,7 @@ function iq_bible_books_ajax_handler()
 
     // Display Old Testament books
     if (!empty($booksOT)) {
-        echo '<h3>Old Testament</h3>';
+        echo '<h3>' . esc_html__('Old Testament', 'iqbible') . '</h3>';
         echo '<ul>';
         foreach ($booksOT as $bookOT) {
             echo '<li class="book-item" data-book-id="' . esc_attr($bookOT['b']) . '" data-book-category="OT">' . esc_html($bookOT['n']) . '</li>';
@@ -975,7 +1214,7 @@ function iq_bible_books_ajax_handler()
 
     // Display New Testament books
     if (!empty($booksNT)) {
-        echo '<h3>New Testament</h3>';
+        echo '<h3>' . esc_html__('New Testament', 'iqbible') . '</h3>';
         echo '<ul>';
         foreach ($booksNT as $bookNT) {
             echo '<li class="book-item" data-book-id="' . esc_attr($bookNT['b']) . '" data-book-category="OT">' . esc_html($bookNT['n']) . '</li>';
@@ -1019,7 +1258,7 @@ function iq_bible_clear_plugin_cache_form()
     check_admin_referer('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
 
     if (!current_user_can('manage_options')) {
-         wp_die('You do not have sufficient permissions to perform this action.');
+        wp_die(esc_html__('You do not have sufficient permissions to perform this action.', 'iqbible'));
     }
 
     global $wpdb;
@@ -1044,16 +1283,16 @@ function iq_bible_clear_plugin_cache_form()
 function iq_bible_get_versions()
 {
 
-        // ---> Verify Nonce <---
-        check_ajax_referer('iqbible_ajax_nonce', 'security');
-        // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     $versions = iq_bible_api_get_data('GetVersions');
 
     if (!empty($versions)) {
         echo json_encode($versions);
     } else {
-        echo json_encode(array('error' => 'No versions found'));
+        echo json_encode(array('error' => __('No versions found', 'iqbible')));
     }
 
     wp_die(); // Required to terminate the AJAX request properly
@@ -1070,9 +1309,9 @@ add_action('wp_ajax_nopriv_iq_bible_get_versions', 'iq_bible_get_versions');
 function iq_bible_audio_check()
 {
 
-       // ---> Verify Nonce <---
-       check_ajax_referer('iqbible_ajax_nonce', 'security');
-       // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     $bookId = isset($_POST['bookId']) ? sanitize_text_field($_POST['bookId']) : '';
     $chapterId = isset($_POST['chapterId']) ? sanitize_text_field($_POST['chapterId']) : '';
@@ -1109,19 +1348,19 @@ add_action('wp_ajax_nopriv_iq_bible_audio_check', 'iq_bible_audio_check');
 function iq_bible_save_note()
 {
 
-       // ---> Verify Nonce <---
-       check_ajax_referer('iqbible_ajax_nonce', 'security');
-       // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     if (!is_user_logged_in()) {
-        wp_send_json_error('User not logged in');
+        wp_send_json_error(__('User not logged in', 'iqbible'));
     }
 
     $user_id = get_current_user_id();
     $note_text = isset($_POST['note_text']) ? wp_kses_post($_POST['note_text']) : '';
 
     if (empty($note_text)) {
-        wp_send_json_error('Note content is empty.');
+        wp_send_json_error(__('Note content is empty.', 'iqbible'));
     }
 
     global $wpdb;
@@ -1142,7 +1381,7 @@ function iq_bible_save_note()
         $note = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE id = %d", $note_id), ARRAY_A);
         wp_send_json_success($note);
     } else {
-        wp_send_json_error('Failed to save the note.');
+        wp_send_json_error(__('Failed to save the note.', 'iqbible'));
     }
 }
 add_action('wp_ajax_iq_bible_save_note', 'iq_bible_save_note');
@@ -1153,12 +1392,12 @@ add_action('wp_ajax_iq_bible_save_note', 'iq_bible_save_note');
 function iq_bible_update_note()
 {
 
-       // ---> Verify Nonce <---
-       check_ajax_referer('iqbible_ajax_nonce', 'security');
-       // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     if (!is_user_logged_in()) {
-        wp_send_json_error('User not logged in');
+        wp_send_json_error(__('User not logged in', 'iqbible'));
     }
 
     global $wpdb;
@@ -1167,7 +1406,7 @@ function iq_bible_update_note()
     $note_text = isset($_POST['note_text']) ? stripslashes(wp_kses_post($_POST['note_text'])) : ''; // Use stripslashes() to remove slashes
 
     if ($note_id === 0 || empty($note_text)) {
-        wp_send_json_error('Invalid note ID or content.');
+        wp_send_json_error(__('Invalid note ID or content.', 'iqbible'));
     }
 
     $user_id = get_current_user_id();
@@ -1188,7 +1427,7 @@ function iq_bible_update_note()
         $updated_note['note_text'] = stripslashes($updated_note['note_text']); // Ensure no slashes in the response
         wp_send_json_success($updated_note);
     } else {
-        wp_send_json_error('Failed to update note.');
+        wp_send_json_error(__('Failed to update note.', 'iqbible'));
     }
 }
 add_action('wp_ajax_iq_bible_update_note', 'iq_bible_update_note');
@@ -1201,12 +1440,12 @@ add_action('wp_ajax_iq_bible_update_note', 'iq_bible_update_note');
 function iq_bible_get_saved_notes()
 {
 
-       // ---> Verify Nonce <---
-       check_ajax_referer('iqbible_ajax_nonce', 'security');
-       // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     if (!is_user_logged_in()) {
-        wp_send_json_error('User not logged in');
+        wp_send_json_error(__('User not logged in', 'iqbible'));
     }
 
     global $wpdb;
@@ -1226,7 +1465,7 @@ function iq_bible_get_saved_notes()
         }
         wp_send_json_success($notes); // Send the decoded notes
     } else {
-        wp_send_json_error('No notes found.');
+        wp_send_json_error(__('No notes found!', 'iqbible'));
     }
 }
 add_action('wp_ajax_iq_bible_get_saved_notes', 'iq_bible_get_saved_notes');
@@ -1239,12 +1478,12 @@ add_action('wp_ajax_iq_bible_get_saved_notes', 'iq_bible_get_saved_notes');
 function iq_bible_delete_note()
 {
 
-       // ---> Verify Nonce <---
-       check_ajax_referer('iqbible_ajax_nonce', 'security');
-       // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     if (!is_user_logged_in()) {
-        wp_send_json_error('User not logged in');
+        wp_send_json_error(__('User not logged in', 'iqbible'));
     }
 
     $note_id = isset($_POST['note_id']) ? intval($_POST['note_id']) : 0;
@@ -1258,10 +1497,10 @@ function iq_bible_delete_note()
         if ($result !== false) {
             wp_send_json_success();
         } else {
-            wp_send_json_error('Failed to delete note.');
+            wp_send_json_error(__('Failed to delete note.', 'iqbible'));
         }
     } else {
-        wp_send_json_error('Invalid note ID.');
+        wp_send_json_error(__('Invalid note ID.', 'iqbible'));
     }
 }
 add_action('wp_ajax_iq_bible_delete_note', 'iq_bible_delete_note');
@@ -1306,7 +1545,7 @@ function iq_bible_save_verse_ajax_handler()
 
     // Check if the user is logged in
     if (!is_user_logged_in()) {
-        echo json_encode(array('success' => false, 'error' => 'User not logged in.'));
+        wp_send_json_error(['success' => false, 'error' => __('User not logged in.', 'iqbible')]);
         wp_die();
     }
 
@@ -1320,7 +1559,7 @@ function iq_bible_save_verse_ajax_handler()
 
     // Check if the verseId is valid
     if (empty($verseId)) {
-        echo json_encode(array('success' => false, 'error' => 'Invalid verse ID.'));
+        echo json_encode(array('success' => false, 'error' => __('Invalid verse ID.', 'iqbible')));
         wp_die();
     }
 
@@ -1337,7 +1576,7 @@ function iq_bible_save_verse_ajax_handler()
     ));
 
     if ($existing > 0) {
-        echo json_encode(array('success' => false, 'error' => 'Verse already saved.'));
+        echo json_encode(array('success' => false, 'error' => __('Verse already saved.', 'iqbible')));
         wp_die();
     }
 
@@ -1357,7 +1596,7 @@ function iq_bible_save_verse_ajax_handler()
     if ($inserted) {
         echo json_encode(array('success' => true));
     } else {
-        echo json_encode(array('success' => false, 'error' => 'Error saving verse.'));
+        echo json_encode(array('success' => false, 'error' => __('Error saving verse.', 'iqbible')));
     }
 
     wp_die();
@@ -1370,12 +1609,12 @@ add_action('wp_ajax_iq_bible_save_verse', 'iq_bible_save_verse_ajax_handler');
 function iq_bible_get_saved_verses_ajax_handler()
 {
 
-       // ---> Verify Nonce <---
-       check_ajax_referer('iqbible_ajax_nonce', 'security');
-       // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     if (!is_user_logged_in()) {
-        echo json_encode(array('success' => false, 'error' => 'User not logged in.'));
+        echo json_encode(array('success' => false, 'error' => __('User not logged in.', 'iqbible')));
         wp_die();
     }
 
@@ -1432,9 +1671,8 @@ function iq_bible_get_book_name($bookId, $chapterId)
     // Fallback to API call if needed
     $bookName = iq_bible_api_get_data('GetBookAndChapterNameByBookAndChapterId', array(
         'bookAndChapterId' => $bookId . $chapterId,
-        'language' => 'english'
+        'language' => $_SESSION['language'] ?? 'english'
     ));
-
     return $bookName;
 }
 
@@ -1449,7 +1687,7 @@ function iq_bible_delete_saved_verse_ajax_handler()
     // ---> End Verify Nonce <---
 
     if (!is_user_logged_in()) {
-        echo json_encode(array('success' => false, 'error' => 'User not logged in.'));
+        echo json_encode(array('success' => false, 'error' => __('User not logged in.', 'iqbible')));
         wp_die();
     }
 
@@ -1457,7 +1695,7 @@ function iq_bible_delete_saved_verse_ajax_handler()
     $verse_id = isset($_POST['verseId']) ? sanitize_text_field($_POST['verseId']) : '';
 
     if (empty($verse_id)) {
-        echo json_encode(array('success' => false, 'error' => 'Invalid verse ID.'));
+        echo json_encode(array('success' => false, 'error' => __('Invalid verse ID.', 'iqbible')));
         wp_die();
     }
 
@@ -1476,7 +1714,7 @@ function iq_bible_delete_saved_verse_ajax_handler()
     if ($deleted) {
         echo json_encode(array('success' => true));
     } else {
-        echo json_encode(array('success' => false, 'error' => 'Error deleting verse.'));
+        echo json_encode(array('success' => false, 'error' => __('Error deleting verse.', 'iqbible')));
     }
 
     wp_die();
@@ -1492,9 +1730,9 @@ add_action('wp_ajax_iq_bible_delete_saved_verse', 'iq_bible_delete_saved_verse_a
 function clear_books_session()
 {
 
-       // ---> Verify Nonce <---
-       check_ajax_referer('iqbible_ajax_nonce', 'security');
-       // ---> End Verify Nonce <---
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+    // ---> End Verify Nonce <---
 
     if (isset($_POST['language'])) {
         $language = sanitize_text_field($_POST['language']);
@@ -1506,7 +1744,7 @@ function clear_books_session()
     unset($_SESSION['books']);
 
     // Return a success response
-    echo json_encode(['status' => 'success', 'message' => 'Books session cleared successfully']);
+    echo json_encode(['status' => 'success', 'message' => __('Books session cleared successfully', 'iqbible')]);
     wp_die(); // Required to terminate the AJAX request properly
 }
 
@@ -1521,26 +1759,26 @@ add_action('wp_ajax_nopriv_clear_books_session', 'clear_books_session');
 function iqbible_registration_form()
 {
     if (is_user_logged_in()) {
-        return '<p>You are already logged in.</p>';
+        return '<p>' . esc_html__('You are already logged in.', 'iqbible') . '</p>';
     }
 
     // Display the form
     ob_start(); ?>
     <form action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" method="post">
         <p>
-            <label for="username">Username</label>
+            <label for="username"><?php esc_html_e('Username', 'iqbible'); ?></label>
             <input type="text" name="username" required>
         </p>
         <p>
-            <label for="email">Email</label>
+            <label for="email"><?php esc_html_e('Email', 'iqbible'); ?></label>
             <input type="email" name="email" required>
         </p>
         <p>
-            <label for="password">Password</label>
+            <label for="password"><?php esc_html_e('Password', 'iqbible'); ?></label>
             <input type="password" name="password" required>
         </p>
         <p>
-            <input type="submit" name="submit_registration" value="Register">
+            <input type="submit" name="submit_registration" value="<?php esc_attr_e('Register', 'iqbible'); ?>">
         </p>
     </form>
 <?php
@@ -1560,10 +1798,10 @@ function iqbible_register_user()
 
         // Validate fields
         if (username_exists($username) || email_exists($email)) {
-            $errors->add('user_exists', 'Username or email already exists');
+            $errors->add('user_exists', __('Username or email already exists', 'iqbible'));
         }
         if (empty($username) || empty($email) || empty($password)) {
-            $errors->add('field_empty', 'Please fill in all required fields');
+            $errors->add('field_empty', __('Please fill in all required fields', 'iqbible'));
         }
 
         // Register user if no errors
@@ -1577,7 +1815,7 @@ function iqbible_register_user()
                 wp_redirect(home_url()); // Redirect to homepage or custom page
                 exit;
             } else {
-                echo '<p>Error creating user: ' . $user_id->get_error_message() . '</p>';
+                echo '<p>' . esc_html__('Error creating user: ', 'iqbible') . esc_html($user_id->get_error_message()) . '</p>';
             }
         } else {
             foreach ($errors->get_error_messages() as $error) {
@@ -1593,32 +1831,32 @@ add_action('init', 'iqbible_register_user');
 function iqbible_profile_form()
 {
     if (!is_user_logged_in()) {
-        return '<p>You need to be logged in to view your profile. <a href="' . esc_url(wp_login_url()) . '">Log in here</a>.</p>';
+        return sprintf('<p>%s <a href="%s">%s</a>.</p>', esc_html__('You need to be logged in to view your profile.', 'iqbible'), esc_url(wp_login_url()), esc_html__('Log in here', 'iqbible'));
     }
 
     $current_user = wp_get_current_user();
 
     ob_start();
 ?>
-    <h3>Your Profile</h3>
+    <h3><?php esc_html_e('Your Profile', 'iqbible'); ?></h3>
     <form method="post">
         <p>
-            <label for="email">Email</label>
+            <label for="email"><?php esc_html_e('Email', 'iqbible'); ?></label>
             <input type="email" name="email" value="<?php echo esc_attr($current_user->user_email); ?>" required>
         </p>
         <p>
-            <label for="first_name">First Name</label>
+            <label for="first_name"><?php esc_html_e('First Name', 'iqbible'); ?></label>
             <input type="text" name="first_name" value="<?php echo esc_attr($current_user->first_name); ?>">
         </p>
         <p>
-            <label for="last_name">Last Name</label>
+            <label for="last_name"><?php esc_html_e('Last Name', 'iqbible'); ?></label>
             <input type="text" name="last_name" value="<?php echo esc_attr($current_user->last_name); ?>">
         </p>
         <p>
 
-            <?php wp_nonce_field('iqbible_update_profile_action', 'iqbible_profile_nonce');?>
+            <?php wp_nonce_field('iqbible_update_profile_action', 'iqbible_profile_nonce'); ?>
 
-            <input type="submit" name="update_profile" value="Update Profile">
+            <input type="submit" name="update_profile" value="<?php esc_attr_e('Update Profile', 'iqbible'); ?>">
 
         </p>
     </form>
@@ -1629,14 +1867,14 @@ function iqbible_profile_form()
 
         // Verify Nonce
         check_admin_referer('iqbible_update_profile_action', 'iqbible_profile_nonce');
-        
+
         wp_update_user(array(
             'ID'         => $current_user->ID,
             'user_email' => sanitize_email($_POST['email']),
             'first_name' => sanitize_text_field($_POST['first_name']),
             'last_name'  => sanitize_text_field($_POST['last_name']),
         ));
-        echo '<p>Profile updated successfully!</p>';
+        echo '<p>' . esc_html__('Profile updated successfully!', 'iqbible') . '</p>';
     }
 
     return ob_get_clean();
@@ -1649,9 +1887,9 @@ function iqbible_logout_link()
 {
     if (is_user_logged_in()) {
         $logout_url = wp_logout_url(home_url());
-        return '<a href="' . esc_url($logout_url) . '">Logout</a>';
+        return '<a href="' . esc_url($logout_url) . '">' . esc_html__('Logout', 'iqbible') . '</a>';
     }
-    return '<p>You are not logged in.</p>';
+    return '<p>' . esc_html__('You are not logged in.', 'iqbible') . '</p>';
 }
 add_shortcode('iqbible_logout', 'iqbible_logout_link');
 
@@ -1660,22 +1898,22 @@ add_shortcode('iqbible_logout', 'iqbible_logout_link');
 function iqbible_login_form()
 {
     if (is_user_logged_in()) {
-        return '<p>You are already logged in. <a href="' . esc_url(home_url()) . '">Go to homepage</a>.</p>';
+        return sprintf('<p>%s <a href="%s">%s</a>.</p>', esc_html__('You are already logged in.', 'iqbible'), esc_url(home_url()), esc_html__('Go to homepage', 'iqbible'));
     }
 
     ob_start();
     ?>
     <form action="<?php echo esc_url(site_url('wp-login.php', 'login_post')); ?>" method="post">
         <p>
-            <label for="username">Username</label>
+            <label for="username"><?php esc_html_e('Username', 'iqbible'); ?></label>
             <input type="text" name="log" required>
         </p>
         <p>
-            <label for="password">Password</label>
+            <label for="password"><?php esc_html_e('Password', 'iqbible'); ?></label>
             <input type="password" name="pwd" required>
         </p>
         <p>
-            <input type="submit" name="wp-submit" value="Log In">
+            <input type="submit" name="wp-submit" value="<?php esc_attr_e('Log In', 'iqbible'); ?>">
             <input type="hidden" name="redirect_to" value="<?php echo esc_url(home_url()); ?>">
         </p>
     </form>
@@ -1701,7 +1939,7 @@ function iq_bible_book_intro_ajax_handler()
 
     // If no bookId is provided, return an error
     if (!$bookId) {
-        echo '<p>Error: No book ID provided.</p>';
+        echo '<p>' . esc_html__('Error: No book ID provided.', 'iqbible') . '</p>';
         wp_die();
     }
 
@@ -1720,43 +1958,43 @@ function iq_bible_book_intro_ajax_handler()
 
         // Introduction
         if (isset($bookInfo['introduction'])) {
-            echo '<h2>Introduction</h2>';
+            echo '<h2>' . esc_html__('Introduction', 'iqbible') . '</h2>';
             echo '<p>' . esc_html($bookInfo['introduction']) . '</p>';
         }
 
         // Long Introduction
         if (isset($bookInfo['introduction_long'])) {
-            echo '<h2>Long Introduction</h2>';
+            echo '<h2>' . esc_html__('Long Introduction', 'iqbible') . '</h2>';
             echo '<p>' . esc_html($bookInfo['introduction_long']) . '</p>';
         }
 
         // Author
         if (isset($bookInfo['author'])) {
-            echo '<h3>Author</h3>';
+            echo '<h3>' . esc_html__('Author', 'iqbible') . '</h3>';
             echo '<p>' . esc_html($bookInfo['author']) . '</p>';
         }
 
         // Date
         if (isset($bookInfo['date'])) {
-            echo '<h3>Date</h3>';
+            echo '<h3>' . esc_html__('Date', 'iqbible') . '</h3>';
             echo '<p>' . esc_html($bookInfo['date']) . '</p>';
         }
 
         // Word Origin
         if (isset($bookInfo['word_origin'])) {
-            echo '<h3>Word Origin</h3>';
+            echo '<h3>' . esc_html__('Word Origin', 'iqbible') . '</h3>';
             echo '<p>' . esc_html($bookInfo['word_origin']) . '</p>';
         }
 
         // Genre
         if (isset($bookInfo['genre'])) {
-            echo '<h3>Genre</h3>';
+            echo '<h3>' . esc_html__('Genre', 'iqbible') . '</h3>';
             echo '<p>' . esc_html($bookInfo['genre']) . '</p>';
         }
 
         // Theological Details (if available)
         if (isset($bookInfo['theological_introduction'])) {
-            echo '<h2>Theological Introduction</h2>';
+            echo '<h2>' . esc_html__('Theological Introduction', 'iqbible') . '</h2>';
             echo '<p>' . esc_html($bookInfo['theological_introduction']) . '</p>';
         }
 
@@ -1786,7 +2024,7 @@ function iq_bible_book_intro_ajax_handler()
 
         echo '</div>';
     } else {
-        echo '<p>No introduction found for this book.</p>';
+        echo '<p>' . esc_html__('No introduction found for this book.', 'iqbible') . '</p>';
     }
 
     wp_die(); // End the AJAX request

@@ -56,6 +56,8 @@ function iq_bible_api_enqueue_assets()
         'noNotesFound'          => __('No notes found.', 'iqbible'),
         'edit' => __('Edit', 'iqbible'),
         'delete' => __('Delete', 'iqbible')
+
+  
     
     );
 

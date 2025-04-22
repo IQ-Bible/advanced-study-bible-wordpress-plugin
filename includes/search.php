@@ -1,10 +1,10 @@
 <!-- Search -->
-<h2>Search</h2>
+<h2><?php esc_html_e('Search', 'iqbible'); ?></h2>
 <form id="iqbible-search-form" class="iqbible-search-form">
     <div class="iqbible-search-container">
-        <input type="text" id="iqbible-query" name="query" required placeholder="Search the bible...">
+        <input type="text" id="iqbible-query" name="query" required placeholder="<?php esc_attr_e('Search the bible...', 'iqbible'); ?>">
         <button type="submit" class="iqbible-search-button">
-            Search
+            <?php esc_html_e('Search', 'iqbible'); ?>
         </button>
     </div>
 </form>

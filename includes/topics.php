@@ -1,18 +1,23 @@
 <!-- Topics -->
-<h2>Topics</h2>
+<h2><?php esc_html_e('Topics', 'iqbible'); ?></h2>
 
 <div class="iqbible-topics-container">
+    <?php
+    $current_language = $_SESSION['language'] ?? 'english'; 
+    $topics = iq_bible_api_get_data('GetTopics'); 
 
-    <?php $topics = iq_bible_api_get_data('GetTopics'); ?>
-
-    <ul>
-  
-
-        <?php foreach ($topics as $topic) { ?>
-            <li class="iqbible-topic-item" data-topic="<?php echo esc_attr($topic); ?>">
-                <?php echo ucfirst($topic); ?>
-            </li>
-        <?php } ?>
-    </ul>
+    if (!empty($topics) && is_array($topics)) : 
+    ?>
+        <ul>
+            <?php foreach ($topics as $topic) : ?>
+                <?php if (is_string($topic)) : ?>
+                    <li class="iqbible-topic-item" data-topic="<?php echo esc_attr($topic); ?>">
+                        <?php echo esc_html(ucfirst($topic));?>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ul>
+    <?php else : ?>
+        <p><?php esc_html_e('No topics could be loaded at this time.', 'iqbible'); ?></p>
+    <?php endif; ?>
 </div>
-

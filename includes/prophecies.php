@@ -1,8 +1,7 @@
 <!-- Prophecies -->
-<h2>Prophecies Fulfilled in Jesus</h2>
+<h2><?php esc_html_e('Prophecies Fulfilled in Jesus', 'iqbible'); ?></h2>
 <?php 
 $prophecies_fulfilled_in_jesus = iq_bible_api_get_data('GetPropheciesFulfilledInJesus', array('language' => 'english'));
-print_r($prophecies_fulfilled_in_jesus);
 ?>
 <ol>
 <div class="iqbible-prophecies-container">
@@ -33,7 +32,7 @@ print_r($prophecies_fulfilled_in_jesus);
                     ?>
                         <li class="prophecy-text"><?php echo esc_html($prophecy_text); ?>
                         <p class="fulfillment-references">
-                            Fulfilled in: 
+                        <?php esc_html_e('Fulfilled in: ', 'iqbible'); ?> 
                             <?php foreach ($fulfilled_refs as $index => $ref) : ?>
                                 <span class="fulfillment-reference"><?php echo esc_html(trim($ref)); ?></span><?php echo $index < count($fulfilled_refs) - 1 ? ', ' : ''; ?>
                             <?php endforeach; ?>
@@ -46,7 +45,7 @@ print_r($prophecies_fulfilled_in_jesus);
             <?php endforeach; ?>
                  
     <?php else : ?>
-        <p>No prophecies found.</p>
+        <p><?php esc_html_e('No prophecies found.', 'iqbible'); ?></p>
     <?php endif; ?>
 </div>
 <ol>
