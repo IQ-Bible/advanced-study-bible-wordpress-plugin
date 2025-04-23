@@ -53,19 +53,19 @@
     <section>
         <h3><?php esc_html_e( 'Saved Verses', 'iqbible' ); ?></h3>
         <p><?php esc_html_e( 'Registered and logged-in users can save their favorite verses by clicking the Bookmark icon in the Verse Options. View and manage your saved verses here.', 'iqbible' ); ?></p>
-        <img src="<?php echo esc_url( plugins_url( '../assets/img/screenshots/saved.png', __FILE__ ) ); ?>" width="100%;" alt="<?php esc_attr_e( 'Saved Verses Screenshot', 'iqbible' ); ?>">
+        <!-- <img src="<?php echo esc_url( plugins_url( '../assets/img/screenshots/saved.png', __FILE__ ) ); ?>" width="100%;" alt="<?php esc_attr_e( 'Saved Verses Screenshot', 'iqbible' ); ?>"> -->
     </section>
     <hr>
     <section>
         <h3><?php esc_html_e( 'Notes', 'iqbible' ); ?></h3>
         <p><?php esc_html_e( 'Registered and logged-in users can create, edit, and delete personal notes related to their study. Keep your thoughts and reflections organized.', 'iqbible' ); ?></p>
-        <img src="<?php echo esc_url( plugins_url( '../assets/img/screenshots/notes.png', __FILE__ ) ); ?>" width="100%;" alt="<?php esc_attr_e( 'Notes Interface Screenshot', 'iqbible' ); ?>">
+        <!-- <img src="<?php echo esc_url( plugins_url( '../assets/img/screenshots/notes.png', __FILE__ ) ); ?>" width="100%;" alt="<?php esc_attr_e( 'Notes Interface Screenshot', 'iqbible' ); ?>"> -->
     </section>
     <hr>
      <section>
         <h3><?php esc_html_e( 'Topics', 'iqbible' ); ?></h3>
         <p><?php esc_html_e( 'Explore biblical topics and find relevant verses associated with them. Select a topic from the dropdown to see related scriptures.', 'iqbible' ); ?></p>
-         <img src="<?php echo esc_url( plugins_url( '../assets/img/screenshots/topics.png', __FILE__ ) ); ?>" width="100%;" alt="<?php esc_attr_e( 'Topics Interface Screenshot', 'iqbible' ); ?>">
+         <!-- <img src="<?php echo esc_url( plugins_url( '../assets/img/screenshots/topics.png', __FILE__ ) ); ?>" width="100%;" alt="<?php esc_attr_e( 'Topics Interface Screenshot', 'iqbible' ); ?>"> -->
     </section>
     <hr>
     <section>

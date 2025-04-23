@@ -21,19 +21,13 @@ function GetLatestVersionFromChangelog()
     }
 }
 
-
 // Book icons
 function iqbible_get_book_icon_url($bookName)
 {
-    // Replace spaces with hyphens and make it lowercase
     $formattedBookName = strtolower(str_replace(' ', '-', $bookName));
-
-    // Construct the URL for the book icon
     $iconUrl = plugin_dir_url(__DIR__) . 'assets/img/bible-icons/' . $formattedBookName . '.png';
-
     return esc_url($iconUrl);
 }
-
 
 
 function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3600)
@@ -445,223 +439,15 @@ function iq_bible_get_original_text_ajax_handler()
 
 // Reading Plans Ajax Handler
 // -----------------------------
-// function iq_bible_plans_ajax_handler()
-// {
-
-//     // ---> Verify Nonce <---
-//     check_ajax_referer('iqbible_ajax_nonce', 'security');
-//     // ---> End Verify Nonce <---
-
-
-//     // Get form data from the AJAX request
-//     $days = isset($_POST['days']) ? sanitize_text_field($_POST['days']) : '365';
-//     $requestedStartDate = isset($_POST['requestedStartDate']) ? sanitize_text_field($_POST['requestedStartDate']) : '2023-01-01';
-//     $sections = isset($_POST['sections']) ? sanitize_text_field($_POST['sections']) : 'all';
-//     $requestedAge = isset($_POST['requestedAge']) ? intval($_POST['requestedAge']) : 15;
-//     $planName = isset($_POST['iqbible-planName']) ? sanitize_text_field($_POST['iqbible-planName']) : __('Default Plan', 'iqbible');
-//     $planName = esc_html(stripslashes($planName));
-
-//     // Handle custom days if selected
-//     if ($days === 'custom') {
-//         $customDays = isset($_POST['customDays']) ? intval($_POST['customDays']) : 0;
-//         if ($customDays > 0) {
-//             $days = $customDays; // Use the custom number of days provided by the user
-//         } else {
-//             wp_send_json_error(array('message' => __('Invalid number of days.', 'iqbible')));
-//             return;
-//         }
-//     } else {
-//         $days = intval($days);
-//         if ($days <= 0) {
-//             $days = 365; // Default value if invalid
-//         }
-//     }
-
-//     // Call the API with the provided form data (excluding planName)
-//     $planResults = iq_bible_api_get_data(
-//         'GetBibleReadingPlan',
-//         array(
-//             'days' => $days,
-//             'requestedStartDate' => $requestedStartDate,
-//             'sections' => $sections,
-//             'requestedAge' => $requestedAge
-//         )
-//     );
-
-//     // Function to create reading plan HTML and PDF details from the API response
-//     function create_plan_list_html($planResults, $planName)
-//     {
-//         // URL for the PDF maker (FPDF):
-//         define('MY_PLUGIN_URL', plugin_dir_url(__FILE__));
-//         define('MY_PLUGIN_PATH', plugin_dir_path(__FILE__));
-//         $plugin_url = MY_PLUGIN_URL;
-//         $plans_pdf_url = $plugin_url . 'plans-pdf.php';
-
-//         // Access books from session
-//         iq_bible_ensure_books_session();
-//         $books = isset($_SESSION['books']) ? $_SESSION['books'] : array();
-
-//         if (empty($planResults)) {
-//             return '<p>' . esc_html__('No plan results found for your request.', 'iqbible') . '</p>';
-//         }
-
-//         // Extract plan details
-//         $planDetails = $planResults[0]['datesInfo'];
-//         $startDate = new DateTime($planDetails['startDate']);
-//         $endDate = new DateTime($planDetails['endDate']);
-//         $duration = $startDate->diff($endDate)->days;
-//         $testaments = $planResults[0]['sections'];
-
-//         // Create plan details for HTML (display on page)
-//         $planDetailsHTML = "<div class='plan-details' id='plan-details'>";
-//         $planDetailsHTML .= "<h2>'" . $planName . "' <span><small>" . esc_html__('Bible Reading Plan:', 'iqbible') . "</small></span></h2>";
-
-
-//         $planDetailsHTML .= "<p><strong>" . esc_html__('Start Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $startDate->getTimestamp()) . "</p>";
-
-//         $planDetailsHTML .= "<p><strong>" . esc_html__('End Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $endDate->getTimestamp()) . "</p>";
-
-
-//         $planDetailsHTML .= "<p><strong>" . esc_html__('Duration:', 'iqbible') . "</strong> " . sprintf(_n('%d day', '%d days', $duration, 'iqbible'), $duration) . "</p>";
-//         $planDetailsHTML .= "</div>";
-
-//         // Create plan details for PDF (to be sent to PDF maker)
-//         $planDetailsPDF = sprintf(__('Plan Name: %s', 'iqbible'), $planName) . "\n";
-//         $planDetailsPDF .= sprintf(__('Start Date: %s', 'iqbible'), $startDate->format(get_option('date_format'))) . "\n";
-
-//         $planDetailsPDF .= sprintf(__('End Date: %s', 'iqbible'), $endDate->format(get_option('date_format'))) . "\n";
-
-//         $planDetailsPDF .= sprintf(__('Duration: %s', 'iqbible'), sprintf(_n('%d day', '%d days', $duration, 'iqbible'), $duration)) . "\n";
-
-//         // Begin creating the list HTML
-//         $planListHTML = "<div class='reading-plan-list'>";
-//         $planListPDF = ""; // For PDF content
-
-//         $currentDate = clone $startDate;
-//         $currentMonth = $currentDate->format('F');
-//         $currentYear = $currentDate->format('Y');
-//         $planListHTML .= "<h3>$currentMonth, $currentYear</h3><ul>";
-
-//         $planListPDF .= "<b>" . sprintf(__('Month: %s, %s', 'iqbible'), $currentMonth, $currentYear) . "\n</b>";
-
-//         // Generate the list of readings
-//         while ($currentDate <= $endDate) {
-//             if ($currentDate->format('F') != $currentMonth) {
-//                 $currentMonth = $currentDate->format('F');
-//                 $currentYear = $currentDate->format('Y');
-//                 $planListHTML .= "</ul><h3>$currentMonth, $currentYear</h3><ul>";
-//                 $planListPDF .= "\n<b>Month: $currentMonth, $currentYear\n</b>";
-//             }
-
-//             $dayContentHTML = '';
-//             $dayContentPDF = '';
-//             $ct = 0;
-
-//             foreach ($planResults as $entry) {
-//                 if ($entry['date'] === $currentDate->format('Y-m-d')) {
-//                     $verseListHTML = [];
-//                     $verseListPDF = [];
-//                     foreach ($entry['bookAndChapterIds'] as $id) {
-//                         $id = str_pad($id, 5, '0', STR_PAD_LEFT);
-//                         $bookId = intval(substr($id, 0, 2));
-//                         $chapterId = intval(substr($id, -3));
-//                         $bookName = __('Unknown Book', 'iqbible');
-//                         foreach ($books as $book) {
-//                             if ($book['b'] == $bookId) {
-//                                 $bookName = $book['n'];
-//                                 break;
-//                             }
-//                         }
-
-//                         // Construct the URL using add_query_arg()
-//                         $url = add_query_arg(
-//                             array(
-//                                 'bookId' => $bookId,
-//                                 'chapterId' => $chapterId,
-//                                 'versionId' => $_SESSION['versionId']
-//                             ),
-//                             $_SESSION['baseUrl']
-//                         );
-//                         // Append the verse ID as a fragment
-//                         $url .= '#' . $verseId;
-
-//                         $verseListHTML[] = sprintf(
-//                             '<label class="chapter-checkbox-label">
-//                                 <input type="checkbox" class="chapter-checkbox" 
-//                                     data-book-id="%s" 
-//                                     data-chapter-id="%s" 
-//                                     data-chapter-ref="%s %s">
-//                                 <a href="#" class="reading-plan-link" data-book-id="%s" data-chapter-id="%s">%s %s</a>
-//                             </label>',
-//                             esc_attr($bookId),
-//                             esc_attr($chapterId),
-//                             esc_html($bookName),
-//                             $chapterId,
-//                             esc_attr($bookId),
-//                             esc_attr($chapterId),
-//                             esc_html($bookName),
-//                             $chapterId
-//                         );
-
-//                         $verseListPDF[] = "$bookName $chapterId";
-//                     }
-//                     $dayContentHTML = implode(', ', $verseListHTML);
-//                     $dayContentPDF = implode(', ', $verseListPDF);
-//                     break;
-//                 }
-//                 $ct++;
-//             }
-
-//             $planListHTML .= "<small>" . sprintf(esc_html__('Day #%d', 'iqbible'), $ct) . "</small><li style='list-style-type:none;'><strong>" . date_i18n( 'l, ' . get_option( 'date_format' ), $currentDate->getTimestamp() ) . "</strong><br>$dayContentHTML</li><hr>";
-
-//             $planListPDF .= sprintf(__('Day #%1$d: %2$s - %3$s', 'iqbible'), $ct, $currentDate->format(get_option('date_format')), $dayContentPDF) . "\n";
-
-//             $currentDate->modify('+1 day');
-//         }
-
-//         $planListHTML .= "</ul></div>";
-//         $planListPDF .= "\n";
-
-//         // Form to pass data to the PDF generator
-//         $planDetailsDownloadOrPrint = "
-//         <div id='reading-plan-output'>
-//             <form id='generate-pdf' action='" . esc_url($plans_pdf_url) . "' method='post' target='_blank'>
-//                 <input type='hidden' name='planName' value='" . esc_html($planName) . "'>
-//                 <input type='hidden' name='startDate' value='" . esc_html($startDate->format('F j, Y')) . "'>
-//                 <input type='hidden' name='endDate' value='" . esc_html($endDate->format('F j, Y')) . "'>
-//                 <input type='hidden' name='duration' value='" . esc_html($duration) . "'>
-//                 <input type='hidden' name='testaments' value='" . esc_html($testaments) . "'>
-//                 <input type='hidden' name='planDetails' value='" . esc_html($planListPDF) . "'>
-//             </form>
-//             </div>";
-
-//             echo "<button id='print-reading-plan-btn'>OUTPUT</button>";
-
-//         return $planDetailsDownloadOrPrint . $planDetailsHTML . $planListHTML;
-//     }
-
-//     // Output the plan list HTML
-//     echo create_plan_list_html($planResults, $planName);
-
-//     wp_die(); // Terminate immediately and return the proper response
-// }
-
-
-
-
-
-
-
-// Reading Plans Ajax Handler
-// -----------------------------
-function iq_bible_plans_ajax_handler() {
+function iq_bible_plans_ajax_handler()
+{
 
     // ---> Verify Nonce <---
-    check_ajax_referer( 'iqbible_ajax_nonce', 'security' );
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
     // ---> End Verify Nonce <---
 
 
-    $day_count=1;
+    $day_count = 1;
 
     // --- Get form data ---
     $days = isset($_POST['days']) ? sanitize_text_field($_POST['days']) : '365';
@@ -679,11 +465,17 @@ function iq_bible_plans_ajax_handler() {
     // --- Handle custom days ---
     if ($days === 'custom') {
         $customDays = isset($_POST['customDays']) ? intval($_POST['customDays']) : 0;
-        if ($customDays > 0) { $days = $customDays; }
-        else { wp_send_json_error( array( 'message' => __( 'Invalid number of days.', 'iqbible' ) ) ); return; }
+        if ($customDays > 0) {
+            $days = $customDays;
+        } else {
+            wp_send_json_error(array('message' => __('Invalid number of days.', 'iqbible')));
+            return;
+        }
     } else {
         $days = intval($days);
-        if ($days <= 0) { $days = 365; }
+        if ($days <= 0) {
+            $days = 365;
+        }
     }
     $days = min($days, 365 * 5); // Limit duration
 
@@ -700,10 +492,10 @@ function iq_bible_plans_ajax_handler() {
     );
 
     // --- Validate API Response ---
-    if ( empty( $planResults ) || ! is_array( $planResults ) || ! isset( $planResults[0]['datesInfo'] ) || ! is_array( $planResults[0]['datesInfo'] ) || ! isset( $planResults[0]['datesInfo']['startDate'] ) || ! isset( $planResults[0]['datesInfo']['endDate'] ) ) {
-         // Log error for server admin if needed: error_log('IQBible Plan Error: Invalid API response structure.');
-         wp_send_json_error( array('message' => esc_html__( 'Invalid plan data received from API. Please try again.', 'iqbible' )) );
-         return;
+    if (empty($planResults) || ! is_array($planResults) || ! isset($planResults[0]['datesInfo']) || ! is_array($planResults[0]['datesInfo']) || ! isset($planResults[0]['datesInfo']['startDate']) || ! isset($planResults[0]['datesInfo']['endDate'])) {
+        // Log error for server admin if needed: error_log('IQBible Plan Error: Invalid API response structure.');
+        wp_send_json_error(array('message' => esc_html__('Invalid plan data received from API. Please try again.', 'iqbible')));
+        return;
     }
 
     // --- Prepare HTML Output ---
@@ -714,30 +506,32 @@ function iq_bible_plans_ajax_handler() {
     $startDate   = null;
     $endDate     = null;
     try {
-        $startDate = new DateTime( $planDetails['startDate'] );
-        $endDate   = new DateTime( $planDetails['endDate'] );
-    } catch ( Exception $e ) {
+        $startDate = new DateTime($planDetails['startDate']);
+        $endDate   = new DateTime($planDetails['endDate']);
+    } catch (Exception $e) {
         ob_end_clean();
-         // Log error for server admin if needed: error_log('IQBible Plan Error: Failed to parse dates from API - ' . $e->getMessage());
-        wp_send_json_error( array('message' => esc_html__( 'Error processing plan dates.', 'iqbible' )) );
+        // Log error for server admin if needed: error_log('IQBible Plan Error: Failed to parse dates from API - ' . $e->getMessage());
+        wp_send_json_error(array('message' => esc_html__('Error processing plan dates.', 'iqbible')));
         return;
     }
     $duration = $startDate->diff($endDate)->days;
 
 
-    // --- Print Button ---
-    echo '<div class="iqbible-print-plan-action" style="margin-bottom: 15px; text-align: right;">';
-    echo '<button id="print-reading-plan-btn" class="button button-secondary">' . esc_html__( 'Print This Plan', 'iqbible' ) . '</button>';
-    echo '</div>';
-
     // --- Plan Header ---
     echo "<div id='printable-plan-content'>"; // Start wrapper
+
     echo "<div class='plan-details' id='plan-details'>";
-    echo "<h2>" . esc_html( $planNameInput ) . " <span><small>" . esc_html__( 'Bible Reading Plan:', 'iqbible' ) . "</small></span></h2>";
-    echo "<p><strong>" . esc_html__( 'Start Date:', 'iqbible' ) . "</strong> " . date_i18n( get_option( 'date_format' ), $startDate->getTimestamp() ) . "</p>";
-    echo "<p><strong>" . esc_html__( 'End Date:', 'iqbible' ) . "</strong> " . date_i18n( get_option( 'date_format' ), $endDate->getTimestamp() ) . "</p>";
-    echo "<p><strong>" . esc_html__( 'Duration:', 'iqbible' ) . "</strong> " . sprintf( _n( '%d day', '%d days', $duration, 'iqbible' ), $duration ) . "</p>";
+    echo "<h2>" . esc_html($planNameInput) . " <span><br><small>" . esc_html__('Bible Reading Plan', 'iqbible') . "</small></span></h2>";
+
+    echo "<p><strong>" . esc_html__('Start Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $startDate->getTimestamp()) . "</p>";
+    echo "<p><strong>" . esc_html__('End Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $endDate->getTimestamp()) . "</p>";
+    echo "<p><strong>" . esc_html__('Duration:', 'iqbible') . "</strong> " . sprintf(_n('%d day', '%d days', $duration, 'iqbible'), $duration) . "</p>";
     echo "</div>"; // End plan-details
+
+    // --- Print Button ---
+    echo '<div class="iqbible-print-plan-action">';
+    echo '<button id="print-reading-plan-btn" class="button button-secondary">' . esc_html__('Print / Save as PDF', 'iqbible') . '</button>';
+    echo '</div>';
 
     // --- Generate Reading List HTML ---
     echo "<div class='reading-plan-list'>"; // Start list container
@@ -749,12 +543,12 @@ function iq_bible_plans_ajax_handler() {
     // Ensure $books is a non-empty array before proceeding
     if (is_array($books) && !empty($books)) {
         // Filter out invalid book entries before creating the map
-        $valid_books = array_filter($books, function($book) {
+        $valid_books = array_filter($books, function ($book) {
             return is_array($book) && isset($book['b']) && isset($book['n']);
         });
         // Create map only if there are valid books
         if (!empty($valid_books)) {
-             $book_map = array_column($valid_books, 'n', 'b');
+            $book_map = array_column($valid_books, 'n', 'b');
         }
     } // If $books wasn't valid or empty, $book_map remains an empty array
 
@@ -764,77 +558,82 @@ function iq_bible_plans_ajax_handler() {
     $prev_month_year = null;
 
     // ** Main Loop for Days **
-    while ( $currentDate <= $loopEndDate ) {
-        $current_ymd = $currentDate->format( 'Y-m-d' );
+    while ($currentDate <= $loopEndDate) {
+        $current_ymd = $currentDate->format('Y-m-d');
         $day_entry   = null;
 
         // Find the API entry for the current date safely
-        foreach ( $planResults as $entry ) {
-            if ( is_array($entry) && isset( $entry['date'] ) && $entry['date'] === $current_ymd ) {
+        foreach ($planResults as $entry) {
+            if (is_array($entry) && isset($entry['date']) && $entry['date'] === $current_ymd) {
                 $day_entry = $entry;
                 break;
             }
         }
 
         // Month/Year Header
-        $month_year = date_i18n( 'F, Y', $currentDate->getTimestamp() );
-        if ( ! $output_started || ( $month_year !== $prev_month_year ) ) {
-            if ( $output_started ) { echo '</ul>'; } // Close previous list if needed
-            echo "<h3>" . esc_html( $month_year ) . "</h3><ul>"; // Start new month list
+        $month_year = date_i18n('F, Y', $currentDate->getTimestamp());
+        if (! $output_started || ($month_year !== $prev_month_year)) {
+            if ($output_started) {
+                echo '</ul>';
+            } // Close previous list if needed
+            echo "<h3>" . esc_html($month_year) . "</h3><ul>"; // Start new month list
             $output_started  = true;
             $prev_month_year = $month_year;
         }
 
         // Day's Reading Item
-     
-        $day_of_week = date_i18n( 'l', $currentDate->getTimestamp() );
-        $day_label   = date_i18n( get_option( 'date_format' ), $currentDate->getTimestamp() );
-        echo "<li style='list-style-type:none;'>Day ".$day_count.": <strong>" . esc_html( $day_of_week ) . ", " . esc_html( $day_label ) . "</strong><br>";
+
+        $day_of_week = date_i18n('l', $currentDate->getTimestamp());
+        $day_label   = date_i18n(get_option('date_format'), $currentDate->getTimestamp());
+        echo "<li style='list-style-type:none;'>Day " . $day_count . ": <strong>" . esc_html($day_of_week) . ", " . esc_html($day_label) . "</strong><br>";
 
         // Check day_entry and bookAndChapterIds structure defensively
-        if ( $day_entry && isset($day_entry['bookAndChapterIds']) && is_array($day_entry['bookAndChapterIds']) && !empty($day_entry['bookAndChapterIds'])) {
+        if ($day_entry && isset($day_entry['bookAndChapterIds']) && is_array($day_entry['bookAndChapterIds']) && !empty($day_entry['bookAndChapterIds'])) {
             $readings_html = [];
-             foreach ($day_entry['bookAndChapterIds'] as $id) {
-                 // Ensure ID is usable
-                 if (!is_scalar($id)) { continue; } // Skip non-scalar IDs
+            foreach ($day_entry['bookAndChapterIds'] as $id) {
+                // Ensure ID is usable
+                if (!is_scalar($id)) {
+                    continue;
+                } // Skip non-scalar IDs
 
-                $id_str    = str_pad( (string)$id, 5, '0', STR_PAD_LEFT );
-                $bookId    = intval( substr( $id_str, 0, 2 ) );
-                $chapterId = intval( substr( $id_str, -3 ) );
+                $id_str    = str_pad((string)$id, 5, '0', STR_PAD_LEFT);
+                $bookId    = intval(substr($id_str, 0, 2));
+                $chapterId = intval(substr($id_str, -3));
                 // Use book map safely with null coalescing operator ??
-                $bookName  = $book_map[$bookId] ?? __( 'Unknown Book', 'iqbible' );
+                $bookName  = $book_map[$bookId] ?? __('Unknown Book', 'iqbible');
 
                 $readings_html[] = sprintf(
                     '<label class="chapter-checkbox-label" style="margin-right: 10px;">
                         <input type="checkbox" class="chapter-checkbox" data-reading-ref="%1$s-%2$s">
                         <a href="#" class="reading-plan-link" data-book-id="%1$s" data-chapter-id="%2$s">%3$s %2$s</a>
                     </label>',
-                    esc_attr( $bookId ),
-                    esc_attr( $chapterId ),
-                    esc_html( $bookName )
+                    esc_attr($bookId),
+                    esc_attr($chapterId),
+                    esc_html($bookName)
                 );
-             } // End foreach $id
+            } // End foreach $id
 
-             // Only implode if there's something to implode
-             if (!empty($readings_html)) {
-                echo implode( ' ', $readings_html );
-             } else {
-                 // This case might occur if all IDs inside were invalid scalars
-                 echo '<span>' . esc_html__( 'No valid readings found for this day.', 'iqbible' ) . '</span>';
-             }
-
+            // Only implode if there's something to implode
+            if (!empty($readings_html)) {
+                echo implode(' ', $readings_html);
+            } else {
+                // This case might occur if all IDs inside were invalid scalars
+                echo '<span>' . esc_html__('No valid readings found for this day.', 'iqbible') . '</span>';
+            }
         } else {
             // No readings assigned for this day
-            echo '<span>' . esc_html__( 'No reading assigned for this day.', 'iqbible' ) . '</span>';
+            echo '<span>' . esc_html__('No reading assigned for this day.', 'iqbible') . '</span>';
         }
         echo "</li><hr>"; // End list item
 
-        $currentDate->modify( '+1 day' ); // Increment day
-       $day_count++;
+        $currentDate->modify('+1 day'); // Increment day
+        $day_count++;
     } // ** End while loop **
 
     // ** Close Final Tags **
-    if ( $output_started ) { echo '</ul>'; } // Close the last month's list
+    if ($output_started) {
+        echo '</ul>';
+    } // Close the last month's list
     echo "</div>"; // End reading-plan-list
     echo "</div>"; // End #printable-plan-content
 
@@ -844,14 +643,14 @@ function iq_bible_plans_ajax_handler() {
     // --- Send JSON Success Response ---
     // Ensure the HTML isn't empty before sending success
     if (empty(trim($output_html))) {
-         // Log error for server admin if needed: error_log('IQBible Plan Error: Generated HTML was empty.');
-        wp_send_json_error( array('message' => esc_html__( 'Failed to generate plan content.', 'iqbible' )) );
+        // Log error for server admin if needed: error_log('IQBible Plan Error: Generated HTML was empty.');
+        wp_send_json_error(array('message' => esc_html__('Failed to generate plan content.', 'iqbible')));
     } else {
-        wp_send_json_success( array( 'html' => $output_html ) );
+        wp_send_json_success(array('html' => $output_html));
     }
 
     // wp_die() is called implicitly
-} 
+}
 
 
 

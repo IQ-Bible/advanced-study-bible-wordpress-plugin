@@ -63,9 +63,6 @@ function iq_bible_api_settings_page()
         <form method="post" action="options.php">
             <?php
             settings_fields('iq_bible_api_options');
-            // Note: do_settings_sections() might eventually output labels/titles
-            // if you add sections/fields using add_settings_section/add_settings_field.
-            // Those titles/labels would need translation in their respective callback functions.
             do_settings_sections('iq_bible_api_options');
             ?>
             <table class="form-table">

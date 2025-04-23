@@ -86,7 +86,14 @@ function showMessageDialog (message, type = 'info', autoCloseDelay = 0) {
     : null
 
   if (!dialog || !messageTextElement || !contentArea) {
-    console.error('Message dialog elements not found. Falling back to alert.')
+    const errorMsg =
+      typeof iqbible_ajax !== 'undefined' &&
+      iqbible_ajax.i18n &&
+      iqbible_ajax.i18n.errorDialogMissing
+        ? iqbible_ajax.i18n.errorDialogMissing
+        : 'Message dialog elements not found. Falling back to alert.'
+    console.error(errorMsg)
+
     alert(message) // Fallback if dialog elements are missing
     return
   }
@@ -114,7 +121,13 @@ function showMessageDialog (message, type = 'info', autoCloseDelay = 0) {
     try {
       dialog.showModal()
     } catch (e) {
-      console.error('Error showing message dialog: ', e)
+      const errorMsg =
+        typeof iqbible_ajax !== 'undefined' &&
+        iqbible_ajax.i18n &&
+        iqbible_ajax.i18n.errorDialogShow
+          ? iqbible_ajax.i18n.errorDialogShow
+          : 'Error showing message dialog:' // Add 'errorDialogShow' key
+      console.error(errorMsg, e)
       alert(message) // Fallback
     }
   }
@@ -208,11 +221,75 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
         )
       }
 
+      
       // Populate the chapter content
       document.getElementById('iqbible-chapter-results').innerHTML =
         response.chapterContent
-      document.getElementById('fetch-books-header').textContent =
-        response.bookName + ' ' + parseInt(chapterId, 10)
+
+
+
+
+
+
+            const headerElement = document.getElementById('fetch-books-header');
+            const bookName = response.bookName;
+            const chapterNum = parseInt(chapterId, 10);
+      
+            if (headerElement && bookName && iqbible_ajax.iconBaseUrl) {
+                // 1. Format book name for filename
+                const formattedBookName = bookName.toLowerCase().replace(/\s+/g, '-');
+      
+                // 2. Construct icon URL
+                const iconUrl = iqbible_ajax.iconBaseUrl + formattedBookName + '.png';
+      
+                // 3. Clear existing header content
+                headerElement.innerHTML = '';
+      
+                // 4. Create and configure the image element
+                const img = document.createElement('img');
+                img.src = iconUrl;
+                img.alt = bookName; // Alt text still uses the full book name
+                img.style.marginRight = '8px'; // Space between icon and book name
+                img.style.verticalAlign = 'middle';
+                img.style.height = '1.2em';
+                img.onerror = function() {
+                    console.warn('Bible icon not found:', iconUrl);
+                    // Fallback includes book name
+                    headerElement.textContent = bookName + ' ' + chapterNum;
+                    this.remove();
+                };
+      
+                // 5. Create text node for the Book Name
+                //    Add a space before the chapter number later if needed, or rely on img margin
+                const bookNameTextNode = document.createTextNode(bookName); // Use the actual book name text
+      
+                // 6. Create text node for the Chapter Number
+                const chapterTextNode = document.createTextNode(' ' + chapterNum); // Add space BEFORE chapter number
+      
+                // 7. Append elements in order: Icon -> Book Name -> Chapter Number
+                headerElement.appendChild(img);
+                headerElement.appendChild(bookNameTextNode);
+                headerElement.appendChild(chapterTextNode);
+      
+            } else {
+                // Fallback or error logging
+                if (headerElement) {
+                    headerElement.textContent = (bookName || 'Book') + ' ' + chapterNum; // Fallback includes book name
+                }
+                if (!headerElement) console.error('Element "#fetch-books-header" not found.');
+                if (!bookName) console.error('Book name missing in response.');
+                if (!iqbible_ajax.iconBaseUrl) console.error('iconBaseUrl missing in iqbible_ajax object.');
+            }
+       
+     
+
+
+
+
+
+
+
+
       document.getElementById('fetch-books-header-version').innerText =
         ' (' + version.toUpperCase() + ')'
 
@@ -238,8 +315,14 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
       // Check for audio narration
       checkAudioNarration(bookId, chapterId, version)
     } else {
+      const errorMsg =
+        typeof iqbible_ajax !== 'undefined' &&
+        iqbible_ajax.i18n &&
+        iqbible_ajax.i18n.errorFetchChapter
+          ? iqbible_ajax.i18n.errorFetchChapter
+          : 'An error occurred while retrieving the chapter:' // Add 'errorFetchChapter' key to PHP localize
       document.getElementById('iqbible-chapter-results').innerHTML =
-        '<p>An error occurred while retrieving the chapter: </p>' + xhr.status
+        '<p>' + errorMsg + ' ' + xhr.status + '</p>'
     }
   }
 
@@ -275,10 +358,17 @@ function checkAudioNarration (bookId, chapterId, version) {
         audioResponse.data &&
         audioResponse.data.audioUrl
       ) {
+        const noAudioSupportMsg =
+          typeof iqbible_ajax !== 'undefined' &&
+          iqbible_ajax.i18n &&
+          iqbible_ajax.i18n.noAudioSupport
+            ? iqbible_ajax.i18n.noAudioSupport
+            : 'Your browser does not support the audio element.' // Add 'noAudioSupport' key to PHP localize
         var audioPlayer = `<audio class='iqbible-audio' id='iqbible-audio-player-element' controls>
                     <source src="${audioResponse.data.audioUrl}" type="audio/mpeg">
-                    Your browser does not support the audio element.
+                    ${noAudioSupportMsg}
                 </audio>`
+
         document.getElementById('iqbible-audio-player').innerHTML = audioPlayer
       }
     }
@@ -346,121 +436,21 @@ function openTab (tabId) {
 
 // Reading Plans
 // ------------------
-// document.addEventListener('DOMContentLoaded', function () {
-//   document
-//     .getElementById('iqbible-reading-plan-form')
-//     .addEventListener('submit', function (e) {
-//       e.preventDefault() // Prevent the form from submitting normally
-
-//       // Get the form values
-//       var days = document.getElementById('iqbible-days').value
-//       var customDays = document.getElementById('iqbible-customDays').value // Get the custom days value
-//       var requestedStartDate =
-//         document.getElementById('iqbible-startDate').value
-//       var sections = document.getElementById('iqbible-sections').value
-//       var requestedAge = document.getElementById('iqbible-age').value
-//       var planName = document.getElementById('iqbible-planName').value // Get the plan name
-
-//       // Validate custom days if custom is selected
-//       if (days === 'custom') {
-//         if (!customDays || isNaN(customDays) || customDays <= 0) {
-//           showMessageDialog(iqbible_ajax.i18n.enterValidDays, 'error')
-
-//           return
-//         }
-//         days = customDays // Use the custom number of days provided by the user
-//       }
-
-//       // Perform the AJAX request
-//       var xhr = new XMLHttpRequest()
-//       xhr.open('POST', iqbible_ajax.ajaxurl, true) // Use the localized ajaxurl
-//       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-//       xhr.onload = function () {
-//         if (xhr.status === 200) {
-//           // Display the results in the 'iqbible-reading-plan-content' div
-//           var contentDiv = document.getElementById(
-//             'iqbible-reading-plan-content'
-//           )
-//           contentDiv.innerHTML = xhr.responseText
-
-//           contentDiv
-//             .querySelectorAll('.reading-plan-link')
-//             .forEach(function (link) {
-//               link.addEventListener('click', function (e) {
-//                 e.preventDefault()
-
-//                 // Retrieve the bookId, chapterId, and verseId from the clicked link's data attributes
-//                 // When loading a chapter from a reading plan link
-//                 currentBookId = this.getAttribute('data-book-id')
-//                 currentChapterId = this.getAttribute('data-chapter-id') // Set the current chapter ID
-//                 reloadChapterContent(currentBookId, currentChapterId, versionId) // Load the chapter content
-
-//                 openTab('bible')
-//               })
-//             })
-
-//           // Scroll to the plan details section
-//           var planDetails = document.getElementById('generate-pdf')
-//           if (planDetails) {
-//             planDetails.scrollIntoView({ behavior: 'smooth' })
-//           }
-//         } else {
-//           // Handle any error here
-//           document.getElementById('iqbible-reading-plan-content').innerHTML =
-//             '<p>An error occurred while fetching the reading plan.</p>'
-//         }
-//       }
-
-//       // Send the form data as URL-encoded parameters
-//       xhr.send(
-//         'action=iq_bible_plans' +
-//           '&days=' +
-//           encodeURIComponent(days) +
-//           '&requestedStartDate=' +
-//           encodeURIComponent(requestedStartDate) +
-//           '&sections=' +
-//           encodeURIComponent(sections) +
-//           '&requestedAge=' +
-//           encodeURIComponent(requestedAge) +
-//           '&iqbible-planName=' +
-//           encodeURIComponent(planName) +
-//           '&security=' +
-//           encodeURIComponent(iqbible_ajax.nonce) // <-- ADDED NONCE
-//       )
-//     })
-
-//   // Show/Hide custom days input based on selection
-//   document
-//     .getElementById('iqbible-days')
-//     .addEventListener('change', function () {
-//       var customDaysInput = document.getElementById('iqbible-customDays')
-//       if (this.value === 'custom') {
-//         customDaysInput.style.display = 'block'
-//       } else {
-//         customDaysInput.style.display = 'none'
-//         customDaysInput.value = '' // Clear custom days input when not in use
-//       }
-//     })
-// })
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', function () {
   document
     .getElementById('iqbible-reading-plan-form')
     .addEventListener('submit', function (e) {
       e.preventDefault() // Prevent the form from submitting normally
-      
+
       // Get the form values
       var days = document.getElementById('iqbible-days').value
       var customDays = document.getElementById('iqbible-customDays').value // Get the custom days value
-      var requestedStartDate = document.getElementById('iqbible-startDate').value
+      var requestedStartDate =
+        document.getElementById('iqbible-startDate').value
       var sections = document.getElementById('iqbible-sections').value
       var requestedAge = document.getElementById('iqbible-age').value
       var planName = document.getElementById('iqbible-planName').value // Get the plan name
-      
+
       // Validate custom days if custom is selected
       if (days === 'custom') {
         if (!customDays || isNaN(customDays) || customDays <= 0) {
@@ -469,11 +459,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         days = customDays // Use the custom number of days provided by the user
       }
-      
+
       // Show loading indicator
       var contentDiv = document.getElementById('iqbible-reading-plan-content')
-      contentDiv.innerHTML = '<div class="loading-indicator">Loading plan...</div>'
-      
+
+      const loadingMsg =
+        typeof iqbible_ajax !== 'undefined' &&
+        iqbible_ajax.i18n &&
+        iqbible_ajax.i18n.loading
+          ? iqbible_ajax.i18n.loading
+          : 'Loading plan...'
+      contentDiv.innerHTML =
+        '<div class="loading-indicator">' + loadingMsg + '</div>'
+
       // Perform the AJAX request
       var xhr = new XMLHttpRequest()
       xhr.open('POST', iqbible_ajax.ajaxurl, true) // Use the localized ajaxurl
@@ -483,107 +481,86 @@ document.addEventListener('DOMContentLoaded', function () {
           // Parse the JSON response
           try {
             var response = JSON.parse(xhr.responseText)
-            
+
             if (response.success && response.data && response.data.html) {
               // Set the HTML content from the response
               contentDiv.innerHTML = response.data.html
-              
+
               // Add event listeners to the reading plan links
               contentDiv
                 .querySelectorAll('.reading-plan-link')
                 .forEach(function (link) {
                   link.addEventListener('click', function (e) {
                     e.preventDefault()
-                    
+
                     // Retrieve the bookId and chapterId from the clicked link's data attributes
                     currentBookId = this.getAttribute('data-book-id')
                     currentChapterId = this.getAttribute('data-chapter-id')
-                    reloadChapterContent(currentBookId, currentChapterId, versionId)
-                    
+                    reloadChapterContent(
+                      currentBookId,
+                      currentChapterId,
+                      versionId
+                    )
+
                     openTab('bible')
                   })
                 })
-              
-
-
-
-
-
-
 
               // Add event listener to the print button
-              // var printBtn = document.getElementById('print-reading-plan-btn')
-              // if (printBtn) {
-              //   printBtn.addEventListener('click', function() {
-              //     var printContent = document.getElementById('printable-plan-content').innerHTML
-              //     var printWindow = window.open('', '_blank')
-              //     printWindow.document.write('<html><head><title>Bible Reading Plan</title>')
-              //     printWindow.document.write('<style>body{font-family:Arial,sans-serif;line-height:1.4}h2{margin-bottom:10px}h3{margin-top:20px}li{margin-bottom:10px}hr{border:0;border-top:1px solid #eee}</style>')
-              //     printWindow.document.write('</head><body>')
-              //     printWindow.document.write(printContent)
-              //     printWindow.document.write('</body></html>')
-              //     printWindow.document.close()
-              //     printWindow.focus()
-                  
-              //     // Print after a slight delay to ensure content is loaded
-              //     setTimeout(function() {
-              //       printWindow.print()
-              //     }, 500)
-              //   })
-              // }
+              contentDiv
+                .querySelector('#print-reading-plan-btn')
+                .addEventListener('click', function () {
+                  // If 'save as PDF', ensure filename is planName (document title)
+                  const originalTitle = document.title
+                  let printTitle = planName
 
+                  const restoreTitle = () => {
+                    document.title = originalTitle
+                    window.removeEventListener('afterprint', restoreTitle)
+                  }
 
+                  // Create a print-specific stylesheet
+                  document.title = printTitle
+                  var printStyleSheet = document.createElement('style')
+                  printStyleSheet.type = 'text/css'
+                  printStyleSheet.innerHTML = `
+                    @media print {
+                      body * { visibility: hidden; }
+                      #printable-plan-content, #printable-plan-content * { visibility: visible; }
+                      #printable-plan-content { position: absolute; left: 0; top: 0; width: 100%; }
+                      #print-reading-plan-btn, .iqbible-print-plan-action { display: none !important; }
+                      h2 { margin-bottom: 10px; font-size: 16pt; }
+                      h3 { margin-top: 20px; font-size: 14pt; }
+                      li { margin-bottom: 8px; page-break-inside: avoid; }
+                      hr { border: 0; border-top: 1px solid #ccc; margin: 5px 0; }
+                      a { text-decoration: none; color: black; }
+                   
+                      p, span, li, strong, label { font-size: 10pt; }
+                    }
+                  `
+                  document.head.appendChild(printStyleSheet)
 
+                  if (window.onafterprint !== undefined) {
+                    window.addEventListener('afterprint', restoreTitle, {
+                      once: true
+                    })
+                  } else {
+                    setTimeout(restoreTitle, 1000)
+                  }
 
-// Add event listener to the print button
-contentDiv.querySelector('#print-reading-plan-btn').addEventListener('click', function() {
-  // Create a print-specific stylesheet
-  var printStyleSheet = document.createElement('style')
-  printStyleSheet.type = 'text/css'
-  printStyleSheet.innerHTML = `
-    @media print {
-      /* Hide everything except the plan content */
-      body * {
-        visibility: hidden;
-      }
-      #printable-plan-content, #printable-plan-content * {
-        visibility: visible;
-      }
-      #printable-plan-content {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-      }
-      /* Hide the print button itself when printing */
-      #print-reading-plan-btn {
-        display: none;
-      }
-      /* Additional print styling */
-      h2 { margin-bottom: 10px; }
-      h3 { margin-top: 20px; }
-      li { margin-bottom: 10px; }
-      hr { border: 0; border-top: 1px solid #eee; }
-    }
-  `
-  document.head.appendChild(printStyleSheet)
-  
-  // Trigger the print dialog
-  window.print()
-  
-  // Remove the print stylesheet after a delay
-  setTimeout(function() {
-    document.head.removeChild(printStyleSheet)
-  }, 1000)
-})
-              
+                  window.print()
 
+                  setTimeout(function () {
+                    if (document.head.contains(printStyleSheet)) {
+                      document.head.removeChild(printStyleSheet)
+                    }
+                  }, 1500)
 
-
-
-
-
-
+                  // Remove the print stylesheet after a delay
+                  setTimeout(function () {
+                    document.head.removeChild(printStyleSheet)
+                  }, 1000)
+                })
 
               // Scroll to the plan details section
               var planDetails = document.getElementById('plan-details')
@@ -591,35 +568,70 @@ contentDiv.querySelector('#print-reading-plan-btn').addEventListener('click', fu
                 planDetails.scrollIntoView({ behavior: 'smooth' })
               }
             } else if (response.data && response.data.message) {
-              contentDiv.innerHTML = '<div class="error-message">' + response.data.message + '</div>'
+              contentDiv.innerHTML =
+                '<div class="error-message">' + response.data.message + '</div>'
             } else {
-              contentDiv.innerHTML = '<div class="error-message">Failed to generate reading plan.</div>'
+              const errorMsg =
+                typeof iqbible_ajax !== 'undefined' &&
+                iqbible_ajax.i18n &&
+                iqbible_ajax.i18n.errorGeneratingPlan
+                  ? iqbible_ajax.i18n.errorGeneratingPlan
+                  : 'Failed to generate reading plan.' // Reuse key
+              contentDiv.innerHTML =
+                '<div class="error-message">' + errorMsg + '</div>'
             }
           } catch (e) {
             console.error('Error parsing JSON response:', e)
-            contentDiv.innerHTML = '<p class="error-message">Error processing the response from server.</p>'
+            const errorMsg =
+              typeof iqbible_ajax !== 'undefined' &&
+              iqbible_ajax.i18n &&
+              iqbible_ajax.i18n.errorProcessingResponse
+                ? iqbible_ajax.i18n.errorProcessingResponse
+                : 'Error processing the response from server.'
+            contentDiv.innerHTML =
+              '<p class="error-message">' + errorMsg + '</p>'
           }
         } else {
-          contentDiv.innerHTML = '<p class="error-message">An error occurred while fetching the reading plan.</p>'
+          const errorMsg =
+            response.data.message ||
+            (typeof iqbible_ajax !== 'undefined' &&
+            iqbible_ajax.i18n &&
+            iqbible_ajax.i18n.errorGeneratingPlan
+              ? iqbible_ajax.i18n.errorGeneratingPlan
+              : 'An error occurred generating the plan.')
+          contentDiv.innerHTML =
+            '<div class="error-message">' + errorMsg + '</div>'
         }
       }
-      
-      xhr.onerror = function() {
-        contentDiv.innerHTML = '<p class="error-message">Network error occurred. Please try again.</p>'
+
+      xhr.onerror = function () {
+        const errorMsg =
+          typeof iqbible_ajax !== 'undefined' &&
+          iqbible_ajax.i18n &&
+          iqbible_ajax.i18n.networkError
+            ? iqbible_ajax.i18n.networkError
+            : 'Network error occurred. Please check your connection.'
+        contentDiv.innerHTML = '<p class="error-message">' + errorMsg + '</p>'
       }
-      
+
       // Send the form data as URL-encoded parameters
       xhr.send(
         'action=iq_bible_plans' +
-        '&days=' + encodeURIComponent(days) +
-        '&requestedStartDate=' + encodeURIComponent(requestedStartDate) +
-        '&sections=' + encodeURIComponent(sections) +
-        '&requestedAge=' + encodeURIComponent(requestedAge) +
-        '&iqbible-planName=' + encodeURIComponent(planName) +
-        '&security=' + encodeURIComponent(iqbible_ajax.nonce)
+          '&days=' +
+          encodeURIComponent(days) +
+          '&requestedStartDate=' +
+          encodeURIComponent(requestedStartDate) +
+          '&sections=' +
+          encodeURIComponent(sections) +
+          '&requestedAge=' +
+          encodeURIComponent(requestedAge) +
+          '&iqbible-planName=' +
+          encodeURIComponent(planName) +
+          '&security=' +
+          encodeURIComponent(iqbible_ajax.nonce)
       )
     })
-  
+
   // Show/Hide custom days input based on selection
   document
     .getElementById('iqbible-days')
@@ -633,12 +645,6 @@ contentDiv.querySelector('#print-reading-plan-btn').addEventListener('click', fu
       }
     })
 })
-
-
-
-
-
-
 
 // Search
 // --------------
@@ -665,8 +671,14 @@ document
         // Add click handlers to all search results
         attachSearchResultHandlers()
       } else {
+        const errorMsg =
+          typeof iqbible_ajax !== 'undefined' &&
+          iqbible_ajax.i18n &&
+          iqbible_ajax.i18n.errorSearch
+            ? iqbible_ajax.i18n.errorSearch
+            : 'An error occurred during the search...' // Add 'errorSearch' key to PHP localize
         document.getElementById('iqbible-search-results').innerHTML =
-          '<p>An error occurred during the search...</p>'
+          '<p>' + errorMsg + '</p>'
       }
     }
     xhr.send(
@@ -718,9 +730,14 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById('iqbible-definition-results').innerHTML =
             xhr.responseText
         } else {
+          const errorMsg =
+            typeof iqbible_ajax !== 'undefined' &&
+            iqbible_ajax.i18n &&
+            iqbible_ajax.i18n.errorDictionary
+              ? iqbible_ajax.i18n.errorDictionary
+              : 'An error occurred during the definition retrieval:' // Add 'errorDictionary' key to PHP localize
           document.getElementById('iqbible-definition-results').innerHTML =
-            '<p>An error occurred during the definition retrieval: </p>' +
-            xhr.status
+            '<p>' + errorMsg + ' ' + xhr.status + '</p>'
         }
       }
       xhr.send(
@@ -752,9 +769,14 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById('iqbible-strongs-results').innerHTML =
             xhr.responseText
         } else {
+          const errorMsg =
+            typeof iqbible_ajax !== 'undefined' &&
+            iqbible_ajax.i18n &&
+            iqbible_ajax.i18n.errorStrongs
+              ? iqbible_ajax.i18n.errorStrongs
+              : 'An error occurred during the concordance retrieval:' // Add 'errorStrongs' key to PHP localize
           document.getElementById('iqbible-strongs-results').innerHTML =
-            '<p>An error occurred during the concordance retrieval: </p>' +
-            xhr.status
+            '<p>' + errorMsg + ' ' + xhr.status + '</p>'
         }
       }
       // Use the correct action name for Strong's
@@ -849,46 +871,6 @@ function showOriginalText (verseId) {
 
 // Copy verse
 // ------------------
-// function copyVerse(verseId, bookName, chapterNumber, versionId, siteName) {
-//     // Find the verse container
-//     var verseElement = document.getElementById('verse-'+verseId);
-
-//     // Get the copyable-text span content only
-//     var copyableSpan = verseElement.querySelector('.copyable-text');
-//     var verseText = copyableSpan ? copyableSpan.textContent : '';
-
-//     // Get the verse number from the <sup> tag
-//     var verseNumber = verseElement.querySelector('sup') ? verseElement.querySelector('sup').textContent : '';
-
-//     // Clean up the text
-//     verseText = verseText.replace(/\s+/g, ' ').trim();
-
-//     // Format the reference
-//     var reference = ` - ${bookName} ${chapterNumber}:${verseNumber} (${versionId.toUpperCase()}) - ${siteName}`;
-//     var fullText = verseText + reference;
-
-//     // Create temporary textarea to copy
-//     var textarea = document.createElement('textarea');
-//     textarea.value = fullText;
-//     document.body.appendChild(textarea);
-
-//     // Select and copy
-//     textarea.select();
-//     document.execCommand('copy');
-
-//     // Remove textarea
-//     document.body.removeChild(textarea);
-
-//     // Update message
-//     var messageDiv = document.getElementById('verse-message-' + verseId);
-//     if (messageDiv) {
-//         messageDiv.innerHTML = '<span id="iqbible-success-text">Verse copied to clipboard</span>';
-//         setTimeout(() => { messageDiv.textContent = ''; }, 3000);
-//     }
-// }
-
-// Copy verse
-// ------------------
 function copyVerse (
   verseId,
   bookName,
@@ -969,7 +951,15 @@ document.addEventListener('DOMContentLoaded', function () {
       var content = document.getElementById('book-intro-content')
 
       // Show loading text while fetching
-      content.innerHTML = '<p>Loading...</p>'
+
+      const loadingMsg =
+        typeof iqbible_ajax !== 'undefined' &&
+        iqbible_ajax.i18n &&
+        iqbible_ajax.i18n.loading
+          ? iqbible_ajax.i18n.loading
+          : 'Loading...'
+      content.innerHTML = '<p>' + loadingMsg + '</p>'
+
       dialog.showModal()
 
       // AJAX request to fetch the book introduction
@@ -984,8 +974,18 @@ document.addEventListener('DOMContentLoaded', function () {
           // Dynamically add the close button
           const closeButton = document.createElement('span')
           closeButton.classList.add('iqbible-dialog-close')
-          closeButton.textContent = '×' // Close button text
-          closeButton.style.cursor = 'pointer' // Add pointer cursor
+
+          closeButton.textContent = '×'
+          const closeLabel =
+            typeof iqbible_ajax !== 'undefined' &&
+            iqbible_ajax.i18n &&
+            iqbible_ajax.i18n.close
+              ? iqbible_ajax.i18n.close
+              : 'Close'
+          closeButton.setAttribute('aria-label', closeLabel)
+          closeButton.setAttribute('title', closeLabel)
+
+          closeButton.style.cursor = 'pointer'
 
           // Add click event to close the dialog
           closeButton.addEventListener('click', function () {
@@ -995,8 +995,13 @@ document.addEventListener('DOMContentLoaded', function () {
           // Prepend the close button to the dialog content
           content.prepend(closeButton)
         } else {
-          content.innerHTML =
-            '<p>Error loading book introduction. Please try again.</p>'
+          const errorMsg =
+            typeof iqbible_ajax !== 'undefined' &&
+            iqbible_ajax.i18n &&
+            iqbible_ajax.i18n.errorBookIntro
+              ? iqbible_ajax.i18n.errorBookIntro
+              : 'Error loading book introduction. Please try again.'
+          content.innerHTML = '<p>' + errorMsg + '</p>'
         }
       }
 
@@ -1321,72 +1326,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Open the Versions Dialog when the version text is clicked
   // -----------------------------------------------------------
-  // document.getElementById('fetch-books-header-version').addEventListener('click', function () {
-  //     var xhr = new XMLHttpRequest();
-  //     xhr.open('POST', iqbible_ajax.ajaxurl, true);
-  //     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-  //     xhr.onload = function () {
-  //         if (xhr.status === 200) {
-  //             var response = JSON.parse(xhr.responseText);
-  //             var versionsDialog = document.getElementById('versions-dialog');
-  //             var dialogContent = versionsDialog.querySelector('.iqbible-dialog-content');
-
-  //             // Clear existing content
-  //             dialogContent.innerHTML = '<span class="iqbible-dialog-close" onclick="document.getElementById(\'versions-dialog\').close()">×</span><h2>Select a Version</h2>';
-
-  //             // Create a list to hold the versions
-  //             var versionsList = document.createElement('ul');
-  //             versionsList.classList.add('iqbible-versions-list'); // Add a class for custom styling if needed
-
-  //             // Generate the version options and check for audio availability from the predefined array
-  //             response.forEach(function (version) {
-  //                 var listItem = document.createElement('li');
-  //                 var versionName = version.abbreviation.toLowerCase();
-
-  //                 // Default display text for the version
-  //                 var displayText = version.abbreviation + ' - ' + version.version;
-
-  //                 // Check if audio is available for this version
-  //                 if (audioAvailableVersions.includes(versionName)) {
-  //                     displayText += ' - with AUDIO NARRATION'; // Append audio availability notice
-  //                 }
-
-  //                 listItem.textContent = displayText;
-  //                 listItem.setAttribute('data-version-id', version.version_id);
-  //                 listItem.setAttribute('data-version-name', versionName);
-  //                 listItem.classList.add('iqbible-version-item'); // Add class for styling
-
-  //                 // Add event listener for selecting a version
-  //                 listItem.addEventListener('click', function () {
-  //                     selectedVersionName = this.getAttribute('data-version-name'); // Update the selected version
-
-  //                     // Update versionId across the board
-  //                     versionId=selectedVersionName;
-
-  //                     // Reload the chapter content with the new version
-  //                     reloadChapterContent(currentBookId, currentChapterId, selectedVersionName);
-
-  //                     // Close the versions dialog
-  //                     versionsDialog.close();
-  //                 });
-
-  //                 // Append the list item to the list
-  //                 versionsList.appendChild(listItem);
-  //             });
-
-  //             // Append the list to the dialog content
-  //             dialogContent.appendChild(versionsList);
-
-  //             // Show the dialog with version options
-  //             versionsDialog.showModal();
-  //         }
-  //     };
-
-  //     // Send AJAX request to get versions
-  //     xhr.send('action=iq_bible_get_versions');
-  // });
-
   document
     .getElementById('fetch-books-header-version')
     .addEventListener('click', function () {
@@ -1403,8 +1342,16 @@ document.addEventListener('DOMContentLoaded', function () {
           )
 
           // Clear existing content
+          const title =
+            typeof iqbible_ajax !== 'undefined' &&
+            iqbible_ajax.i18n &&
+            iqbible_ajax.i18n.selectVersion
+              ? iqbible_ajax.i18n.selectVersion
+              : 'Select a Version' // Add 'selectVersion' key to PHP localize
           dialogContent.innerHTML =
-            '<span class="iqbible-dialog-close" onclick="document.getElementById(\'versions-dialog\').close()">×</span><h2>Select a Version</h2>'
+            '<span class="iqbible-dialog-close" onclick="document.getElementById(\'versions-dialog\').close()">×</span><h2>' +
+            title +
+            '</h2>'
 
           // Group versions by language
           var groupedVersions = {}
@@ -1439,7 +1386,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
               // Check if audio is available for this version
               if (audioAvailableVersions.includes(versionName)) {
-                displayText += ' - with AUDIO NARRATION'
+                const audioText =
+                  typeof iqbible_ajax !== 'undefined' &&
+                  iqbible_ajax.i18n &&
+                  iqbible_ajax.i18n.withAudio
+                    ? iqbible_ajax.i18n.withAudio
+                    : ' - with AUDIO NARRATION' // Add 'withAudio' key to PHP localize
+                if (audioAvailableVersions.includes(versionName)) {
+                  displayText += audioText
+                }
               }
 
               listItem.textContent = displayText
@@ -1516,10 +1471,18 @@ function clearBooksSession (language) {
       if (response.status === 'success') {
         console.log(response.message) // Handle success response
       } else {
-        console.error('Error clearing session:', response.message) // Handle error
+
+        const errorMsg = (typeof iqbible_ajax !== 'undefined' && iqbible_ajax.i18n && iqbible_ajax.i18n.errorSessionClear) ? iqbible_ajax.i18n.errorSessionClear : 'Error clearing session:'; 
+console.error(errorMsg, response.message);
+
       }
     } else {
-      console.error('AJAX request failed with status:', xhr.status) // Handle AJAX error
+
+
+      const errorMsg = (typeof iqbible_ajax !== 'undefined' && iqbible_ajax.i18n && iqbible_ajax.i18n.errorAjaxStatus) ? iqbible_ajax.i18n.errorAjaxStatus : 'AJAX request failed with status:'; 
+      console.error(errorMsg, xhr.status);
+
+
     }
   }
 
@@ -1531,29 +1494,6 @@ function clearBooksSession (language) {
       encodeURIComponent(iqbible_ajax.nonce)
   )
 }
-
-// Edit API key
-// --------------------
-// document.addEventListener('DOMContentLoaded', function () {
-//     var editButton = document.getElementById('edit-api-key-btn');
-//     var apiKeyDisplay = document.getElementById('api-key-display');
-//     var apiKeyInput = document.getElementById('api-key-input');
-
-//     if (editButton && apiKeyDisplay && apiKeyInput) {
-//         editButton.addEventListener('click', function () {
-//             // Hide the masked key display and show the input field to allow editing
-//             apiKeyDisplay.style.display = 'none';
-//             apiKeyInput.type = 'text'; // Change hidden input to text input for editing
-//         });
-//     }
-// });
-
-// document.getElementById('edit-api-key-btn').addEventListener('click', function() {
-//     // Show the input field and hide the display paragraph
-//     document.getElementById('api-key-display').style.display = 'none';
-//     document.getElementById('api-key-input').style.display = 'inline-block';
-//     document.getElementById('api-key-input').focus();
-// });
 
 // Notes
 // --------------
@@ -1614,7 +1554,15 @@ document.addEventListener('DOMContentLoaded', function () {
   function resetEditor () {
     tinymce.get('iqbible_editor').setContent('')
     currentNoteId = null
-    saveNoteBtn.textContent = 'Save New Note'
+
+    const saveNewNoteText =
+      typeof iqbible_ajax !== 'undefined' &&
+      iqbible_ajax.i18n &&
+      iqbible_ajax.i18n.saveNewNote
+        ? iqbible_ajax.i18n.saveNewNote
+        : 'Save New Note'
+    saveNoteBtn.textContent = saveNewNoteText
+
     cancelNoteBtn.style.display = 'none'
   }
 
@@ -1663,11 +1611,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             noteTextTitle = getFirstTenWords(noteTextDecoded)
 
+            const createdText =
+              typeof iqbible_ajax !== 'undefined' &&
+              iqbible_ajax.i18n &&
+              iqbible_ajax.i18n.created
+                ? iqbible_ajax.i18n.created
+                : 'Created:' // Add 'created' key
+            const updatedText =
+              typeof iqbible_ajax !== 'undefined' &&
+              iqbible_ajax.i18n &&
+              iqbible_ajax.i18n.updated
+                ? iqbible_ajax.i18n.updated
+                : 'Updated:' // Add 'updated' key
+
             noteDiv.innerHTML = `  
                          <hr> 
                           <div class="note-title">${noteTextTitle}</div>            
                             <div class="note-content" style='display:none;'>${noteTextDecoded}</div>
-                            <small>Created: ${note.created_at} | Updated: ${note.updated_at}</small>
+
+                          <small>${createdText} ${note.created_at} | ${updatedText} ${note.updated_at}</small>
+                            
                             <button class="edit-note-btn" data-note-id="${note.id}">${iqbible_ajax.i18n.edit}</button></button>
                             <button class="delete-note-btn" data-note-id="${note.id}">${iqbible_ajax.i18n.delete}</button>
                            
@@ -1702,7 +1665,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     tinymce.get('iqbible_editor').setContent(noteContent)
     currentNoteId = noteId
-    saveNoteBtn.textContent = 'Update Note'
+
+    const updateNoteText =
+      typeof iqbible_ajax !== 'undefined' &&
+      iqbible_ajax.i18n &&
+      iqbible_ajax.i18n.updateNote
+        ? iqbible_ajax.i18n.updateNote
+        : 'Update Note'
+    saveNoteBtn.textContent = updateNoteText
 
     // Scroll to the top to focus on note
     document.getElementById('iqbible-main').scrollIntoView({
@@ -1770,8 +1740,14 @@ function showCommentary (verseId) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       var response = JSON.parse(xhr.responseText)
-      var commentaryContent =
-        response.commentary || 'No commentary available for this verse.'
+
+      const noCommentaryText =
+        typeof iqbible_ajax !== 'undefined' &&
+        iqbible_ajax.i18n &&
+        iqbible_ajax.i18n.noCommentary
+          ? iqbible_ajax.i18n.noCommentary
+          : 'No commentary available for this verse.' // Add 'noCommentary' key
+      var commentaryContent = response.commentary || noCommentaryText
 
       // Insert commentary content into the dialog
       document.getElementById('commentary-text').innerHTML = commentaryContent
@@ -1829,9 +1805,24 @@ function saveVerse (verseId) {
           if (!existingIcon) {
             var savedIcon = document.createElement('img')
             savedIcon.src = iqbible_ajax.plugin_url + 'assets/img/bookmark.svg'
-            savedIcon.alt = 'Saved!'
+
+            const savedAltText =
+              typeof iqbible_ajax !== 'undefined' &&
+              iqbible_ajax.i18n &&
+              iqbible_ajax.i18n.savedAlt
+                ? iqbible_ajax.i18n.savedAlt
+                : 'Saved!'
+            savedIcon.alt = savedAltText
+
             savedIcon.classList.add('saved-icon')
-            savedIcon.title = 'Verse saved!'
+
+            const verseSavedTitle =
+              typeof iqbible_ajax !== 'undefined' &&
+              iqbible_ajax.i18n &&
+              iqbible_ajax.i18n.verseSaved
+                ? iqbible_ajax.i18n.verseSaved
+                : 'Verse saved!'
+            savedIcon.title = verseSavedTitle
 
             // Insert the saved icon after the verse content
             verseElement.appendChild(savedIcon)
@@ -1898,11 +1889,37 @@ function loadSavedVerses () {
       if (response.success && response.savedVerses.length > 0) {
         // Add sort controls
         var sortControls = document.createElement('div')
+
+        const dateNewText =
+          typeof iqbible_ajax !== 'undefined' &&
+          iqbible_ajax.i18n &&
+          iqbible_ajax.i18n.sortDateNew
+            ? iqbible_ajax.i18n.sortDateNew
+            : 'Date (Newest First)'
+
+        const dateOldText =
+          typeof iqbible_ajax !== 'undefined' &&
+          iqbible_ajax.i18n &&
+          iqbible_ajax.i18n.sortDateOld
+            ? iqbible_ajax.i18n.sortDateOld
+            : 'Date (Oldest First)'
+
+        const biblicalOrderText =
+          typeof iqbible_ajax !== 'undefined' &&
+          iqbible_ajax.i18n &&
+          iqbible_ajax.i18n.sortBiblical
+            ? iqbible_ajax.i18n.sortBiblical
+            : 'Biblical Order'
+
         sortControls.innerHTML = `
                     <select id="verse-sort" onchange="sortVerses(this.value)">
-                        <option value="date-new">Date (Newest First)</option>
-                        <option value="date-old">Date (Oldest First)</option>
-                        <option value="biblical">Biblical Order</option>
+
+<option value="date-new">${dateNewText}</option>
+
+<option value="date-old">${dateOldText}</option>
+
+<option value="biblical">${biblicalOrderText}</option>
+
                     </select><p></p>
                 `
         savedVersesContainer.appendChild(sortControls)
@@ -2022,8 +2039,14 @@ function deleteVerse (verseId) {
         displayVerses(currentSort)
 
         if (window.savedVerses.length === 0) {
+          const noSavedText =
+            typeof iqbible_ajax !== 'undefined' &&
+            iqbible_ajax.i18n &&
+            iqbible_ajax.i18n.noSavedVerses
+              ? iqbible_ajax.i18n.noSavedVerses
+              : 'No saved verses.'
           document.querySelector('.my-saved-verses').innerHTML =
-            '<p>No saved verses.</p>'
+            '<p>' + noSavedText + '</p>'
         }
       } else {
         showMessageDialog(
@@ -2081,15 +2104,3 @@ function shareVerse (verseId) {
       })
   }
 }
-
-
-
- // --- NEW Click Handler for the Print Button ---
-    // Use event delegation on the container where the plan HTML is loaded.
-    // Replace '#reading-plan-output' if you use a different container ID.
-    $('#reading-plan-output').on('click', '#print-reading-plan-btn', function(e) {
-      e.preventDefault(); // Stop the button from doing anything else
-
-      // Trigger the browser's print dialog
-      window.print();
-  });

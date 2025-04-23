@@ -9,6 +9,12 @@ The shortcode for this plugin is [IQBible].
 - Extra-biblical
 - Save Bible Reading Plan
 
+## [1.0.0-alpha-5] - 2025-04-23
+### Added
+- Bible Reading Plan planName as default filename for saving reading plans as PDF via window.print() by toggling the docuement.title
+- Added remaining i18n standards (internationlization) to outputs in scripts.js
+- Bible book icons back to book headings
+
 ## [1.0.0-alpha-4] - 2025-04-22
 ### Added
 - Added internationlization functions (output) to functions.php in preparation for .pot file

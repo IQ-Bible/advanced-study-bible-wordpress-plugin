@@ -2,7 +2,7 @@
 /*
 Plugin Name:    IQBible - Study Bible
 Description:    A WordPress plugin to display a Study Bible and other features via the IQBible API. Use the shortcode [IQBible] to display on any page. For settings, go to Settings > IQBible.
-Version:        1.0.0-alpha-14
+Version:        1.0.0-alpha-x
 Text-Domain:    iqbible
 Domain Path:    /languages
 Author:         Jody Pike Méndez

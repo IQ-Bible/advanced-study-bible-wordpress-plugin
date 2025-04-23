@@ -35,6 +35,32 @@ function iq_bible_api_enqueue_assets()
         'enterValidDays'        => __('Please enter a valid number of days.', 'iqbible'),
         'errorFetchCrossRefs'   => __('An error occurred while fetching cross references. Status:', 'iqbible'),
         'errorFetchOriginalText'=> __('An error occurred while retrieving the original text. Status:', 'iqbible'),
+
+        'errorFetchChapter' => __('An error occurred while retrieving the chapter:', 'iqbible'),
+        'noAudioSupport' => __('Your browser does not support the audio element.', 'iqbible'),
+        'networkError' => __('Network error occurred. Please check your connection.', 'iqbible'),
+        'errorProcessingResponse' => __('Error processing response from server.', 'iqbible'),
+        'errorGeneratingPlan' => __('An error occurred generating the plan.', 'iqbible'),
+        'errorGeneratingPlan' => __('An error occurred generating the plan.', 'iqbible'),
+        'errorSearch' => __('An error occurred during the search...', 'iqbible'),
+        'errorDictionary' => __('An error occurred during the definition retrieval:', 'iqbible'),
+        'errorStrongs' => __('An error occurred during the concordance retrieval:', 'iqbible'),
+        'errorBookIntro' => __('Error loading book introduction. Please try again.', 'iqbible'),
+        'close' => __('Close', 'iqbible'),
+        'selectVersion' => __('Select a Version', 'iqbible'),
+        'withAudio' => __(' - with AUDIO NARRATION', 'iqbible'),
+        'saveNewNote' => __('Save New Note', 'iqbible'),
+        'updateNote' => __('Update Note', 'iqbible'),
+        'noCommentary' => __('No commentary available for this verse.', 'iqbible'),
+        'savedAlt' => __('Saved!', 'iqbible'),
+        'errorDialogMissing' => __('Message dialog elements not found. Falling back to alert.', 'iqbible'),
+        'errorDialogShow' => __('Error showing message dialog:', 'iqbible'),
+        'errorSessionClear' => __('Error clearing session:', 'iqbible'),
+        'errorAjaxStatus' => __('AJAX request failed with status:', 'iqbible'),
+
+        'created' => __('Created:', 'iqbible'),
+        'updated' => __('Updated:', 'iqbible'),
+
         'noteNotEmpty'          => __('Note content cannot be empty!', 'iqbible'),
         'noteSaved'             => __('Note saved!', 'iqbible'),
         'errorSavingNote'       => __('Error saving note:', 'iqbible'),
@@ -51,20 +77,22 @@ function iq_bible_api_enqueue_assets()
         'errorRemovingVerseRetry' => __('Error removing verse, please try again!', 'iqbible'),
         'savedOn'               => __('Saved on', 'iqbible'),
         'remove'                => __('Remove verse', 'iqbible'),
-        'loading'               => __('Loading...', 'iqbible'), // Example for dynamic content placeholders
+
+        'loading'               => __('Loading....', 'iqbible'), 
+
         'noSavedVerses'         => __('No saved verses.', 'iqbible'),
         'noNotesFound'          => __('No notes found.', 'iqbible'),
         'edit' => __('Edit', 'iqbible'),
         'delete' => __('Delete', 'iqbible')
-
-  
-    
     );
 
     // Data to pass to JavaScript
     $data_for_js = array(
         'ajaxurl'        => admin_url('admin-ajax.php'),
-        'plugin_url'     => plugin_dir_url(__DIR__), // Base URL for assets, adjust if needed
+        'plugin_url'     => plugin_dir_url(__DIR__),
+
+        'iconBaseUrl'    => esc_url( plugin_dir_url(__DIR__) . 'assets/img/bible-icons/' ),
+        
         'versionId'      => isset($_GET['versionId']) ? sanitize_text_field($_GET['versionId']) : 'kjv',
         'isUserLoggedIn' => is_user_logged_in() ? '1' : '0',
         'nonce'          => $ajax_nonce,
@@ -103,7 +131,7 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
         wp_enqueue_script(
             'iqbible-admin-script',
              plugin_dir_url(__DIR__) . 'assets/js/scripts-admin.js',
-             array('jquery'), // Add dependencies if needed
+             array('jquery'), 
              $plugin_version,
              true
         );
@@ -112,10 +140,9 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
         $admin_nonce = wp_create_nonce('iqbible_admin_ajax_nonce');
 
         // Localize script for admin settings page
-        wp_localize_script('iqbible-admin-script', 'iqbible_admin_ajax', array( // Use a different object name for admin
+        wp_localize_script('iqbible-admin-script', 'iqbible_admin_ajax', array( 
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'admin_nonce' => $admin_nonce // Example nonce for admin actions
-            // Add any other data needed by admin script
+            'admin_nonce' => $admin_nonce 
         ));
     }
 }
@@ -123,6 +150,6 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
 // Hooks:
 add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
 add_action('admin_enqueue_scripts', 'iq_bible_enqueue_admin_assets');
-add_action('wp_enqueue_scripts', 'enqueue_dashicons'); // This might belong in the main wp_enqueue_scripts if always needed
+add_action('wp_enqueue_scripts', 'enqueue_dashicons'); 
 
 ?>
