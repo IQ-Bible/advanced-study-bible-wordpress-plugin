@@ -1,25 +1,30 @@
 /* Theme: Default */
+
+/* Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
     /* General vars */
-    --background-color: #f8f9fa; /* Light gray */
-    --text-color: #343a40; /* Dark gray for text */
-    --hover-background-color: #e9ecef; /* Slightly darker hover effect */
+    --font-family: 'Roboto', sans-serif;
+    --background-color: #f8f9fa; 
+    --text-color: #343a40; 
+    --hover-background-color: #e9ecef;
     
     /* Tab vars */
-    --tab-button-background-color: #6c757d; /* Medium gray for tabs */
-    --tab-button-color: #fff; /* White text for contrast */
-    --tab-button-hover-background-color: #495057; /* Darker gray on hover */
-    --tab-active-background-color: #343a40; /* Dark gray for active tab */
-    --tab-border-color: #dee2e6; /* Light gray border for tabs */
+    --tab-button-background-color: #6c757d; 
+    --tab-button-color: #fff; 
+    --tab-button-hover-background-color: #495057; 
+    --tab-active-background-color: #343a40; 
+    --tab-border-color: #dee2e6; 
     
     /* Form and btns vars */
-    --form-border-color: #ced4da; /* Light gray form border */
-    --button-background-color: #6c757d; /* Button with the same gray as tabs */
-    --button-color: #fff; /* Button with the same gray as tabs */
-    --button-hover-opacity: 0.85; /* Slight opacity change on hover */
-    --input-background-color: #ffffff; /* White background for inputs */
-    
+    --form-border-color: #ced4da; 
+    --button-background-color: #6c757d; 
+    --button-color: #fff; 
+    --button-hover-opacity: 0.85; 
+    --input-background-color: #ffffff; 
+
     /* Audio vars */
-    --audio-shadow-color: rgba(52, 58, 64, 0.2); /* Subtle shadow with dark gray */
-    --audio-controls-color: #495057; /* Controls with darker gray */
+    --audio-shadow-color: rgba(52, 58, 64, 0.2); 
+    --audio-controls-color: #495057; 
 }

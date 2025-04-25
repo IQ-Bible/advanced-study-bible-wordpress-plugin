@@ -25,7 +25,6 @@
  * Media Queries
  */
 
- @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 /**
 *
@@ -37,45 +36,38 @@
 /* @import url('theme-dark.css'); */
 
 
-
 /**
 *
 * General Styles 
 *
 */
 
-
-
+/* Explicit specifications to avoid theme conflicts */
 .iqbible-main {
+    font-family: var(--font-family);
     background-color: var(--background-color);
-    color: var(--text-color);
+    color:var(--text-color);
     padding: 15px;
     border: 1px solid gray;
     border-radius: 15px;
 }
 
-.iqbible-main h2,
-h3,
-li,
-a {
-    color: var(--text-color);
+/* Explicitly specify font to descendants of .iqbible-main to avoid font conflicts with themes */
+.iqbible-main #fetch-books-header,
+.iqbible-main .iqbible-tab-text,
+.iqbible-main .iqbible-tab-content-container,
+.iqbible-main form,
+.iqbible-main input,
+.iqbible-main button,
+.iqbible-main select { 
+    font-family: inherit;
+}
+
+.iqbible-main h2 {
+    font-size:2rem;
 }
 
 
-/**
-*
-* Bible Icons (for books)
-*
-*/
-.bible-icon {
-    width: 60px;
-    pointer-events: none;
-    /*  allows the click event to propagate through the image for dropdown*/
-
-    /*
-padding-right:15px;
-margin-top:30px; */
-}
 
 /* Saved verse icon */
 .saved-icon {
@@ -109,15 +101,11 @@ margin-top:30px; */
 
 
 
-
 .iqbible-tabs {
     display: flex;
     flex-wrap: wrap;
-    /* Allow the tabs to wrap to the next line */
     justify-content: left;
-    /* Center the tab buttons */
     gap: 3px;
-    /* Space between buttons */
     padding-bottom: 10px;
 }
 
@@ -128,8 +116,6 @@ margin-top:30px; */
     border: none;
     padding: 5px;
     cursor: pointer;
-    width: 100px;
-    /* Set fixed width for each tab button */
     text-align: center;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
@@ -183,6 +169,7 @@ margin-top:30px; */
 }
 
 
+
 /**
 *
 * IQ Bible Header (book name, chapter, version)
@@ -191,15 +178,29 @@ margin-top:30px; */
 #iqbible-header-container {
     display: flex;
     align-items: center;
-    /* Vertically align items in the center */
     gap: 10px;
-    /* Adjust the space between the h2 and small */
     cursor: pointer;
+    margin:1rem 0;
 }
+
+.iqbible-main #iqbible-header-container > h2,
+.iqbible-main #iqbible-header-container > small,
+.iqbible-main #iqbible-header-container > img { 
+    margin: 0; 
+    padding: 0; 
+    vertical-align: middle; 
+    line-height: 1.2; 
+}
+
+.iqbible-main #iqbible-header-container > img {
+   max-height: 1.5em;
+   width: auto;
+}
+
 
 /* Adjust the small element to be in sync with h2 styling */
 #fetch-books-header-version {
-    font-size: 0.9em;
+    font-size: 0.8em;
     /* Adjust the size relative to h2 */
     color: gray;
     /* Adjust color if needed */
@@ -322,7 +323,7 @@ margin-top:30px; */
 }
 
 #iqbible-audio-player {
-    padding-bottom: 20px;
+    margin:1rem 0;
 }
 
 .iqbible-audio-indicator img {
@@ -564,7 +565,12 @@ dialog::backdrop {
 }
 
 
-
+.iqbible-dialog.iqbible-message-dialog {
+    opacity:.8;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
 
 
@@ -766,14 +772,14 @@ input:checked+.iqbible-slider:before {
 }
 
 
+
+
+
 /**
 *
 * Notes
 *
 */
-#iqbible-notes-list {
-    /* Nothing yet */
-}
 
 .note-content {
     display: block;
@@ -808,6 +814,18 @@ input:checked+.iqbible-slider:before {
 
 
 
+
+
+
+
+
+  
+  
+
+
+
+
+
 /**
 *
 * Media Queries
@@ -815,9 +833,8 @@ input:checked+.iqbible-slider:before {
 */
 
 /* Min */
-@media (min-width: 768px) {
 
-    /* Hide icons on large viewports */
+@media (min-width: 768px) {
     .iqbible-tab-icon {
         display: none;
     }
@@ -826,6 +843,20 @@ input:checked+.iqbible-slider:before {
 /* Max */
 @media (max-width: 767px) {
 
+        .iqbible-tab-text {
+        display: none;
+    }
+
+    #fetch-books-header {
+        font-size:1.3rem;
+        white-space: nowrap;
+      }
+
+    .iqbible-tab-icon img {
+        filter: brightness(0) invert(1);
+      }
+      
+
     #iqbible-reading-plan-form-container {
         padding: 10px;
     }
@@ -833,15 +864,6 @@ input:checked+.iqbible-slider:before {
     .iqbible-form-row {
         flex-direction: column;
         gap: 10px;
-    }
-
-    .iqbible-tab-text {
-        font-size: 12px;
-    }
-
-    /* Show icons, hide text on small viewports */
-    .iqbible-tab-text {
-        display: none;
     }
 
     .iqbible-search-container {
@@ -862,9 +884,7 @@ input:checked+.iqbible-slider:before {
         font-size: 10px;
     }
 
-    .iqbible-tab-text {
-        display: none;
-    }
+
 }
 
 

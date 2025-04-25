@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name:    IQBible - Study Bible
-Description:    A WordPress plugin to display a Study Bible and other features via the IQBible API. Use the shortcode [IQBible] to display on any page. For settings, go to Settings > IQBible.
-Version:        1.0.0-alpha-x
+Plugin Name:    IQBible - Advanced Study Bible
+Description:    A WordPress plugin to display an Advanced Study Bible and other features via the IQBible API. Use the shortcode [IQBible] to display on any page. For settings, go to Settings > IQBible.
+Version:        1.0.0
 Text-Domain:    iqbible
 Domain Path:    /languages
 Author:         Jody Pike Méndez
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
 }
 
 
-// --- START I18N SETUP ---
+// --- I18N SETUP ---
 /**
  * Load plugin textdomain.
  * @since 1.0.0 // version
@@ -28,8 +28,6 @@ function iqbible_load_textdomain() {
         dirname( plugin_basename( __FILE__ ) ) . '/languages/'
     );
 }
-add_action( 'plugins_loaded', 'iqbible_load_textdomain' );
-// --- END I18N SETUP ---
 
 
 // Start the session
@@ -100,6 +98,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 
 /* Registries
 ---------------- */
+
+// I18N
+add_action( 'plugins_loaded', 'iqbible_load_textdomain' );
 
 // Register shortcode
 add_shortcode('IQBible', 'iq_bible_api_shortcode');

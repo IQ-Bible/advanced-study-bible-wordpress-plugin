@@ -1,25 +1,30 @@
 /* Theme: Dark */
+
+/* Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
     /* General vars */
-    --background-color: #121212; /* Very dark gray */
-    --text-color: #e0e0e0; /* Light gray for text */
-    --hover-background-color: #1e1e1e; /* Slightly lighter dark gray for hover */
+    --font-family: 'Montserrat', sans-serif;
+    --background-color: #121212; 
+    --text-color: #e0e0e0; 
+    --hover-background-color: #1e1e1e; 
     
     /* Tab vars */
-    --tab-button-background-color: #333333; /* Dark gray for tabs */
-    --tab-button-color: #e0e0e0; /* Light gray text for contrast */
-    --tab-button-hover-background-color: #444444; /* Slightly lighter dark gray on hover */
-    --tab-active-background-color: #555555; /* Medium gray for active tab */
-    --tab-border-color: #222222; /* Very dark gray border for tabs */
+    --tab-button-background-color: #333333; 
+    --tab-button-color: #e0e0e0; 
+    --tab-button-hover-background-color: #444444; 
+    --tab-active-background-color: #555555;
+    --tab-border-color: #222222; 
     
     /* Form and btns vars */
-    --form-border-color: #333333; /* Dark gray form border */
-    --button-background-color: #444444; /* Button with the same dark gray as tabs */
-    --button-color: #e0e0e0; /* Button with light gray text */
-    --button-hover-opacity: 0.85; /* Slight opacity change on hover */
-    --input-background-color: #1e1e1e; /* Dark gray background for inputs */
+    --form-border-color: #333333;
+    --button-background-color: #444444;
+    --button-color: #e0e0e0;
+    --button-hover-opacity: 0.85; 
+    --input-background-color: #1e1e1e; 
     
     /* Audio vars */
-    --audio-shadow-color: rgba(34, 34, 34, 0.5); /* Subtle shadow with dark gray */
-    --audio-controls-color: #e0e0e0; /* Controls with light gray */
+    --audio-shadow-color: rgba(34, 34, 34, 0.5);
+    --audio-controls-color: #e0e0e0; 
 }

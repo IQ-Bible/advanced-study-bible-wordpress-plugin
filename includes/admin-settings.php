@@ -44,7 +44,7 @@ function iq_bible_api_settings_page()
     }
 ?>
     <div class="wrap">
-        <h1><?php esc_html_e('IQBible - Study Bible Settings', 'iqbible'); // Changed title slightly ?></h1>
+        <h1><?php esc_html_e('IQBible - Advanced Study Bible Settings', 'iqbible'); // Changed title slightly ?></h1>
 
         <!-- Manual Cache Clear Form -->
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">

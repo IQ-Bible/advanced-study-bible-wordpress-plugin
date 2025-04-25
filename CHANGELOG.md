@@ -9,6 +9,11 @@ The shortcode for this plugin is [IQBible].
 - Extra-biblical
 - Save Bible Reading Plan
 
+## [1.0.0-alpha-6] - 2025-04-24 - 2025-04-25
+### Added
+- Updated media queries
+- README.txt for WordPress Plugin submission
+
 ## [1.0.0-alpha-5] - 2025-04-23
 ### Added
 - Bible Reading Plan planName as default filename for saving reading plans as PDF via window.print() by toggling the docuement.title

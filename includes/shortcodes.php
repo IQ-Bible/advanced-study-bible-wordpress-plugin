@@ -15,8 +15,6 @@ function iq_bible_api_shortcode()
         echo "<div class='iqbible-main'>";
         echo "<h2>" . esc_html__('There was a problem. Please contact the administrator of this site and let them know of the missing or invalid IQBible API Key.', 'iqbible') . "</h2>";
         echo "<hr>";
-        // Note: Translating scripture itself is generally not done, but the surrounding text could be.
-        // Keeping the Isaiah quote as is for now. If needed, the reference text could be translated.
         echo "<p><sup>10</sup> Fear thou not; for I am with thee: be not dismayed; for I am thy God: I will strengthen thee; yea, I will help thee; yea, I will uphold thee with the right hand of my righteousness. - Isaiah 41:10 (KJV)</p>";
         echo "</div>";
         // --- End I18N ---

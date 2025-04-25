@@ -4,12 +4,8 @@
 function iq_bible_api_enqueue_assets()
 {
     $enable_caching = get_option('iq_bible_api_cache');
-    // Use plugin version for cache busting unless caching is disabled
-    // Ensure GetLatestVersionFromChangelog() is defined/included before this file if used
     $plugin_version = function_exists('GetLatestVersionFromChangelog') && $enable_caching ? GetLatestVersionFromChangelog() : time();
 
-    // Enqueue styles for the front end
-    // Assuming style.css is in assets/css relative to the plugin's root directory
     wp_enqueue_style(
         'iq-bible-api-style',
         plugin_dir_url(__DIR__) . 'assets/css/style.css', // Use __DIR__ assuming enqueue.php is in 'includes'
@@ -17,24 +13,20 @@ function iq_bible_api_enqueue_assets()
         $plugin_version
     );
 
-    // Enqueue scripts only if needed on the front end
-    // Assuming scripts.js is in assets/js relative to the plugin's root directory
     wp_enqueue_script(
         'iqbible-script',
-        plugin_dir_url(__DIR__) . 'assets/js/scripts.js', // Use __DIR__ assuming enqueue.php is in 'includes'
-        array('jquery'), // Keep jQuery dependency if needed by scripts.js or libraries
+        plugin_dir_url(__DIR__) . 'assets/js/scripts.js', 
+        array('jquery'), 
         $plugin_version,
-        true // Load in footer
+        true 
     );
 
-    // Prepare data for JavaScript
     $ajax_nonce = wp_create_nonce('iqbible_ajax_nonce');
 
-    // Array of translatable strings for JavaScript
     $localized_strings_for_js = array(
         'enterValidDays'        => __('Please enter a valid number of days.', 'iqbible'),
         'errorFetchCrossRefs'   => __('An error occurred while fetching cross references. Status:', 'iqbible'),
-        'errorFetchOriginalText'=> __('An error occurred while retrieving the original text. Status:', 'iqbible'),
+        'errorFetchOriginalText' => __('An error occurred while retrieving the original text. Status:', 'iqbible'),
 
         'errorFetchChapter' => __('An error occurred while retrieving the chapter:', 'iqbible'),
         'noAudioSupport' => __('Your browser does not support the audio element.', 'iqbible'),
@@ -78,7 +70,7 @@ function iq_bible_api_enqueue_assets()
         'savedOn'               => __('Saved on', 'iqbible'),
         'remove'                => __('Remove verse', 'iqbible'),
 
-        'loading'               => __('Loading....', 'iqbible'), 
+        'loading'               => __('Loading....', 'iqbible'),
 
         'noSavedVerses'         => __('No saved verses.', 'iqbible'),
         'noNotesFound'          => __('No notes found.', 'iqbible'),
@@ -91,8 +83,8 @@ function iq_bible_api_enqueue_assets()
         'ajaxurl'        => admin_url('admin-ajax.php'),
         'plugin_url'     => plugin_dir_url(__DIR__),
 
-        'iconBaseUrl'    => esc_url( plugin_dir_url(__DIR__) . 'assets/img/bible-icons/' ),
-        
+        'iconBaseUrl'    => esc_url(plugin_dir_url(__DIR__) . 'assets/img/bible-icons/'),
+
         'versionId'      => isset($_GET['versionId']) ? sanitize_text_field($_GET['versionId']) : 'kjv',
         'isUserLoggedIn' => is_user_logged_in() ? '1' : '0',
         'nonce'          => $ajax_nonce,
@@ -124,32 +116,32 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
         wp_enqueue_style(
             'iq-bible-admin-style',
             plugin_dir_url(__DIR__) . 'assets/css/admin-style.css',
-             array(),
-             $plugin_version
+            array(),
+            $plugin_version
         );
         // Enqueue admin scripts
         wp_enqueue_script(
             'iqbible-admin-script',
-             plugin_dir_url(__DIR__) . 'assets/js/scripts-admin.js',
-             array('jquery'), 
-             $plugin_version,
-             true
+            plugin_dir_url(__DIR__) . 'assets/js/scripts-admin.js',
+            array('jquery'),
+            $plugin_version,
+            true
         );
 
         // Nonce for potential admin AJAX actions
         $admin_nonce = wp_create_nonce('iqbible_admin_ajax_nonce');
 
         // Localize script for admin settings page
-        wp_localize_script('iqbible-admin-script', 'iqbible_admin_ajax', array( 
+        wp_localize_script('iqbible-admin-script', 'iqbible_admin_ajax', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
-            'admin_nonce' => $admin_nonce 
+            'admin_nonce' => $admin_nonce
         ));
     }
 }
 
+
+
 // Hooks:
 add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
 add_action('admin_enqueue_scripts', 'iq_bible_enqueue_admin_assets');
-add_action('wp_enqueue_scripts', 'enqueue_dashicons'); 
-
-?>
+add_action('wp_enqueue_scripts', 'enqueue_dashicons');

@@ -1,16 +1,16 @@
-=== IQBible - Study Bible ===
-Contributors: jodypm <!-- NOTE: Replace 'jodypm' with your actual WordPress.org username(s), comma-separated -->
+=== IQBible Advanced Study Bible ===
+Contributors: @jodypm
 Tags: bible, study bible, scripture, concordance, strongs, dictionary, reading plan, bible search, bible audio, shortcode, api, christian, faith, religion
-Requires at least: 6.0 <!-- NOTE: Verify this minimum WordPress version required -->
+Requires at least: 6.0 
 Tested up to: 6.8
-Stable tag: 1.0.0 <!-- NOTE: Update this to match the version you are releasing (e.g., 1.0.0). Do NOT use '-alpha' tags here. -->
-Requires PHP: 7.4 <!-- NOTE: Verify this minimum PHP version required -->
+Stable tag: 1.0.0 
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: iqbible
 Domain Path: /languages
 
-Embed a comprehensive, interactive Bible study experience directly into your WordPress site. Uses the IQ Bible API for dynamic content.
+Embed a comprehensive, interactive Bible study experience directly into your WordPress site. Uses the IQ Bible API for dynamic content (free tier available).
 
 == Description ==
 
@@ -32,7 +32,7 @@ Offer your visitors the ability to:
 
 The plugin interface is fully translatable and uses AJAX for a smooth user experience. Registered users can benefit from personalized features like saving notes and bookmarking verses (optional shortcodes provided for login/registration).
 
-**Requires an API Key:** This plugin requires an API key from the third-party IQ Bible API service hosted on RapidAPI. Subscription plans (including potential free tiers) are managed on RapidAPI.
+**Requires an API Key:** This plugin requires an API key from the third-party IQ Bible API service hosted on RapidAPI. Subscription plans (including a free tier) are managed on RapidAPI.
 
 **Main Usage:** Place the shortcode `[IQBible]` on any page or post to display the full study Bible interface.
 
@@ -55,8 +55,8 @@ The plugin interface is fully translatable and uses AJAX for a smooth user exper
 
 3.  **Configuration (Required):**
     *   **Get API Key:** You need an API key from the IQ Bible API provider on RapidAPI.
-        *   Navigate to the [IQ Bible API page on RapidAPI](https://rapidapi.com/vibrantmiami/api/iq-bible) (Ensure this is the correct, current link).
-        *   Subscribe to a suitable plan (check for free tiers if available).
+        *   Navigate to the [IQ Bible API page on RapidAPI](https://rapidapi.com/vibrantmiami/api/iq-bible).
+        *   Subscribe to a suitable plan (free tier available).
         *   Find your API key (`X-RapidAPI-Key`) in your RapidAPI dashboard.
     *   **Enter API Key in WordPress:**
         *   In your WordPress admin area, navigate to `Settings` > `IQBible`.
@@ -72,7 +72,7 @@ You need a WordPress website and an API Key from the IQ Bible API service on Rap
 
 = Where do I get an API key? =
 
-You can get an API key by subscribing to the [IQ Bible API on RapidAPI](https://rapidapi.com/vibrantmiami/api/iq-bible). Check their available subscription plans; there might be a free tier suitable for basic usage.
+You can get an API key by subscribing to the [IQ Bible API on RapidAPI](https://rapidapi.com/vibrantmiami/api/iq-bible). There is a free tier available.
 
 = How do I display the Bible interface? =
 
@@ -92,30 +92,17 @@ Yes, the plugin is translation-ready. The text domain is `iqbible` and the `.pot
 
 == Screenshots ==
 
-<!--
-NOTE: Rename your actual screenshot files to screenshot-1.png, screenshot-2.png etc.
-Upload these renamed files to the /assets/ directory in your plugin's SVN repository on WordPress.org.
-The descriptions below should match the content of each corresponding screenshot file.
--->
-1.  Main Bible reading interface showing book, chapter, and verse navigation. (`bible.png`)
-2.  Dictionary feature displaying a definition. (`dictionary.png`)
-3.  Reading plan generation options. (`plans.png`)
-4.  Search results page with highlighted terms. (`search.png`)
-5.  Bible stories index. (`stories.png`)
-6.  Strong's Concordance view linked from a verse. (`strongs.png`)
+screenshot-1.png
+screenshot-2.png
+screenshot-3.png
+screenshot-4.png
 
 == Changelog ==
-
-= 1.0.0 =
-<!-- NOTE: Update this version number to your actual initial release version -->
+= 1.0.0 8
 *   Initial release.
-*   Features include Bible reading (multiple versions via API), book intros, cross-references, Strong's concordance, dictionary lookup, search, audio narration (API dependent), reading plans, topics index, Bible stories, user notes & bookmarks (logged-in users), and API configuration settings.
+*   Features include Bible reading (multiple versions via API), book intros, cross-references, Strong's concordance, dictionary lookup, search, audio narration, reading plans, topics index, Bible stories, user notes & bookmarks (logged-in users), and API configuration settings.
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release version. No upgrade notice needed yet.
-<!-- Example for future:
-= 1.0.1 =
-* Minor bug fixes and performance improvements. Update recommended.
--->
+*   Initial release version.
