@@ -1,5 +1,10 @@
 <!-- Strong's Concordance -->
 
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
+
 <h2><?php esc_html_e('Strong\'s Concordance', 'iqbible'); ?></h2>
 <form id="iqbible-strongs-form" class="iqbible-search-form">
     <div class="iqbible-search-container">

@@ -1,34 +1,38 @@
 <?php
 /*
-Plugin Name:    IQBible - Advanced Study Bible
+Plugin Name:    IQBible Advanced Study Bible
+Plugin URI:     https://iqbible.com
 Description:    A WordPress plugin to display an Advanced Study Bible and other features via the IQBible API. Use the shortcode [IQBible] to display on any page. For settings, go to Settings > IQBible.
 Version:        1.0.0
-Text-Domain:    iqbible
-Domain Path:    /languages
+Requires at least: 6.0
+Tested up to:   6.8
+Requires PHP:   7.4
 Author:         Jody Pike Méndez
 Author URI:     https://jodypm.com
+License:        GPLv2 or later
+License URI:    https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:    iqbible
+Domain Path:    /languages
 */
-
 
 // Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
 
-
 // --- I18N SETUP ---
 /**
  * Load plugin textdomain.
  * @since 1.0.0 // version
  */
-function iqbible_load_textdomain() {
+function iqbible_load_textdomain()
+{
     load_plugin_textdomain(
-        'iqbible', 
-        false, 
-        dirname( plugin_basename( __FILE__ ) ) . '/languages/'
+        'iqbible',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages/'
     );
 }
-
 
 // Start the session
 function start_session()
@@ -55,20 +59,20 @@ function iqbible_create_notes_table()
     ) $charset_collate;";
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    
+
     dbDelta($sql);
 
     // Check if foreign key constraint exists and drop if needed
     $wpdb->query("ALTER TABLE $table_name DROP FOREIGN KEY IF EXISTS fk_user_id");
 
     // Add foreign key constraint with a unique name
-    $wpdb->query("ALTER TABLE $table_name ADD CONSTRAINT fk_user_id_".uniqid()." FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE CASCADE;");
+    $wpdb->query("ALTER TABLE $table_name ADD CONSTRAINT fk_user_id_" . uniqid() . " FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE CASCADE;");
 }
 register_activation_hook(__FILE__, 'iqbible_create_notes_table');
 
 
 // Create saved verses table on plugin activation
-function iq_bible_create_saved_verses_table() 
+function iq_bible_create_saved_verses_table()
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'iqbible_saved_verses';
@@ -100,9 +104,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 ---------------- */
 
 // I18N
-add_action( 'plugins_loaded', 'iqbible_load_textdomain' );
+add_action('plugins_loaded', 'iqbible_load_textdomain');
 
-// Register shortcode
+// Shortcode
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
 /* Session */
@@ -127,7 +131,6 @@ add_action('wp_ajax_nopriv_iq_bible_search', 'iq_bible_search_ajax_handler');
 /* Bible Reading Plans */
 add_action('wp_ajax_iq_bible_plans', 'iq_bible_plans_ajax_handler');
 add_action('wp_ajax_nopriv_iq_bible_plans', 'iq_bible_plans_ajax_handler');
-
 
 /* Defs */
 add_action('wp_ajax_iq_bible_define', 'iq_bible_define_ajax_handler');
@@ -163,5 +166,3 @@ add_action('wp_ajax_nopriv_iq_bible_chapter_count_ajax_handler', 'iq_bible_chapt
 
 // Hook to clear cache when the API key is updated
 add_action('update_option_iq_bible_api_key', 'iq_bible_clear_plugin_cache', 10, 2);
-
-

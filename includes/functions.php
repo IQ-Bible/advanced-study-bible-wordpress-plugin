@@ -1,4 +1,9 @@
-<?php
+<?php // Functions
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 function GetLatestVersionFromChangelog()
 {
@@ -120,7 +125,6 @@ function get_user_info()
 // --------------------------
 function iq_bible_search_ajax_handler()
 {
-
     // ---> Verify Nonce <---
     check_ajax_referer('iqbible_ajax_nonce', 'security');
     // ---> End Verify Nonce <---
@@ -159,20 +163,22 @@ function iq_bible_search_ajax_handler()
             }
 
 
+            // Escape the original text *before* highlighting
+            $safe_text = esc_html($text);
             $boldText = preg_replace(
-                '/(' . preg_quote($query, '/') . ')/i',
-                '<strong>$1</strong>',
-                esc_html($text)
+                 '/(' . preg_quote($query, '/') . ')/i',
+                 '<strong>$1</strong>', 
+                 $safe_text
             );
 
             // Use verse-{verseId} format for the verse identifier
             echo "<li><a href='javascript:void(0)' 
-                    class='bible-search-result' 
-                    data-book-id='$bookId' 
-                    data-chapter-id='$chapterId' 
-                    data-verse-id='verse-$verseId' 
-                    data-version-id='$versionId'>{$boldText}</a><br> 
-                    - $bookName&nbsp;$chapterId:$verse&nbsp;(" . strtoupper($versionId) . ")</li><br>";
+                     class='bible-search-result'
+                    data-book-id='" . esc_attr($bookId) . "'
+                    data-chapter-id='" . esc_attr($chapterId) . "'
+                    data-verse-id='verse-" . esc_attr($verseId) . "'
+                    data-version-id='" . esc_attr($versionId) . "'>{$boldText}</a><br> 
+                   - " . esc_html($bookName) . " " . intval($chapterId) . ":" . intval($verse) . " (" . esc_html(strtoupper($versionId)) . ")</li><br>";
         }
 
         echo "</ol>";
@@ -322,12 +328,12 @@ function iq_bible_get_cross_references_handler()
                     'data-book-id="%s" ' .
                     'data-chapter-id="%s" ' .
                     'data-verse-id="%s">%s %d:%d</a></li>',
-                esc_attr($bookId),
-                esc_attr($chapterId),
-                esc_attr($sv),
+                esc_attr($bookId), 
+                esc_attr($chapterId), 
+                esc_attr($sv), 
                 esc_html($bookName),
                 $chapterId,
-                $verseNumber
+                $verseNumber 
             );
         }
 
@@ -460,7 +466,8 @@ function iq_bible_plans_ajax_handler()
     }
     $sections = isset($_POST['sections']) ? sanitize_text_field($_POST['sections']) : 'all';
     $requestedAge = isset($_POST['requestedAge']) ? intval($_POST['requestedAge']) : 15;
-    $planNameInput = isset($_POST['iqbible-planName']) ? stripslashes($_POST['iqbible-planName']) : __('Default Plan', 'iqbible');
+
+    $planNameInput = isset($_POST['iqbible-planName']) ? sanitize_text_field(stripslashes($_POST['iqbible-planName'])) : __('Default Plan', 'iqbible');
 
     // --- Handle custom days ---
     if ($days === 'custom') {
@@ -604,12 +611,14 @@ function iq_bible_plans_ajax_handler()
 
                 $readings_html[] = sprintf(
                     '<label class="chapter-checkbox-label" style="margin-right: 10px;">
-                        <input type="checkbox" class="chapter-checkbox" data-reading-ref="%1$s-%2$s">
-                        <a href="#" class="reading-plan-link" data-book-id="%1$s" data-chapter-id="%2$s">%3$s %2$s</a>
+                        <input type="checkbox" class="chapter-checkbox" data-reading-ref="%s">
+                        <a href="#" class="reading-plan-link" data-book-id="%s" data-chapter-id="%s">%s %s</a>
                     </label>',
+                    esc_attr($bookId . '-' . $chapterId),
                     esc_attr($bookId),
                     esc_attr($chapterId),
-                    esc_html($bookName)
+                    esc_html($bookName),
+                    esc_html($chapterId)                
                 );
             } // End foreach $id
 
@@ -799,7 +808,8 @@ function iq_bible_chapter_ajax_handler()
             }
 
             // Start verse content
-            $response['chapterContent'] .= '<div class="verse" id="verse-' . $verseId . '" data-verse-id="' . $verseId . '" data-version-id="' . $versionId . '">';
+            $response['chapterContent'] .= '<div class="verse" id="verse-' . esc_attr($verseId) . '" data-verse-id="' . esc_attr($verseId) . '" data-version-id="' . esc_attr($versionId) . '">';
+
             $response['chapterContent'] .= '<sup>' . esc_html($verse['v']) . '</sup>&nbsp;';
             $response['chapterContent'] .= '<span class="copyable-text">' . esc_html($verse['t']) . '</span>';
 
@@ -879,7 +889,8 @@ function iq_bible_chapter_ajax_handler()
                 esc_html__('Share', 'iqbible'),        // %22$s - share button text
                 $bookmark_icon_url,                    // %23$s - bookmark icon URL
                 esc_attr__('Bookmark Icon', 'iqbible'), // %24$s - bookmark icon alt text
-                esc_html__('Bookmark', 'iqbible')      // %25$s - bookmark button text
+                esc_html__('Bookmark', 'iqbible'),      // %25$s - bookmark button text
+                esc_attr($verseId)                     // %26$s - escaped for HTML id
             );
 
             $response['chapterContent'] .= "</div>"; // Close verse div
@@ -1564,6 +1575,9 @@ function iqbible_registration_form()
     // Display the form
     ob_start(); ?>
     <form action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" method="post">
+
+        <?php wp_nonce_field('iqbible_registration_action', 'iqbible_registration_nonce'); ?>
+
         <p>
             <label for="username"><?php esc_html_e('Username', 'iqbible'); ?></label>
             <input type="text" name="username" required>
@@ -1589,9 +1603,14 @@ add_shortcode('iqbible_registration', 'iqbible_registration_form');
 function iqbible_register_user()
 {
     if (isset($_POST['submit_registration'])) {
+
+        // ---> Verify Nonce <---
+        check_admin_referer('iqbible_registration_action', 'iqbible_registration_nonce');
+        // ---> End Verify Nonce <---
+
         $username = sanitize_user($_POST['username']);
         $email = sanitize_email($_POST['email']);
-        $password = esc_attr($_POST['password']);
+        $password = $_POST['password'];
 
         $errors = new WP_Error();
 

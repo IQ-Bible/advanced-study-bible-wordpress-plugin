@@ -1,4 +1,9 @@
 <!-- Notes -->
+
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
  
 <h2><?php esc_html_e( 'My Notes', 'iqbible' ); ?></h2>
 <div class="iqbible-notes-container">

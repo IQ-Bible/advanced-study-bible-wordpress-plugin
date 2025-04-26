@@ -1,5 +1,10 @@
 <?php // Shortcodes
 
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 function iq_bible_api_shortcode()
 {
     ob_start(); // Start output buffering

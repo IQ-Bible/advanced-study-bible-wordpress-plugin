@@ -1,4 +1,9 @@
 <!-- Extra Biblical -->
+
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
  
 <h2><?php esc_html_e('Extra Biblical', 'iqbible'); ?></h2>
 <?php //$books_extra_biblical = iq_bible_api_get_data('GetBooksExtraBiblical');?>

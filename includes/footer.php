@@ -1,5 +1,10 @@
 <!-- Footer -->
 
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
+
 <div class="iqbible-footer">
     <span><?php
            // Use sprintf to allow the link within the translatable string

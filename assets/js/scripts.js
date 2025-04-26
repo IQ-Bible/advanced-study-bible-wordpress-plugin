@@ -196,6 +196,7 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
   // Update the URL parameters without reloading the page
   updateURL(bookId, chapterId, version, verseId)
 
+
   var xhr = new XMLHttpRequest()
   xhr.open('POST', iqbible_ajax.ajaxurl, true)
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -306,7 +307,7 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
       // If verseId is provided, scroll to that verse after content loads
       // else, just scroll to iqbible-main
       if (verseId) {
-        setTimeout(() => scrollToElementById(verseId, verseId), 300) // Adjust timeout as needed
+        setTimeout(() => scrollToElementById('verse-'+verseId, verseId), 300) 
       } else {
         // Scroll to main content area
         scrollToElementById('iqbible-main')
@@ -1948,6 +1949,7 @@ function loadSavedVerses () {
 function displayVerses (sortOrder) {
   var verses = window.savedVerses
   var versesContainer = document.getElementById('verses-container')
+
   versesContainer.innerHTML = ''
 
   // Sort verses based on selected order
@@ -1969,34 +1971,87 @@ function displayVerses (sortOrder) {
     }
   })
 
+  // verses.forEach(function (verse) {
+  //   var verseElement = document.createElement('div')
+  //   verseElement.className = 'saved-verse'
+  //   var formattedDate = new Date(verse.savedAt).toLocaleDateString()
+
+  //   verseElement.innerHTML = `
+  //           <div class="verse-content">
+  //               <div class="verse-text">
+  //                   ${verse.verseText} - ${verse.bookName}:${parseInt(
+  //     verse.verseNumber,
+  //     10
+  //   )} 
+  //                   <span class="version-id">(${verse.versionId.toUpperCase()})</span>
+  //               </div>
+
+  //               <div class="saved-date"><small>${
+  //                 iqbible_ajax.i18n.savedOn
+  //               } ${formattedDate}</small></div>
+
+  //               <button onclick="deleteVerse('${
+  //                 verse.verseId
+  //               }')" class="delete-verse">${iqbible_ajax.i18n.remove}</button>
+  //               <p></p>
+  //           </div>
+  //       `
+
+  //   versesContainer.appendChild(verseElement)
+  // }
+
   verses.forEach(function (verse) {
-    var verseElement = document.createElement('div')
-    verseElement.className = 'saved-verse'
-    var formattedDate = new Date(verse.savedAt).toLocaleDateString()
+    const verseElement = document.createElement('div');
+    verseElement.className = 'saved-verse';
+    verseElement.dataset.verseId = verse.verseId; // Store ID for deletion
 
-    verseElement.innerHTML = `
-            <div class="verse-content">
-                <div class="verse-text">
-                    ${verse.verseText} - ${verse.bookName}:${parseInt(
-      verse.verseNumber,
-      10
-    )} 
-                    <span class="version-id">(${verse.versionId.toUpperCase()})</span>
-                </div>
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'verse-content';
 
-                <div class="saved-date"><small>${
-                  iqbible_ajax.i18n.savedOn
-                } ${formattedDate}</small></div>
+    const textDiv = document.createElement('div');
+    textDiv.className = 'verse-text';
+    // Escape text content before setting
+    textDiv.textContent = `${verse.verseText} - ${escapeHTML(verse.bookName)}:${parseInt(verse.verseNumber,10)} `; // Use helper
 
-                <button onclick="deleteVerse('${
-                  verse.verseId
-                }')" class="delete-verse">${iqbible_ajax.i18n.remove}</button>
-                <p></p>
-            </div>
-        `
+    const versionSpan = document.createElement('span');
+    versionSpan.className = 'version-id';
+    versionSpan.textContent = `(${escapeHTML(verse.versionId.toUpperCase())})`; // Use helper
+    textDiv.appendChild(versionSpan);
 
-    versesContainer.appendChild(verseElement)
-  })
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'saved-date';
+    const dateSmall = document.createElement('small');
+    const formattedDate = new Date(verse.savedAt).toLocaleDateString();
+    dateSmall.textContent = `${iqbible_ajax.i18n.savedOn} ${formattedDate}`;
+    dateDiv.appendChild(dateSmall);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete-verse';
+    deleteButton.textContent = iqbible_ajax.i18n.remove;
+    // Use addEventListener instead of inline onclick
+    deleteButton.addEventListener('click', function() {
+        deleteVerse(verse.verseId); // Pass the ID directly
+    });
+
+    const paragraphBreak = document.createElement('p'); // Add spacing if needed
+
+    contentDiv.appendChild(textDiv);
+    contentDiv.appendChild(dateDiv);
+    contentDiv.appendChild(deleteButton);
+    contentDiv.appendChild(paragraphBreak);
+    verseElement.appendChild(contentDiv);
+    versesContainer.appendChild(verseElement);
+}
+
+
+)
+}
+
+// Simple HTML escaping helper function for JavaScript
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 function sortVerses (sortOrder) {
@@ -2069,38 +2124,84 @@ function deleteVerse (verseId) {
 
 // Share verse
 // ---------------
-function shareVerse (verseId) {
-  // Simpler selector that just looks for button with matching verseId
-  var button = document.querySelector(
-    `button[onclick*='shareVerse("${verseId}")']`
-  )
-
-  // Retrieve the base URL from the button's data-url attribute, if it exists
-  var verseUrl = button ? button.getAttribute('data-url') : ''
-
-  // If verseUrl is empty, construct a new URL based on the current page
-  if (!verseUrl) {
-    var baseUrl = window.location.origin + window.location.pathname
-    verseUrl = `${baseUrl}?verseId=${encodeURIComponent(verseId)}` // Construct the new URL with the query parameter
-  } else {
-    // Ensure verseUrl has the verseId as a parameter
-    const url = new URL(verseUrl)
-    url.searchParams.set('verseId', 'verse-' + verseId) // Add or update the verseId parameter
-    url.hash = '' // Ensure no hash is present
-    verseUrl = url.toString() // Convert back to string
+function shareVerse(verseId) {
+  // Try to find the button directly with the exact onclick attribute
+  // This approach is more direct and should be more reliable
+  var buttons = document.querySelectorAll('button');
+  var targetButton = null;
+  
+  // Inspect all buttons to find the one with the matching onclick
+  for (var i = 0; i < buttons.length; i++) {
+    var onclickAttr = buttons[i].getAttribute('onclick');
+    // Check if the onclick attribute includes this specific verseId
+    if (onclickAttr && onclickAttr.includes(`shareVerse('${verseId}')`)) {
+      targetButton = buttons[i];
+      break;
+    }
   }
-
+  
+  console.log("Target button found:", targetButton);
+  
+  // Get the data-url attribute if the button was found
+  var verseUrl = '';
+  if (targetButton) {
+    verseUrl = targetButton.getAttribute('data-url');
+    console.log("Found data-url:", verseUrl);
+  }
+  
+  // If we have a valid URL from the button
+  if (verseUrl) {
+    // Decode any HTML entities in the URL
+    verseUrl = verseUrl.replace(/&amp;/g, '&');
+    
+    // Create a URL object to properly handle parameters
+    try {
+      const url = new URL(verseUrl);
+      
+      // Add the verseId parameter
+      url.searchParams.set('verseId', verseId);
+      
+      // Remove hash fragment (we'll use the query parameter instead)
+      url.hash = '';
+      
+      // Get the final URL
+      verseUrl = url.toString();
+    } catch (error) {
+      console.error("Error processing URL:", error);
+      // If URL parsing fails, just append the parameter
+      if (verseUrl.includes('?')) {
+        verseUrl += '&verseId=' + verseId;
+      } else {
+        verseUrl += '?verseId=' + verseId;
+      }
+    }
+  } else {
+    // Fallback - get current page URL and add verseId
+    var currentUrl = new URL(window.location.href);
+    
+    // Preserve all existing parameters
+    currentUrl.searchParams.set('verseId', verseId);
+    verseUrl = currentUrl.toString();
+    console.log("Using fallback URL:", verseUrl);
+  }
+  
+  console.log("Final URL to copy:", verseUrl);
+  
+  // Copy to clipboard
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard
       .writeText(verseUrl)
       .then(() => {
-        var messageDiv = document.getElementById('verse-message-' + verseId)
+        console.log("URL copied to clipboard successfully");
+        var messageDiv = document.getElementById('verse-message-' + verseId);
         if (messageDiv) {
-          showMessageDialog(iqbible_ajax.i18n.linkCopied, 'success', 3000)
+          showMessageDialog(iqbible_ajax.i18n.linkCopied, 'success', 3000);
         }
       })
       .catch(error => {
-        showMessageDialog(iqbible_ajax.i18n.errorCopyLink, 'error')
-      })
+        console.error("Clipboard error:", error);
+        showMessageDialog(iqbible_ajax.i18n.errorCopyLink, 'error');
+      });
   }
 }
+

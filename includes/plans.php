@@ -1,4 +1,9 @@
 <!-- Reading Plans -->
+
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
  
 <h2><?php esc_html_e('Reading Plans', 'iqbible'); ?></h2>
 <div id="iqbible-reading-plan-form-container">

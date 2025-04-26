@@ -1,10 +1,15 @@
 <!-- Bible -->
 
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
+
 <div id="iqbible-bible-content-wrapper">
 
     <div id="iqbible-header-container">
 
-        <?php echo $bookName;?>
+        <?php echo esc_html($bookName); ?>
 
         <h2 title="Change book or chapter" id="fetch-books-header"></h2>
 
@@ -18,7 +23,7 @@
     <!-- Audio -->
     <div class="iqbible-audio" id="iqbible-audio-player">
     </div>
-    
+
     <p></p>
     <!-- Chapter Results -->
 
@@ -27,13 +32,7 @@
 <hr>
 <!-- Prev/Next -->
 <div id="iqbible-prev-next">
-    <span id="prev-chapter"> < <?php esc_html_e('prev', 'iqbible'); ?> </span> | 
-    <span id="next-chapter"> <?php esc_html_e('next', 'iqbible'); ?> > </span> 
+    <span id="prev-chapter">
+        < <?php esc_html_e('prev', 'iqbible'); ?> </span> |
+            <span id="next-chapter"> <?php esc_html_e('next', 'iqbible'); ?> > </span>
 </div>
-
-
-
-
-
-
-

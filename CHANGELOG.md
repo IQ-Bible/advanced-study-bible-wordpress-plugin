@@ -4,10 +4,22 @@ All notable changes to this project will be documented in this file.
 The shortcode for this plugin is [IQBible].
 
 ## Unreleased
+- Dictionary
 - Parables
 - Prophecies
 - Extra-biblical
 - Save Bible Reading Plan
+
+## [1.0.0-alpha-7] - 2025-04-26
+### Added
+- Verified NONCE validations
+- Verified Sanitization
+- Added NONCE validation to iqbible_registration_form() and iqbible_register_user()
+- Feather icons license to readme.txt and under /licenses
+- Free Bible Icons permission to readme.txt
+- Additional (complete) escaping to dynamic PHP and JS output
+### Fixed
+- Share verse URL not scrolling to verseId-xxxxxxxx
 
 ## [1.0.0-alpha-6] - 2025-04-24 - 2025-04-25
 ### Added
@@ -25,7 +37,7 @@ The shortcode for this plugin is [IQBible].
 - Added internationlization functions (output) to functions.php in preparation for .pot file
 - Completed internationlization for other files as well
 ### Changed
-- Deprecated PDF generation with just straightforward print HTML for Bible Reading Plans until save features are implemented
+- Deprecated PDF generation with just straightforward print HTML for Bible Reading Plans until 'save plan' features are implemented
 
 ## [1.0.0-alpha-3] - 2025-04-21
 ### Added

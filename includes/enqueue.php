@@ -1,5 +1,9 @@
-<?php
-// Enqueue plugin styles and scripts for the front end
+<?php // Enqueue plugin styles and scripts for the front end
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} 
 
 function iq_bible_api_enqueue_assets()
 {

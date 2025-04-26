@@ -1,5 +1,10 @@
 <?php // Admin Settings
 
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 function iq_bible_api_register_settings()
 {
     register_setting( 'iq_bible_api_options', 'iq_bible_api_key', 'sanitize_text_field' );

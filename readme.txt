@@ -1,6 +1,6 @@
 === IQBible Advanced Study Bible ===
-Contributors: @jodypm
-Tags: bible, study bible, scripture, concordance, strongs, dictionary, reading plan, bible search, bible audio, shortcode, api, christian, faith, religion
+Contributors: jodypm
+Tags: bible, study bible, christian, scripture, religion
 Requires at least: 6.0 
 Tested up to: 6.8
 Stable tag: 1.0.0 
@@ -10,11 +10,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: iqbible
 Domain Path: /languages
 
-Embed a comprehensive, interactive Bible study experience directly into your WordPress site. Uses the IQ Bible API for dynamic content (free tier available).
+Embed a comprehensive, interactive Bible study experience directly into your WordPress site.
 
 == Description ==
 
-Embed a comprehensive, interactive Bible study experience directly into your WordPress site with the **IQBible Study Bible Plugin**. This open-source plugin leverages the powerful [IQ Bible API](https://rapidapi.com/vibrantmiami/api/iq-bible) (requires a free or paid API key from RapidAPI) to fetch and display a wide range of Bible-related data dynamically.
+Embed a comprehensive, interactive Bible study experience directly into your WordPress site with the **IQBible Study Bible Plugin**. This open-source plugin leverages the powerful IQ Bible API](https://rapidapi.com/vibrantmiami/api/iq-bible) (requires a free or paid API key from RapidAPI) to fetch and display a wide range of Bible-related data dynamically.
 
 Offer your visitors the ability to:
 
@@ -60,7 +60,7 @@ The plugin interface is fully translatable and uses AJAX for a smooth user exper
         *   Find your API key (`X-RapidAPI-Key`) in your RapidAPI dashboard.
     *   **Enter API Key in WordPress:**
         *   In your WordPress admin area, navigate to `Settings` > `IQBible`.
-        *   Paste your RapidAPI Key into the 'RapidAPI Key' field.
+        *   Paste your RapidAPI Key into the 'API Key' field.
         *   Configure other settings like caching and default language if needed.
         *   Save the settings. The plugin will not function without a valid API key.
 
@@ -91,11 +91,18 @@ Yes, if a user is logged into your WordPress site, their notes and saved verses 
 Yes, the plugin is translation-ready. The text domain is `iqbible` and the `.pot` file will be located in the `/languages` folder within the plugin directory. You can use standard translation tools like Poedit or translation plugins.
 
 == Screenshots ==
-
 screenshot-1.png
 screenshot-2.png
 screenshot-3.png
 screenshot-4.png
+
+== Credits ==
+
+This plugin bundles assets from the following sources:
+
+*   **UI Icons:** Feather Icons by Cole Bemis. Licensed under the MIT License (GPL compatible). See `licenses/feather-icons-LICENSE.txt` included with the plugin. Website: [https://feathericons.com/](https://feathericons.com/)
+*   **Bible Book Icons:** Provided by Jeffrey Kranz via OverviewBible. Free for any project use. Website: [https://overviewbible.com/free-bible-icons/](https://overviewbible.com/free-bible-icons/) (Credit appreciated but not required). License terms are compatible with GPLv2.
+*   **Plugin Code:** All original PHP, JavaScript, and CSS code is licensed under the GPLv2 or later.
 
 == Changelog ==
 = 1.0.0 8

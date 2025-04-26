@@ -1,5 +1,10 @@
 <!-- Parables -->
 
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
+
 <h2><?php esc_html_e( 'Parables', 'iqbible' ); ?></h2>
 <?php
 $session_language = $_SESSION['language'] ?? 'english';

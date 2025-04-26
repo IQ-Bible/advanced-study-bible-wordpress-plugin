@@ -1,4 +1,9 @@
 <!-- Prophecies -->
+
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
  
 <h2><?php esc_html_e('Prophecies Fulfilled in Jesus', 'iqbible'); ?></h2>
 <?php 

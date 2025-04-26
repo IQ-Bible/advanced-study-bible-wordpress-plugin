@@ -1,5 +1,10 @@
 <!-- Logged out -->
 
+<?php // Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+} ?>
+
 <p><?php esc_html_e( 'You must have an account and be logged in to use this feature:', 'iqbible' ); ?></p>
 <ul>
     <li><?php esc_html_e( 'Create, save, and edit notes', 'iqbible' ); ?></li>
