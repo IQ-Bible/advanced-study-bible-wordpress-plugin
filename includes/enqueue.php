@@ -7,21 +7,19 @@ if (!defined('ABSPATH')) {
 
 function iq_bible_api_enqueue_assets()
 {
-    $enable_caching = get_option('iq_bible_api_cache');
-    $plugin_version = function_exists('GetLatestVersionFromChangelog') && $enable_caching ? GetLatestVersionFromChangelog() : time();
 
     wp_enqueue_style(
         'iq-bible-api-style',
         plugin_dir_url(__DIR__) . 'assets/css/style.css', // Use __DIR__ assuming enqueue.php is in 'includes'
         array(),
-        $plugin_version
+        IQBIBLE_VERSION 
     );
 
     wp_enqueue_script(
         'iqbible-script',
         plugin_dir_url(__DIR__) . 'assets/js/scripts.js', 
         array('jquery'), 
-        $plugin_version,
+        IQBIBLE_VERSION,
         true 
     );
 
@@ -103,7 +101,7 @@ function iq_bible_api_enqueue_assets()
 }
 
 // Enqueue Dashicons
-function enqueue_dashicons()
+function iqbible_enqueue_dashicons()
 {
     wp_enqueue_style('dashicons');
 }
@@ -113,22 +111,20 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
 {
     // Only load on the specific settings page for this plugin
     if ($hook_suffix === 'settings_page_iq_bible_api') {
-        // Ensure GetLatestVersionFromChangelog() is available if used here
-        $plugin_version = function_exists('GetLatestVersionFromChangelog') ? GetLatestVersionFromChangelog() : '1.0.0';
 
         // Enqueue admin styles
         wp_enqueue_style(
             'iq-bible-admin-style',
             plugin_dir_url(__DIR__) . 'assets/css/admin-style.css',
             array(),
-            $plugin_version
+            IQBIBLE_VERSION 
         );
         // Enqueue admin scripts
         wp_enqueue_script(
             'iqbible-admin-script',
             plugin_dir_url(__DIR__) . 'assets/js/scripts-admin.js',
             array('jquery'),
-            $plugin_version,
+            IQBIBLE_VERSION,
             true
         );
 
@@ -148,4 +144,4 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
 // Hooks:
 add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
 add_action('admin_enqueue_scripts', 'iq_bible_enqueue_admin_assets');
-add_action('wp_enqueue_scripts', 'enqueue_dashicons');
+add_action('wp_enqueue_scripts', 'iqbible_enqueue_dashicons');

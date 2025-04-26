@@ -5,26 +5,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function GetLatestVersionFromChangelog()
-{
-    // Get the path to the root of the plugin directory
-    $plugin_root = plugin_dir_path(__FILE__);
 
-    // Read the contents of the CHANGELOG.md file from the root of the plugin directory
-    $changelog_file = $plugin_root . '../CHANGELOG.md';
-
-    // Check if the file exists and read its contents
-    if (file_exists($changelog_file)) {
-        $subject = file_get_contents($changelog_file);
-        preg_match_all('/\[.*?\]/', $subject, $matches);
-
-        // Return the version, defaulting to '0.0.0' if not found
-        return "v" . str_replace(['[', ']'], '', $matches[0][1] ?? '0.0.0');
-    } else {
-        // Handle the error if the file does not exist
-        return "v0.0.0";
-    }
-}
 
 // Book icons
 function iqbible_get_book_icon_url($bookName)
@@ -99,28 +80,6 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
 }
 
 
-
-// Fetch current user information
-function get_user_info()
-{
-    $current_user = wp_get_current_user();
-
-    if ($current_user->ID == 0) {
-        // User is not logged in
-        return false;
-    }
-
-    $userInfo = array(
-        'display_name' => $current_user->display_name,
-        'user_email' => $current_user->user_email,
-        'user_login' => $current_user->user_login
-    );
-
-    return $userInfo;
-}
-
-
-
 // Search Ajax handler
 // --------------------------
 function iq_bible_search_ajax_handler()
@@ -166,9 +125,9 @@ function iq_bible_search_ajax_handler()
             // Escape the original text *before* highlighting
             $safe_text = esc_html($text);
             $boldText = preg_replace(
-                 '/(' . preg_quote($query, '/') . ')/i',
-                 '<strong>$1</strong>', 
-                 $safe_text
+                '/(' . preg_quote($query, '/') . ')/i',
+                '<strong>$1</strong>',
+                $safe_text
             );
 
             // Use verse-{verseId} format for the verse identifier
@@ -183,8 +142,10 @@ function iq_bible_search_ajax_handler()
 
         echo "</ol>";
     } else {
+        // translators: %s: The user's search query.
         echo '<p>' . sprintf(esc_html__('No results found for: \'%s\'.', 'iqbible'), esc_html($query)) . '</p>';
         if (count($searchResults) == 0) {
+            // translators: %s: The abbreviation of the Bible version being used (e.g., KJV).
             echo '<i>' . sprintf(esc_html__('Remember, you are using the %s version. Check your spelling for the appropriate version!', 'iqbible'), strtoupper(esc_html($versionId))) . '</i>';
         }
     }
@@ -218,7 +179,7 @@ function iq_bible_define_ajax_handler()
     $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => $_SESSION['dictionaryId']));
 
     if (!empty($definition_biblical)) {
-
+        // translators: %s: The name of the Bible dictionary (e.g., Smith's Bible Dictionary).
         echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'), esc_html($_SESSION['dictionaryIdFullName'])) . '</i></small><br>';
 
         // Display the word being defined
@@ -240,6 +201,7 @@ function iq_bible_define_ajax_handler()
         // Output the cleaned-up definition text
         echo esc_html($definition_text) . '<br>';
     } else {
+        // translators: %s: The word the user tried to define.
         echo sprintf(esc_html__('No biblical definition found for %s.', 'iqbible'), esc_html($query));
     }
 
@@ -328,12 +290,12 @@ function iq_bible_get_cross_references_handler()
                     'data-book-id="%s" ' .
                     'data-chapter-id="%s" ' .
                     'data-verse-id="%s">%s %d:%d</a></li>',
-                esc_attr($bookId), 
-                esc_attr($chapterId), 
-                esc_attr($sv), 
+                esc_attr($bookId),
+                esc_attr($chapterId),
+                esc_attr($sv),
                 esc_html($bookName),
                 $chapterId,
-                $verseNumber 
+                $verseNumber
             );
         }
 
@@ -414,7 +376,7 @@ function iq_bible_get_original_text_ajax_handler()
 
             if ($isHebrew) {
                 // All details in LTR, only the Hebrew word itself is RTL
-
+                // translators: %d: The sequential number for a word in the original text view.
                 echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . ' </strong>';
                 // Just the Hebrew word is RTL
                 echo '<span style="direction: rtl; display: inline-block;">' . esc_html($originalText['word']) . '</span><br>';
@@ -532,6 +494,7 @@ function iq_bible_plans_ajax_handler()
 
     echo "<p><strong>" . esc_html__('Start Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $startDate->getTimestamp()) . "</p>";
     echo "<p><strong>" . esc_html__('End Date:', 'iqbible') . "</strong> " . date_i18n(get_option('date_format'), $endDate->getTimestamp()) . "</p>";
+    // translators: %d: The number of days in the reading plan duration.
     echo "<p><strong>" . esc_html__('Duration:', 'iqbible') . "</strong> " . sprintf(_n('%d day', '%d days', $duration, 'iqbible'), $duration) . "</p>";
     echo "</div>"; // End plan-details
 
@@ -618,7 +581,7 @@ function iq_bible_plans_ajax_handler()
                     esc_attr($bookId),
                     esc_attr($chapterId),
                     esc_html($bookName),
-                    esc_html($chapterId)                
+                    esc_html($chapterId)
                 );
             } // End foreach $id
 

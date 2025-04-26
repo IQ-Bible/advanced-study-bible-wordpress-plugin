@@ -27,6 +27,7 @@ function iq_bible_api_settings_page()
             '<h2 style="color:green;">%1$s %2$s</h2><h3>%3$s</h3>',
             '✔', // Checkmark entity
             sprintf(
+                // translators: %s: The current version number of the IQ Bible API.
                 esc_html__('IQBible API version %s', 'iqbible'),
                 esc_html($info['version'])
             ),
@@ -40,6 +41,7 @@ function iq_bible_api_settings_page()
             esc_html__('Please subscribe to the IQBible API to obtain an API Key.', 'iqbible'),
             sprintf(
                 wp_kses( // Allow the 'a' tag for the link
+                    // translators: %s: URL to the RapidAPI Marketplace page for the IQ Bible API.
                     __('Visit: <a href="%s" target="_blank">IQBible API on The RapidAPI Marketplace</a>', 'iqbible'),
                     ['a' => ['href' => true, 'target' => true]]
                 ),
@@ -50,6 +52,8 @@ function iq_bible_api_settings_page()
 ?>
     <div class="wrap">
         <h1><?php esc_html_e('IQBible - Advanced Study Bible Settings', 'iqbible'); // Changed title slightly ?></h1>
+
+        <p><?php printf(esc_html__('Version: %s', 'iqbible'), esc_html(IQBIBLE_VERSION)); ?></p>
 
         <!-- Manual Cache Clear Form -->
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">

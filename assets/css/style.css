@@ -441,29 +441,6 @@
     opacity: var(--button-hover-opacity);
 }
 
-/**
-*
-* Footer 
-*
-*/
-.iqbible-footer {
-    padding: 20px 0 10px;
-    font-size: 12px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.iqbible-footer a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.iqbible-footer a:hover {
-    text-decoration: underline;
-}
 
 
 /**

@@ -20,6 +20,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Define Plugin Version Constant
+if ( ! defined( 'IQBIBLE_VERSION' ) ) {
+    define( 'IQBIBLE_VERSION', '1.0.0' ); 
+}
+
 // --- I18N SETUP ---
 /**
  * Load plugin textdomain.
@@ -35,7 +40,7 @@ function iqbible_load_textdomain()
 }
 
 // Start the session
-function start_session()
+function iqbible_start_session()
 {
     if (!session_id()) {
         session_start();
@@ -110,7 +115,7 @@ add_action('plugins_loaded', 'iqbible_load_textdomain');
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
 /* Session */
-add_action('init', 'start_session', 1);
+add_action('init', 'iqbible_start_session', 1);
 
 /* Shortcode */
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
@@ -122,7 +127,7 @@ add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
 add_action('admin_enqueue_scripts', 'iq_bible_enqueue_admin_assets');
 
 /* Dashicons */
-add_action('wp_enqueue_scripts', 'enqueue_dashicons');
+add_action('wp_enqueue_scripts', 'iqbible_enqueue_dashicons');
 
 /*Search */
 add_action('wp_ajax_iq_bible_search', 'iq_bible_search_ajax_handler');

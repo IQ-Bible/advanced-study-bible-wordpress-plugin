@@ -196,7 +196,6 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
   // Update the URL parameters without reloading the page
   updateURL(bookId, chapterId, version, verseId)
 
-
   var xhr = new XMLHttpRequest()
   xhr.open('POST', iqbible_ajax.ajaxurl, true)
   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -222,74 +221,131 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
         )
       }
 
-      
       // Populate the chapter content
       document.getElementById('iqbible-chapter-results').innerHTML =
         response.chapterContent
 
+      // Map Bible Book Icon images for alt versions
+      const bookIdToIconNameMap = {
+        '01': 'genesis',
+        '02': 'exodus',
+        '03': 'leviticus',
+        '04': 'numbers',
+        '05': 'deuteronomy',
+        '06': 'joshua',
+        '07': 'judges',
+        '08': 'ruth',
+        '09': '1-samuel', 
+        10: '2-samuel',
+        11: '1-kings',
+        12: '2-kings',
+        13: '1-chronicles',
+        14: '2-chronicles',
+        15: 'ezra',
+        16: 'nehemiah',
+        17: 'esther',
+        18: 'job',
+        19: 'psalms',
+        20: 'proverbs',
+        21: 'ecclesiastes',
+        22: 'song-of-solomon',
+        23: 'isaiah',
+        24: 'jeremiah',
+        25: 'lamentations',
+        26: 'ezekiel',
+        27: 'daniel',
+        28: 'hosea',
+        29: 'joel',
+        30: 'amos',
+        31: 'obadiah',
+        32: 'jonah',
+        33: 'micah',
+        34: 'nahum',
+        35: 'habakkuk',
+        36: 'zephaniah',
+        37: 'haggai',
+        38: 'zechariah',
+        39: 'malachi',
+        40: 'matthew',
+        41: 'mark',
+        42: 'luke',
+        43: 'john',
+        44: 'acts',
+        45: 'romans',
+        46: '1-corinthians',
+        47: '2-corinthians',
+        48: 'galatians',
+        49: 'ephesians',
+        50: 'philippians',
+        51: 'colossians',
+        52: '1-thessalonians',
+        53: '2-thessalonians',
+        54: '1-timothy',
+        55: '2-timothy',
+        56: 'titus',
+        57: 'philemon',
+        58: 'hebrews',
+        59: 'james',
+        60: '1-peter',
+        61: '2-peter',
+        62: '1-john',
+        63: '2-john',
+        64: '3-john',
+        65: 'jude',
+        66: 'revelation'
+      }
 
+      const headerElement = document.getElementById('fetch-books-header')
+      const bookName = response.bookName
+      const chapterNum = parseInt(chapterId, 10)
+      const currentBookIdPadded = String(bookId).padStart(2, '0')
 
+      if (headerElement && bookName && iqbible_ajax.iconBaseUrl) {
+        // 1. Format book name for filename
+        // const formattedBookName = bookName.toLowerCase().replace(/\s+/g, '-');
+        const iconNameBase = bookIdToIconNameMap[currentBookIdPadded]
+        // 2. Construct icon URL
+        const iconUrl = iqbible_ajax.iconBaseUrl + iconNameBase + '.png'
 
+        // 3. Clear existing header content
+        headerElement.innerHTML = ''
 
+        // 4. Create and configure the image element
+        const img = document.createElement('img')
+        img.src = iconUrl
+        img.alt = bookName // Alt text still uses the full book name
+        img.style.marginRight = '8px' // Space between icon and book name
+        img.style.verticalAlign = 'middle'
+        img.style.height = '2em'
+        img.onerror = function () {
+          console.warn('Bible icon not found:', iconUrl)
+          // Fallback includes book name
+          headerElement.textContent = bookName + ' ' + chapterNum
+          this.remove()
+        }
 
-            const headerElement = document.getElementById('fetch-books-header');
-            const bookName = response.bookName;
-            const chapterNum = parseInt(chapterId, 10);
-      
-            if (headerElement && bookName && iqbible_ajax.iconBaseUrl) {
-                // 1. Format book name for filename
-                const formattedBookName = bookName.toLowerCase().replace(/\s+/g, '-');
-      
-                // 2. Construct icon URL
-                const iconUrl = iqbible_ajax.iconBaseUrl + formattedBookName + '.png';
-      
-                // 3. Clear existing header content
-                headerElement.innerHTML = '';
-      
-                // 4. Create and configure the image element
-                const img = document.createElement('img');
-                img.src = iconUrl;
-                img.alt = bookName; // Alt text still uses the full book name
-                img.style.marginRight = '8px'; // Space between icon and book name
-                img.style.verticalAlign = 'middle';
-                img.style.height = '1.2em';
-                img.onerror = function() {
-                    console.warn('Bible icon not found:', iconUrl);
-                    // Fallback includes book name
-                    headerElement.textContent = bookName + ' ' + chapterNum;
-                    this.remove();
-                };
-      
-                // 5. Create text node for the Book Name
-                //    Add a space before the chapter number later if needed, or rely on img margin
-                const bookNameTextNode = document.createTextNode(bookName); // Use the actual book name text
-      
-                // 6. Create text node for the Chapter Number
-                const chapterTextNode = document.createTextNode(' ' + chapterNum); // Add space BEFORE chapter number
-      
-                // 7. Append elements in order: Icon -> Book Name -> Chapter Number
-                headerElement.appendChild(img);
-                headerElement.appendChild(bookNameTextNode);
-                headerElement.appendChild(chapterTextNode);
-      
-            } else {
-                // Fallback or error logging
-                if (headerElement) {
-                    headerElement.textContent = (bookName || 'Book') + ' ' + chapterNum; // Fallback includes book name
-                }
-                if (!headerElement) console.error('Element "#fetch-books-header" not found.');
-                if (!bookName) console.error('Book name missing in response.');
-                if (!iqbible_ajax.iconBaseUrl) console.error('iconBaseUrl missing in iqbible_ajax object.');
-            }
-       
-     
+        // 5. Create text node for the Book Name
+        //    Add a space before the chapter number later if needed, or rely on img margin
+        const bookNameTextNode = document.createTextNode(bookName) // Use the actual book name text
 
+        // 6. Create text node for the Chapter Number
+        const chapterTextNode = document.createTextNode(' ' + chapterNum) // Add space BEFORE chapter number
 
-
-
-
-
-
+        // 7. Append elements in order: Icon -> Book Name -> Chapter Number
+        headerElement.appendChild(img)
+        headerElement.appendChild(bookNameTextNode)
+        headerElement.appendChild(chapterTextNode)
+      } else {
+        // Fallback or error logging
+        if (headerElement) {
+          headerElement.textContent = (bookName || 'Book') + ' ' + chapterNum // Fallback includes book name
+        }
+        if (!headerElement)
+          console.error('Element "#fetch-books-header" not found.')
+        if (!bookName) console.error('Book name missing in response.')
+        if (!iqbible_ajax.iconBaseUrl)
+          console.error('iconBaseUrl missing in iqbible_ajax object.')
+      }
 
       document.getElementById('fetch-books-header-version').innerText =
         ' (' + version.toUpperCase() + ')'
@@ -304,10 +360,9 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
         mainContent.dir = 'ltr'
       }
 
-      // If verseId is provided, scroll to that verse after content loads
-      // else, just scroll to iqbible-main
+      // If verseId is provided, scroll to that verse after content loaded, else, just scroll to iqbible-main
       if (verseId) {
-        setTimeout(() => scrollToElementById('verse-'+verseId, verseId), 300) 
+        setTimeout(() => scrollToElementById(verseId, 'verseId' + verseId), 300)
       } else {
         // Scroll to main content area
         scrollToElementById('iqbible-main')
@@ -1472,18 +1527,22 @@ function clearBooksSession (language) {
       if (response.status === 'success') {
         console.log(response.message) // Handle success response
       } else {
-
-        const errorMsg = (typeof iqbible_ajax !== 'undefined' && iqbible_ajax.i18n && iqbible_ajax.i18n.errorSessionClear) ? iqbible_ajax.i18n.errorSessionClear : 'Error clearing session:'; 
-console.error(errorMsg, response.message);
-
+        const errorMsg =
+          typeof iqbible_ajax !== 'undefined' &&
+          iqbible_ajax.i18n &&
+          iqbible_ajax.i18n.errorSessionClear
+            ? iqbible_ajax.i18n.errorSessionClear
+            : 'Error clearing session:'
+        console.error(errorMsg, response.message)
       }
     } else {
-
-
-      const errorMsg = (typeof iqbible_ajax !== 'undefined' && iqbible_ajax.i18n && iqbible_ajax.i18n.errorAjaxStatus) ? iqbible_ajax.i18n.errorAjaxStatus : 'AJAX request failed with status:'; 
-      console.error(errorMsg, xhr.status);
-
-
+      const errorMsg =
+        typeof iqbible_ajax !== 'undefined' &&
+        iqbible_ajax.i18n &&
+        iqbible_ajax.i18n.errorAjaxStatus
+          ? iqbible_ajax.i18n.errorAjaxStatus
+          : 'AJAX request failed with status:'
+      console.error(errorMsg, xhr.status)
     }
   }
 
@@ -1982,7 +2041,7 @@ function displayVerses (sortOrder) {
   //                   ${verse.verseText} - ${verse.bookName}:${parseInt(
   //     verse.verseNumber,
   //     10
-  //   )} 
+  //   )}
   //                   <span class="version-id">(${verse.versionId.toUpperCase()})</span>
   //               </div>
 
@@ -2001,57 +2060,56 @@ function displayVerses (sortOrder) {
   // }
 
   verses.forEach(function (verse) {
-    const verseElement = document.createElement('div');
-    verseElement.className = 'saved-verse';
-    verseElement.dataset.verseId = verse.verseId; // Store ID for deletion
+    const verseElement = document.createElement('div')
+    verseElement.className = 'saved-verse'
+    verseElement.dataset.verseId = verse.verseId // Store ID for deletion
 
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'verse-content';
+    const contentDiv = document.createElement('div')
+    contentDiv.className = 'verse-content'
 
-    const textDiv = document.createElement('div');
-    textDiv.className = 'verse-text';
+    const textDiv = document.createElement('div')
+    textDiv.className = 'verse-text'
     // Escape text content before setting
-    textDiv.textContent = `${verse.verseText} - ${escapeHTML(verse.bookName)}:${parseInt(verse.verseNumber,10)} `; // Use helper
+    textDiv.textContent = `${verse.verseText} - ${escapeHTML(
+      verse.bookName
+    )}:${parseInt(verse.verseNumber, 10)} ` // Use helper
 
-    const versionSpan = document.createElement('span');
-    versionSpan.className = 'version-id';
-    versionSpan.textContent = `(${escapeHTML(verse.versionId.toUpperCase())})`; // Use helper
-    textDiv.appendChild(versionSpan);
+    const versionSpan = document.createElement('span')
+    versionSpan.className = 'version-id'
+    versionSpan.textContent = `(${escapeHTML(verse.versionId.toUpperCase())})` // Use helper
+    textDiv.appendChild(versionSpan)
 
-    const dateDiv = document.createElement('div');
-    dateDiv.className = 'saved-date';
-    const dateSmall = document.createElement('small');
-    const formattedDate = new Date(verse.savedAt).toLocaleDateString();
-    dateSmall.textContent = `${iqbible_ajax.i18n.savedOn} ${formattedDate}`;
-    dateDiv.appendChild(dateSmall);
+    const dateDiv = document.createElement('div')
+    dateDiv.className = 'saved-date'
+    const dateSmall = document.createElement('small')
+    const formattedDate = new Date(verse.savedAt).toLocaleDateString()
+    dateSmall.textContent = `${iqbible_ajax.i18n.savedOn} ${formattedDate}`
+    dateDiv.appendChild(dateSmall)
 
-    const deleteButton = document.createElement('button');
-    deleteButton.className = 'delete-verse';
-    deleteButton.textContent = iqbible_ajax.i18n.remove;
+    const deleteButton = document.createElement('button')
+    deleteButton.className = 'delete-verse'
+    deleteButton.textContent = iqbible_ajax.i18n.remove
     // Use addEventListener instead of inline onclick
-    deleteButton.addEventListener('click', function() {
-        deleteVerse(verse.verseId); // Pass the ID directly
-    });
+    deleteButton.addEventListener('click', function () {
+      deleteVerse(verse.verseId) // Pass the ID directly
+    })
 
-    const paragraphBreak = document.createElement('p'); // Add spacing if needed
+    const paragraphBreak = document.createElement('p') // Add spacing if needed
 
-    contentDiv.appendChild(textDiv);
-    contentDiv.appendChild(dateDiv);
-    contentDiv.appendChild(deleteButton);
-    contentDiv.appendChild(paragraphBreak);
-    verseElement.appendChild(contentDiv);
-    versesContainer.appendChild(verseElement);
-}
-
-
-)
+    contentDiv.appendChild(textDiv)
+    contentDiv.appendChild(dateDiv)
+    contentDiv.appendChild(deleteButton)
+    contentDiv.appendChild(paragraphBreak)
+    verseElement.appendChild(contentDiv)
+    versesContainer.appendChild(verseElement)
+  })
 }
 
 // Simple HTML escaping helper function for JavaScript
-function escapeHTML(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+function escapeHTML (str) {
+  const div = document.createElement('div')
+  div.textContent = str
+  return div.innerHTML
 }
 
 function sortVerses (sortOrder) {
@@ -2124,84 +2182,71 @@ function deleteVerse (verseId) {
 
 // Share verse
 // ---------------
-function shareVerse(verseId) {
+function shareVerse (verseId) {
   // Try to find the button directly with the exact onclick attribute
-  // This approach is more direct and should be more reliable
-  var buttons = document.querySelectorAll('button');
-  var targetButton = null;
-  
+  var buttons = document.querySelectorAll('button')
+  var targetButton = null
+
   // Inspect all buttons to find the one with the matching onclick
   for (var i = 0; i < buttons.length; i++) {
-    var onclickAttr = buttons[i].getAttribute('onclick');
-    // Check if the onclick attribute includes this specific verseId
+    var onclickAttr = buttons[i].getAttribute('onclick')
     if (onclickAttr && onclickAttr.includes(`shareVerse('${verseId}')`)) {
-      targetButton = buttons[i];
-      break;
+      targetButton = buttons[i]
+      break
     }
   }
-  
-  console.log("Target button found:", targetButton);
-  
+
+  console.log('Target button found:', targetButton)
+
   // Get the data-url attribute if the button was found
-  var verseUrl = '';
+  var verseUrl = ''
   if (targetButton) {
-    verseUrl = targetButton.getAttribute('data-url');
-    console.log("Found data-url:", verseUrl);
+    verseUrl = targetButton.getAttribute('data-url')
+    console.log('Found data-url:', verseUrl)
   }
-  
+
   // If we have a valid URL from the button
   if (verseUrl) {
-    // Decode any HTML entities in the URL
-    verseUrl = verseUrl.replace(/&amp;/g, '&');
-    
-    // Create a URL object to properly handle parameters
+    verseUrl = verseUrl.replace(/&amp;/g, '&')
+
     try {
-      const url = new URL(verseUrl);
-      
-      // Add the verseId parameter
-      url.searchParams.set('verseId', verseId);
-      
-      // Remove hash fragment (we'll use the query parameter instead)
-      url.hash = '';
-      
-      // Get the final URL
-      verseUrl = url.toString();
+      const url = new URL(verseUrl)
+      // Set the verseId parameter with the desired format
+      url.searchParams.set('verseId', 'verse-' + verseId)
+      url.hash = ''
+      verseUrl = url.toString()
     } catch (error) {
-      console.error("Error processing URL:", error);
-      // If URL parsing fails, just append the parameter
+      console.error('Error processing URL:', error)
       if (verseUrl.includes('?')) {
-        verseUrl += '&verseId=' + verseId;
+        verseUrl += '&verseId=verse-' + verseId
       } else {
-        verseUrl += '?verseId=' + verseId;
+        verseUrl += '?verseId=verse-' + verseId
       }
     }
   } else {
     // Fallback - get current page URL and add verseId
-    var currentUrl = new URL(window.location.href);
-    
-    // Preserve all existing parameters
-    currentUrl.searchParams.set('verseId', verseId);
-    verseUrl = currentUrl.toString();
-    console.log("Using fallback URL:", verseUrl);
+    var currentUrl = new URL(window.location.href)
+    currentUrl.searchParams.set('verseId', 'verse-' + verseId)
+    verseUrl = currentUrl.toString()
+    console.log('Using fallback URL:', verseUrl)
   }
-  
-  console.log("Final URL to copy:", verseUrl);
-  
+
+  console.log('Final URL to copy:', verseUrl)
+
   // Copy to clipboard
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard
       .writeText(verseUrl)
       .then(() => {
-        console.log("URL copied to clipboard successfully");
-        var messageDiv = document.getElementById('verse-message-' + verseId);
+        console.log('URL copied to clipboard successfully')
+        var messageDiv = document.getElementById('verse-message-' + verseId)
         if (messageDiv) {
-          showMessageDialog(iqbible_ajax.i18n.linkCopied, 'success', 3000);
+          showMessageDialog(iqbible_ajax.i18n.linkCopied, 'success', 3000)
         }
       })
       .catch(error => {
-        console.error("Clipboard error:", error);
-        showMessageDialog(iqbible_ajax.i18n.errorCopyLink, 'error');
-      });
+        console.error('Clipboard error:', error)
+        showMessageDialog(iqbible_ajax.i18n.errorCopyLink, 'error')
+      })
   }
 }
-

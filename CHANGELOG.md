@@ -18,8 +18,14 @@ The shortcode for this plugin is [IQBible].
 - Feather icons license to readme.txt and under /licenses
 - Free Bible Icons permission to readme.txt
 - Additional (complete) escaping to dynamic PHP and JS output
+- POT file generation (/languages/iqbible.pot) via WP CLI
+- Mapped all version book names to use english book name for the bible book icons (iconNameBase)
 ### Fixed
 - Share verse URL not scrolling to verseId-xxxxxxxx
+### Removed/Changed
+- Footer (added dialogs to shortcodes) as data is not suited for the WP site owner's visitors. Instead, display version data in admin-settings.php
+- Renamed generic start_session to iqbible_start_session to avoid potential conflicts
+- enqueue_dashicons to iqbible_enqueue_dashicons
 
 ## [1.0.0-alpha-6] - 2025-04-24 - 2025-04-25
 ### Added

@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
  
 <h2><?php esc_html_e( 'Help', 'iqbible' ); ?></h2>
 <div class="iqbible-help-container">
-<p><?php esc_html_e( 'Welcome! This help section guides you through the Bible study features available here. Our goal is to help you get the most out of your journey with scripture. Learn how to explore the Bible, search for definitions, create custom reading plans, and use the other tools provided.', 'iqbible' ); ?></p>
+<p><?php esc_html_e( 'Welcome! This help section guides you through the Advanced Bible Study features available here. Our goal is to help you get the most out of your journey with scripture. Learn how to explore the Bible, search for definitions, create custom reading plans, and use the other tools provided.', 'iqbible' ); ?></p>
     <section>
         <h3><?php esc_html_e( 'Bible', 'iqbible' ); ?></h3>
         <p><?php esc_html_e( 'Interact with the Bible by clicking on the', 'iqbible' ); ?> <strong><?php esc_html_e( 'Book Name', 'iqbible' ); ?></strong>, <strong><?php esc_html_e( 'Chapter Number', 'iqbible' ); ?></strong>, <?php esc_html_e( 'or', 'iqbible' ); ?> <strong><?php esc_html_e( 'Version', 'iqbible' ); ?></strong> <?php esc_html_e( 'to change them.', 'iqbible' ); ?></p>
