@@ -11,6 +11,8 @@ The shortcode for this plugin is [IQBible].
 - Save Bible Reading Plan
 
 ## [1.0.0-alpha-8] - 2025-04-27
+### Added
+- uninstall.php
 ### Changed
 - reloadChapterContent to loadChapterContent for clarity as it is not always 'reloading' (e.g., initial page load)
 ### Fixed
