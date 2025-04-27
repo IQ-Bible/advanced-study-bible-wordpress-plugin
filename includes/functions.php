@@ -80,6 +80,7 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
 }
 
 
+
 // Search Ajax handler
 // --------------------------
 function iq_bible_search_ajax_handler()
@@ -701,6 +702,10 @@ function iq_bible_chapter_ajax_handler()
     $chapterId = isset($_POST['chapterId']) ? sanitize_text_field($_POST['chapterId']) : '';
     $versionId = isset($_POST['versionId']) ? sanitize_text_field($_POST['versionId']) : 'kjv';
 
+
+        $language = isset($_POST['language']) ? sanitize_text_field(strtolower($_POST['language'])) : 'english'; // Default to english
+
+
     if (empty($bookId) || empty($chapterId)) {
         wp_send_json_error(['error' => __('Invalid book ID or chapter ID.', 'iqbible')]);
         wp_die();
@@ -741,7 +746,7 @@ function iq_bible_chapter_ajax_handler()
     // Fetch the book name by book ID
     $bookNameResponse = iq_bible_api_get_data('GetBookNameByBookId', array(
         'bookId' => $bookId,
-        'language' => $_SESSION['language']
+        'language' => $language
     ));
 
     // Extract the book name from the response
@@ -795,7 +800,7 @@ function iq_bible_chapter_ajax_handler()
             $share_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/share.svg');
             $bookmark_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg');
             // Ensure session language is escaped if used directly in JS onclick
-            $session_lang_esc = esc_js($_SESSION['language']);
+            $current_lang_esc = esc_js($language);
             // Ensure base URL is clean for data attribute
             $base_url_esc = esc_url($_SESSION['baseUrl']);
             // Build share URL components safely
@@ -833,7 +838,7 @@ function iq_bible_chapter_ajax_handler()
                 intval($chapterNumber),                // %3$d - chapterNumber (integer)
                 esc_js($versionId),                    // %4$s - versionId (escaped for JS)
                 esc_js($siteName),                     // %5$s - siteName (escaped for JS)
-                $session_lang_esc,                     // %6$s - session language (already escaped)
+                $current_lang_esc,                     // %6$s - session language (already escaped)
                 $copy_icon_url,                        // %7$s - copy icon URL
                 esc_attr__('Copy Icon', 'iqbible'),    // %8$s - copy icon alt text
                 esc_html__('Copy', 'iqbible'),         // %9$s - copy button text
@@ -858,7 +863,6 @@ function iq_bible_chapter_ajax_handler()
 
             $response['chapterContent'] .= "</div>"; // Close verse div
 
-            $response['chapterContent'] .= "</div>"; // Close verse div
         }
     } else {
         $response['chapterContent'] = esc_html__('No chapter content results found.', 'iqbible');

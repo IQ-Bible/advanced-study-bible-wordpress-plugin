@@ -190,9 +190,15 @@ function updateURL (bookId, chapterId, version, verseId = null) {
   window.history.pushState({ path: newUrl }, '', newUrl)
 }
 
-// Reload Chapter Content
+// Load Chapter Content
 // ------------------------
-function reloadChapterContent (bookId, chapterId, version, verseId = null) {
+function loadChapterContent (
+  bookId,
+  chapterId,
+  version,
+  verseId = null,
+  language = 'english'
+) {
   // Update the URL parameters without reloading the page
   updateURL(bookId, chapterId, version, verseId)
 
@@ -235,7 +241,7 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
         '06': 'joshua',
         '07': 'judges',
         '08': 'ruth',
-        '09': '1-samuel', 
+        '09': '1-samuel',
         10: '2-samuel',
         11: '1-kings',
         12: '2-kings',
@@ -301,20 +307,13 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
       const currentBookIdPadded = String(bookId).padStart(2, '0')
 
       if (headerElement && bookName && iqbible_ajax.iconBaseUrl) {
-        // 1. Format book name for filename
-        // const formattedBookName = bookName.toLowerCase().replace(/\s+/g, '-');
         const iconNameBase = bookIdToIconNameMap[currentBookIdPadded]
-        // 2. Construct icon URL
         const iconUrl = iqbible_ajax.iconBaseUrl + iconNameBase + '.png'
-
-        // 3. Clear existing header content
         headerElement.innerHTML = ''
-
-        // 4. Create and configure the image element
         const img = document.createElement('img')
         img.src = iconUrl
-        img.alt = bookName // Alt text still uses the full book name
-        img.style.marginRight = '8px' // Space between icon and book name
+        img.alt = bookName
+        img.style.marginRight = '8px'
         img.style.verticalAlign = 'middle'
         img.style.height = '2em'
         img.onerror = function () {
@@ -324,14 +323,10 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
           this.remove()
         }
 
-        // 5. Create text node for the Book Name
-        //    Add a space before the chapter number later if needed, or rely on img margin
-        const bookNameTextNode = document.createTextNode(bookName) // Use the actual book name text
+        const bookNameTextNode = document.createTextNode(bookName)
 
-        // 6. Create text node for the Chapter Number
-        const chapterTextNode = document.createTextNode(' ' + chapterNum) // Add space BEFORE chapter number
+        const chapterTextNode = document.createTextNode(' ' + chapterNum)
 
-        // 7. Append elements in order: Icon -> Book Name -> Chapter Number
         headerElement.appendChild(img)
         headerElement.appendChild(bookNameTextNode)
         headerElement.appendChild(chapterTextNode)
@@ -391,6 +386,8 @@ function reloadChapterContent (bookId, chapterId, version, verseId = null) {
       '&versionId=' +
       encodeURIComponent(version.toLowerCase()) +
       (verseId ? '&verseId=' + encodeURIComponent(verseId) : '') +
+      '&language=' +
+      encodeURIComponent(language) +
       '&security=' +
       encodeURIComponent(iqbible_ajax.nonce) // <-- ADDED NONCE
   )
@@ -552,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Retrieve the bookId and chapterId from the clicked link's data attributes
                     currentBookId = this.getAttribute('data-book-id')
                     currentChapterId = this.getAttribute('data-chapter-id')
-                    reloadChapterContent(
+                    loadChapterContent(
                       currentBookId,
                       currentChapterId,
                       versionId
@@ -763,7 +760,7 @@ function attachSearchResultHandlers () {
       openTab('bible')
 
       // Load the chapter content
-      reloadChapterContent(currentBookId, currentChapterId, versionId, verseId)
+      loadChapterContent(currentBookId, currentChapterId, versionId, verseId)
     })
   })
 }
@@ -874,12 +871,7 @@ function showCrossReferences (verseId) {
             document.getElementById('cross-references-dialog').close()
 
             // Load the new chapter content
-            reloadChapterContent(
-              bookId,
-              chapterId,
-              versionId,
-              'verse-' + verseId
-            )
+            loadChapterContent(bookId, chapterId, versionId, 'verse-' + verseId)
           })
         })
 
@@ -1078,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', function () {
       currentChapterId = this.getAttribute('data-chapter-id')
       const verseId = this.getAttribute('data-verse-id')
       // Trigger the reload of the Bible chapter content with the correct params
-      reloadChapterContent(
+      loadChapterContent(
         currentBookId,
         currentChapterId,
         versionId,
@@ -1132,11 +1124,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentChapterId -= 1
 
         // Reload content for the previous chapter
-        reloadChapterContent(
-          currentBookId,
-          currentChapterId,
-          selectedVersionName
-        )
+        loadChapterContent(currentBookId, currentChapterId, selectedVersionName)
 
         // Optionally update URL for continuity
         updateURL(currentBookId, currentChapterId, selectedVersionName)
@@ -1158,7 +1146,7 @@ document.addEventListener('DOMContentLoaded', function () {
           currentChapterId += 1
 
           // Reload content for the next chapter
-          reloadChapterContent(
+          loadChapterContent(
             currentBookId,
             currentChapterId,
             selectedVersionName
@@ -1234,7 +1222,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const verseId = this.getAttribute('data-verse-id')
 
         // Load the chapter content
-        reloadChapterContent(bookId, chapterId, versionId, 'verse-' + verseId)
+        loadChapterContent(bookId, chapterId, versionId, 'verse-' + verseId)
 
         // Switch to Bible tab
         openTab('bible')
@@ -1253,7 +1241,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // --------------------------------
   const verseId = getURLParameter('verseId') // Get the verseId from URL
   // Call function to load chapter content
-  reloadChapterContent(
+  loadChapterContent(
     currentBookId,
     currentChapterId,
     selectedVersionName,
@@ -1342,7 +1330,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
               // Reload content for the selected chapter
               clearUrlParams()
-              reloadChapterContent(bookId, chapterId, selectedVersionName)
+              loadChapterContent(bookId, chapterId, selectedVersionName)
 
               // Close the book dialog after selecting the chapter
               document.getElementById('book-dialog').close()
@@ -1468,17 +1456,17 @@ document.addEventListener('DOMContentLoaded', function () {
                   'data-version-language'
                 ).toLowerCase()
 
-                // Clear the session var holding book names
-                // so we can refetch them from the API
-                // in the correct language
-                clearBooksSession(selectedLanguage)
-
-                // Reload chapter content with the new version
-                reloadChapterContent(
-                  currentBookId,
-                  currentChapterId,
-                  selectedVersionName
-                )
+                // Clear session var holding book names so we can
+                // refetch them in correct lang, then load chapter
+                clearBooksSession(selectedLanguage).then(() => {
+                  loadChapterContent(
+                    currentBookId,
+                    currentChapterId,
+                    selectedVersionName,
+                    null,
+                    selectedLanguage
+                  )
+                })
 
                 // Close the versions dialog
                 versionsDialog.close()
@@ -1515,44 +1503,48 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 })
 
-// Function to clear the books session with a specified language
 function clearBooksSession (language) {
-  var xhr = new XMLHttpRequest()
-  xhr.open('POST', iqbible_ajax.ajaxurl, true) // Use the localized AJAX URL
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', iqbible_ajax.ajaxurl, true)
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      var response = JSON.parse(xhr.responseText)
-      if (response.status === 'success') {
-        console.log(response.message) // Handle success response
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        try {
+          const response = JSON.parse(xhr.responseText)
+          if (response.status === 'success') {
+            console.log(response.message)
+            resolve() // Resolve the Promise on success
+          } else {
+            const errorMsg =
+              iqbible_ajax?.i18n?.errorSessionClear || 'Error clearing session:'
+            console.error(errorMsg, response.message)
+            reject(new Error(response.message)) // Reject on failure
+          }
+        } catch (e) {
+          reject(new Error('Invalid JSON response'))
+        }
       } else {
         const errorMsg =
-          typeof iqbible_ajax !== 'undefined' &&
-          iqbible_ajax.i18n &&
-          iqbible_ajax.i18n.errorSessionClear
-            ? iqbible_ajax.i18n.errorSessionClear
-            : 'Error clearing session:'
-        console.error(errorMsg, response.message)
+          iqbible_ajax?.i18n?.errorAjaxStatus ||
+          'AJAX request failed with status:'
+        console.error(errorMsg, xhr.status)
+        reject(new Error(`Status code: ${xhr.status}`)) // Reject on HTTP error
       }
-    } else {
-      const errorMsg =
-        typeof iqbible_ajax !== 'undefined' &&
-        iqbible_ajax.i18n &&
-        iqbible_ajax.i18n.errorAjaxStatus
-          ? iqbible_ajax.i18n.errorAjaxStatus
-          : 'AJAX request failed with status:'
-      console.error(errorMsg, xhr.status)
     }
-  }
 
-  // Send AJAX request to clear the session with the specified language
-  xhr.send(
-    'action=clear_books_session&language=' +
-      encodeURIComponent(language) +
-      '&security=' +
-      encodeURIComponent(iqbible_ajax.nonce)
-  )
+    xhr.onerror = function () {
+      reject(new Error('Network error occurred')) // Reject on network error
+    }
+
+    xhr.send(
+      'action=clear_books_session&language=' +
+        encodeURIComponent(language) +
+        '&security=' +
+        encodeURIComponent(iqbible_ajax.nonce)
+    )
+  })
 }
 
 // Notes

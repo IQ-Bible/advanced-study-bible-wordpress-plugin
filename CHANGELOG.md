@@ -10,6 +10,12 @@ The shortcode for this plugin is [IQBible].
 - Extra-biblical
 - Save Bible Reading Plan
 
+## [1.0.0-alpha-8] - 2025-04-27
+### Changed
+- reloadChapterContent to loadChapterContent for clarity as it is not always 'reloading' (e.g., initial page load)
+### Fixed
+- Fixed clearbooksession() in version update to return a promise before executing loadChapterContent (to avoid race condition)
+
 ## [1.0.0-alpha-7] - 2025-04-26
 ### Added
 - Verified NONCE validations
