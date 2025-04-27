@@ -1012,21 +1012,84 @@ function iq_bible_books_ajax_handler()
 
 
 
+// function iq_bible_clear_plugin_cache($old_value, $new_value)
+// {
+//     global $wpdb;
+
+//     // Check if the API key has changed
+//     if ($old_value !== $new_value) {
+//         // Clear all transients related to the IQBible plugin
+//         $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_iqbible_%'");
+//         $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_timeout_iqbible_%'");
+
+//         error_log("Cache cleared due to API key update!");
+//     }
+// }
+
+// // Manual cache clearing via form submission
+// add_action('admin_post_iqbible_clear_plugin_cache', 'iq_bible_clear_plugin_cache_form');
+
+// function iq_bible_clear_plugin_cache_form()
+// {
+
+//     check_admin_referer('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
+
+//     if (!current_user_can('manage_options')) {
+//         wp_die(esc_html__('You do not have sufficient permissions to perform this action.', 'iqbible'));
+//     }
+
+//     global $wpdb;
+
+//     // Clear all transients related to the IQBible plugin
+//     $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_iqbible_%'");
+//     $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_timeout_iqbible_%'");
+
+//     error_log("Cache manually cleared!");
+
+//     // Redirect back to the settings page with a success message
+//     wp_redirect(add_query_arg('cache_cleared', 'true', wp_get_referer()));
+//     exit;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function iq_bible_clear_plugin_cache($old_value, $new_value)
 {
     global $wpdb;
 
-    // Check if the API key has changed
-    if ($old_value !== $new_value) {
-        // Clear all transients related to the IQBible plugin
-        $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_iqbible_%'");
-        $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_timeout_iqbible_%'");
 
-        error_log("Cache cleared due to API key update!");
+    if ($old_value !== $new_value) {
+
+        $transient_prefix = '_transient_iqbible_';
+        $timeout_prefix = '_transient_timeout_iqbible_';
+
+        $sql_transient = $wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+            $wpdb->esc_like($transient_prefix) . '%' 
+        );
+        $wpdb->query($sql_transient); 
+        $sql_timeout = $wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+            $wpdb->esc_like($timeout_prefix) . '%' 
+        );
+        $wpdb->query($sql_timeout); 
+
+        error_log("IQBible Cache cleared due to API key update!");
     }
 }
 
-// Manual cache clearing via form submission
+
 add_action('admin_post_iqbible_clear_plugin_cache', 'iq_bible_clear_plugin_cache_form');
 
 function iq_bible_clear_plugin_cache_form()
@@ -1034,22 +1097,39 @@ function iq_bible_clear_plugin_cache_form()
 
     check_admin_referer('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
 
+
     if (!current_user_can('manage_options')) {
         wp_die(esc_html__('You do not have sufficient permissions to perform this action.', 'iqbible'));
     }
 
     global $wpdb;
 
-    // Clear all transients related to the IQBible plugin
-    $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_iqbible_%'");
-    $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_timeout_iqbible_%'");
+    $transient_prefix = '_transient_iqbible_';
+    $timeout_prefix = '_transient_timeout_iqbible_';
 
-    error_log("Cache manually cleared!");
+    $sql_transient = $wpdb->prepare(
+        "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+        $wpdb->esc_like($transient_prefix) . '%' 
+    );
+    $wpdb->query($sql_transient);
 
-    // Redirect back to the settings page with a success message
-    wp_redirect(add_query_arg('cache_cleared', 'true', wp_get_referer()));
-    exit;
+    $sql_timeout = $wpdb->prepare(
+        "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
+        $wpdb->esc_like($timeout_prefix) . '%' 
+    );
+    $wpdb->query($sql_timeout);
+
+    error_log("IQBible Cache manually cleared by user!");
+
+
+    $redirect_url = add_query_arg('cache_cleared', 'true', wp_get_referer());
+    wp_safe_redirect($redirect_url); 
+    exit; 
 }
+
+
+
+
 
 
 
@@ -1423,7 +1503,7 @@ function iq_bible_get_saved_verses_ajax_handler()
             'chapter' => $chapterId,
             'verseNumber' => $verseNumber,
             'verseId' => $saved->verse_id,
-            'verseText' => $saved->verse_text,
+            'verseText' => stripslashes($saved->verse_text),
             'versionId' => $saved->version_id,
             'savedAt' => $saved->saved_at
         );

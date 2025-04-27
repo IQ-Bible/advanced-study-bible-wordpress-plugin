@@ -113,12 +113,13 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
     if ($hook_suffix === 'settings_page_iq_bible_api') {
 
         // Enqueue admin styles
-        wp_enqueue_style(
-            'iq-bible-admin-style',
-            plugin_dir_url(__DIR__) . 'assets/css/admin-style.css',
-            array(),
-            IQBIBLE_VERSION 
-        );
+        // wp_enqueue_style(
+        //     'iq-bible-admin-style',
+        //     plugin_dir_url(__DIR__) . 'assets/css/admin-style.css',
+        //     array(),
+        //     IQBIBLE_VERSION 
+        // );
+
         // Enqueue admin scripts
         wp_enqueue_script(
             'iqbible-admin-script',

@@ -34,6 +34,7 @@ The shortcode for this plugin is [IQBible].
 - Footer (added dialogs to shortcodes) as data is not suited for the WP site owner's visitors. Instead, display version data in admin-settings.php
 - Renamed generic start_session to iqbible_start_session to avoid potential conflicts
 - enqueue_dashicons to iqbible_enqueue_dashicons
+- credits.txt (is properly in readme.txt for WP Mktplc)
 
 ## [1.0.0-alpha-6] - 2025-04-24 - 2025-04-25
 ### Added
