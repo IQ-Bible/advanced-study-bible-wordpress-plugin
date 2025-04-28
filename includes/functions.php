@@ -697,14 +697,9 @@ function iq_bible_chapter_ajax_handler()
     check_ajax_referer('iqbible_ajax_nonce', 'security');
     // ---> End Verify Nonce <---
 
-
     $bookId = isset($_POST['bookId']) ? sanitize_text_field($_POST['bookId']) : '';
     $chapterId = isset($_POST['chapterId']) ? sanitize_text_field($_POST['chapterId']) : '';
     $versionId = isset($_POST['versionId']) ? sanitize_text_field($_POST['versionId']) : 'kjv';
-
-
-        $language = isset($_POST['language']) ? sanitize_text_field(strtolower($_POST['language'])) : 'english'; // Default to english
-
 
     if (empty($bookId) || empty($chapterId)) {
         wp_send_json_error(['error' => __('Invalid book ID or chapter ID.', 'iqbible')]);
@@ -746,7 +741,7 @@ function iq_bible_chapter_ajax_handler()
     // Fetch the book name by book ID
     $bookNameResponse = iq_bible_api_get_data('GetBookNameByBookId', array(
         'bookId' => $bookId,
-        'language' => $language
+        'language' => $_SESSION['language']
     ));
 
     // Extract the book name from the response
@@ -1076,14 +1071,14 @@ function iq_bible_clear_plugin_cache($old_value, $new_value)
 
         $sql_transient = $wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
-            $wpdb->esc_like($transient_prefix) . '%' 
+            $wpdb->esc_like($transient_prefix) . '%'
         );
-        $wpdb->query($sql_transient); 
+        $wpdb->query($sql_transient);
         $sql_timeout = $wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
-            $wpdb->esc_like($timeout_prefix) . '%' 
+            $wpdb->esc_like($timeout_prefix) . '%'
         );
-        $wpdb->query($sql_timeout); 
+        $wpdb->query($sql_timeout);
 
         error_log("IQBible Cache cleared due to API key update!");
     }
@@ -1109,13 +1104,13 @@ function iq_bible_clear_plugin_cache_form()
 
     $sql_transient = $wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
-        $wpdb->esc_like($transient_prefix) . '%' 
+        $wpdb->esc_like($transient_prefix) . '%'
     );
     $wpdb->query($sql_transient);
 
     $sql_timeout = $wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s",
-        $wpdb->esc_like($timeout_prefix) . '%' 
+        $wpdb->esc_like($timeout_prefix) . '%'
     );
     $wpdb->query($sql_timeout);
 
@@ -1123,8 +1118,8 @@ function iq_bible_clear_plugin_cache_form()
 
 
     $redirect_url = add_query_arg('cache_cleared', 'true', wp_get_referer());
-    wp_safe_redirect($redirect_url); 
-    exit; 
+    wp_safe_redirect($redirect_url);
+    exit;
 }
 
 

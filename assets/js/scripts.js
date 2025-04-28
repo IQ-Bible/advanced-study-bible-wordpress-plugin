@@ -197,7 +197,7 @@ function loadChapterContent (
   chapterId,
   version,
   verseId = null,
-  language = 'english'
+  language = null
 ) {
   // Update the URL parameters without reloading the page
   updateURL(bookId, chapterId, version, verseId)
@@ -1463,8 +1463,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     currentBookId,
                     currentChapterId,
                     selectedVersionName,
-                    null,
-                    selectedLanguage
+                    null
                   )
                 })
 
