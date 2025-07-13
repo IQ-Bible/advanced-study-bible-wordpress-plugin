@@ -37,8 +37,6 @@ function iq_bible_api_enqueue_assets()
         'errorProcessingResponse' => __('Error processing response from server.', 'iqbible'),
 
         'errorGeneratingPlan' => __('An error occurred generating the plan.', 'iqbible'),
-
-        'errorGeneratingPlan' => __('An error occurred generating the plan.', 'iqbible'),
         
         'errorSearch' => __('An error occurred during the search...', 'iqbible'),
         'errorDictionary' => __('An error occurred during the definition retrieval:', 'iqbible'),
