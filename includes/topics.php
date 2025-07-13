@@ -8,8 +8,7 @@ if (!defined('ABSPATH')) {
 <h2><?php esc_html_e('Topics', 'iqbible'); ?></h2>
 
 <div class="iqbible-topics-container">
-    <?php
-    // $current_language = $_SESSION['language'] ?? 'english'; 
+    <?php 
     $current_language = get_transient( 'iqbible_language' );
 if ( ! $current_language ) {
     $current_language = 'english';

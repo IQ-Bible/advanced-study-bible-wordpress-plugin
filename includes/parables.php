@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 
 <h2><?php esc_html_e( 'Parables', 'iqbible' ); ?></h2>
 <?php
-// $session_language = $_SESSION['language'] ?? 'english';
+
 $session_language = get_transient( 'iqbible_language' );
 if ( ! $session_language ) {
     $session_language = 'english';

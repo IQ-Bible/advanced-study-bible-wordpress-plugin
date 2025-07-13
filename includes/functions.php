@@ -175,21 +175,14 @@ function iq_bible_define_ajax_handler()
     }
 
     // Fetch the biblical definition using the API
-    // $_SESSION['dictionaryId'] = 'smiths';
     set_transient('iqbible_dictionaryId', 'smiths', DAY_IN_SECONDS);
 
-    // $_SESSION['dictionaryIdFullName'] = __('Smith\'s Bible Dictionary', 'iqbible');
     set_transient('iqbible_dictionaryIdFullName', __('Smith\'s Bible Dictionary', 'iqbible'), DAY_IN_SECONDS);
-
-    // $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => $_SESSION['dictionaryId']));
 
     $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => get_transient('iqbible_dictionaryId')));
 
 
     if (!empty($definition_biblical)) {
-        // translators: %s: The name of the Bible dictionary (e.g., Smith's Bible Dictionary).
-        // echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'), esc_html($_SESSION['dictionaryIdFullName'])) . '</i></small><br>';
-
         echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'),     esc_html(get_transient('iqbible_dictionaryIdFullName'))) . '</i></small><br>';
 
         // Display the word being defined
@@ -759,7 +752,6 @@ function iq_bible_chapter_ajax_handler()
     // Fetch the book name by book ID
     $bookNameResponse = iq_bible_api_get_data('GetBookNameByBookId', array(
         'bookId' => $bookId,
-        // 'language' => $_SESSION['language']
         'language' => get_transient('iqbible_language')
 
     ));
@@ -775,9 +767,7 @@ function iq_bible_chapter_ajax_handler()
         'savedVerses' => $saved_verses
     );
 
-    // Fetch stories from session
-    // $stories_by_verse = isset($_SESSION['stories_by_verse']) ? $_SESSION['stories_by_verse'] : array();
-
+    // Fetch stories from transient
     $stories_by_verse = get_transient('iqbible_stories_by_verse');
     if (! $stories_by_verse) {
         $stories_by_verse = array();
@@ -810,7 +800,6 @@ function iq_bible_chapter_ajax_handler()
 
             // Add verse options
             $chapterNumber = $paddedChapterId;
-            // $siteName = $_SESSION['siteName'];
             $siteName = get_transient('iqbible_siteName');
 
 
@@ -825,10 +814,7 @@ function iq_bible_chapter_ajax_handler()
 
 
 
-
-
             // Ensure base URL is clean for data attribute
-            // $base_url_esc = esc_url($_SESSION['baseUrl']);
             $base_url_esc = esc_url(get_transient('iqbible_baseUrl'));
 
             // Build share URL components safely
@@ -929,8 +915,6 @@ function iq_bible_chapter_count_ajax_handler()
 
 
     // Clear previous book data
-    // unset($_SESSION['bookId']);
-    // unset($_SESSION['chapterData']);
     delete_transient('iqbible_bookId');
     delete_transient('iqbible_chapterData');
 
@@ -969,25 +953,12 @@ function iq_bible_chapter_count_ajax_handler()
 
 
 
-
-
-
-
-
-
 /**
  * Retrieves the current language preference.
- * !!! TEMPORARY VERSION: Reads from $_SESSION['language'] for now. !!!
- * This will be replaced later. It's needed now only to key the books transient.
- *
  * @return string The language code (e.g., 'english').
  */
 function iq_bible_get_current_language()
 {
-    // Temporarily read from session - will be replaced later.
-    //     $language = isset($_SESSION['language']) ? sanitize_text_field($_SESSION['language']) : 'english';
-    //     return empty($language) ? 'english' : $language;
-    // }
 
     $language = get_transient('iqbible_language');
     if (!$language) {
@@ -1722,67 +1693,6 @@ function iq_bible_delete_saved_verse_ajax_handler()
     wp_die();
 }
 add_action('wp_ajax_iq_bible_delete_saved_verse', 'iq_bible_delete_saved_verse_ajax_handler');
-
-
-
-
-
-
-
-
-/**
- * AJAX handler to update language preference and clear the related book cache transient.
- * !!! TEMPORARY: Still interacts with $_SESSION['language'] !!!
- */
-// function iq_bible_update_language_and_clear_cache() // <-- Renamed function
-// {
-//     check_ajax_referer('iqbible_ajax_nonce', 'security');
-
-//     $message = __('Language updated and book cache cleared.', 'iqbible');
-//     $language_updated = false;
-//     $target_language = null; // Language for which cache needs clearing
-
-//     if (isset($_POST['language'])) {
-//         $new_language = sanitize_text_field($_POST['language']);
-//         if (!empty($new_language)) {
-//             // --- TEMPORARY: Still set session language for now ---
-//             $_SESSION['language'] = $new_language;
-//             // --- End Temporary ---
-//             $target_language = $new_language; // Clear cache for the new language
-//             $language_updated = true;
-//         } else {
-//             $message = __('Invalid language provided.', 'iqbible');
-//             // Optionally clear cache for current language anyway? Or send error?
-//             // For now, just send message and don't clear cache.
-//             wp_send_json_error(['message' => $message]);
-//             return; // Exit early
-//         }
-//     } else {
-//         // If no language is posted, determine the current language to clear its cache
-//         $target_language = iq_bible_get_current_language(); // Gets current lang via session (temporary)
-//         $message = __('Books cache cleared for current language.', 'iqbible');
-//     }
-
-//     // Clear the transient for the target language
-//     if ($target_language) {
-//         $transient_key = 'iqbible_books_' . sanitize_key($target_language);
-//         delete_transient($transient_key);
-//     } else {
-//         // This case should ideally not happen based on logic above, but handle defensively
-//         $message = __('Could not determine language to clear cache.', 'iqbible');
-//         // Optionally log this state
-//     }
-
-
-//     wp_send_json_success(['message' => $message, 'language_updated' => $language_updated]);
-// }
-
-// // Hook the AJAX actions using the NEW action name
-// add_action('wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache');
-// add_action('wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache');
-
-// ---> Action: Ensure your JavaScript AJAX call uses the new action: 'iq_bible_update_language_and_clear_cache' <---
-
 
 
 
