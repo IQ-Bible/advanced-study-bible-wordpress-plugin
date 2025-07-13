@@ -39,14 +39,6 @@ function iqbible_load_textdomain()
     );
 }
 
-// Start the session
-function iqbible_start_session()
-{
-    if (!session_id()) {
-        session_start();
-    }
-}
-
 // Create notes table on plugin activation
 function iqbible_create_notes_table()
 {
@@ -114,9 +106,6 @@ add_action('plugins_loaded', 'iqbible_load_textdomain');
 // Shortcode
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
-/* Session */
-add_action('init', 'iqbible_start_session', 1);
-
 /* Shortcode */
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
@@ -171,3 +160,7 @@ add_action('wp_ajax_nopriv_iq_bible_chapter_count_ajax_handler', 'iq_bible_chapt
 
 // Hook to clear cache when the API key is updated
 add_action('update_option_iq_bible_api_key', 'iq_bible_clear_plugin_cache', 10, 2);
+
+/* Language Update AJAX */
+add_action('wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');
+add_action('wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');

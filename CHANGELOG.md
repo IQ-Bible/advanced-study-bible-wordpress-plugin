@@ -13,6 +13,8 @@ The shortcode for this plugin is [IQBible].
 ## [1.0.0-alpha-10] - 2025-07-13
 ### Changed
 - Successfully converted all $_SESSION vars to transients!
+### Removed
+- Lingering Session functions
 
 ## [1.0.0-alpha-9] - 2025-05-05
 ### Changed
