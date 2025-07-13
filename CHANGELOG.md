@@ -10,6 +10,10 @@ The shortcode for this plugin is [IQBible].
 - Extra-biblical
 - Save Bible Reading Plan
 
+## [1.0.0-alpha-11] - 2025-07-13
+### Added
+- Final checklist reviews for WordPress Plugin Compliance. Almost ready to submit...
+
 ## [1.0.0-alpha-10] - 2025-07-13
 ### Changed
 - Successfully converted all $_SESSION vars to transients!
