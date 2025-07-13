@@ -33,9 +33,13 @@ function iq_bible_api_enqueue_assets()
         'errorFetchChapter' => __('An error occurred while retrieving the chapter:', 'iqbible'),
         'noAudioSupport' => __('Your browser does not support the audio element.', 'iqbible'),
         'networkError' => __('Network error occurred. Please check your connection.', 'iqbible'),
+
         'errorProcessingResponse' => __('Error processing response from server.', 'iqbible'),
+
         'errorGeneratingPlan' => __('An error occurred generating the plan.', 'iqbible'),
+
         'errorGeneratingPlan' => __('An error occurred generating the plan.', 'iqbible'),
+        
         'errorSearch' => __('An error occurred during the search...', 'iqbible'),
         'errorDictionary' => __('An error occurred during the definition retrieval:', 'iqbible'),
         'errorStrongs' => __('An error occurred during the concordance retrieval:', 'iqbible'),
