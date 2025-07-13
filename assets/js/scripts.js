@@ -1460,16 +1460,12 @@ document.addEventListener('DOMContentLoaded', function () {
                   'data-version-language'
                 ).toLowerCase()
 
-                // Get the current book and chapter from the URL to ensure we're loading the correct content.
-                const bookIdFromUrl = getURLParameter('bookId');
-                const chapterIdFromUrl = getURLParameter('chapterId');
-
                 // Clear the old book cache and update the language,
                 // then load the new chapter content.
                 updateLanguageAndClearCache(selectedLanguage).then(() => {
                   loadChapterContent(
-                    bookIdFromUrl,
-                    chapterIdFromUrl,
+                    currentBookId,
+                    currentChapterId,
                     selectedVersionName,
                     null
                   )

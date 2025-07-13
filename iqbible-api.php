@@ -39,6 +39,14 @@ function iqbible_load_textdomain()
     );
 }
 
+// Start the session
+function iqbible_start_session()
+{
+    if (!session_id()) {
+        session_start();
+    }
+}
+
 // Create notes table on plugin activation
 function iqbible_create_notes_table()
 {
@@ -106,7 +114,11 @@ add_action('plugins_loaded', 'iqbible_load_textdomain');
 // Shortcode
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
+/* Session */
+add_action('init', 'iqbible_start_session', 1);
+
 /* Shortcode */
+add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
 /* Frontend Styles and Scripts */
 add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
