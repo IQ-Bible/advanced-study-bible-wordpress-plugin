@@ -199,6 +199,10 @@ function loadChapterContent (
   verseId = null,
   language = null
 ) {
+
+
+  console.log('loadChapterContent called with:', { bookId, chapterId, version, verseId });
+
   // Update the URL parameters without reloading the page
   updateURL(bookId, chapterId, version, verseId)
 
@@ -386,8 +390,6 @@ function loadChapterContent (
       '&versionId=' +
       encodeURIComponent(version.toLowerCase()) +
       (verseId ? '&verseId=' + encodeURIComponent(verseId) : '') +
-      '&language=' +
-      encodeURIComponent(language) +
       '&security=' +
       encodeURIComponent(iqbible_ajax.nonce) // <-- ADDED NONCE
   )
@@ -951,10 +953,12 @@ function copyVerse (
   textarea.value = fullText
 
   // Set direction attribute based on language
-  if (language === 'arabic') {
-    textarea.setAttribute('dir', 'rtl') // Set text direction to RTL for Arabic
+  const textDirection = language; // The 6th parameter is now 'ltr' or 'rtl'
+
+  if (textDirection === 'rtl') { // Check if the direction passed is 'rtl'
+    textarea.setAttribute('dir', 'rtl');
   } else {
-    textarea.setAttribute('dir', 'ltr') // Set text direction to LTR for other languages
+    textarea.setAttribute('dir', 'ltr'); // Default to LTR otherwise
   }
 
   document.body.appendChild(textarea)
@@ -1458,14 +1462,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Clear session var holding book names so we can
                 // refetch them in correct lang, then load chapter
-                clearBooksSession(selectedLanguage).then(() => {
-                  loadChapterContent(
-                    currentBookId,
-                    currentChapterId,
-                    selectedVersionName,
-                    null
-                  )
-                })
+                // clearBooksSession(selectedLanguage).then(() => {
+                //   loadChapterContent(
+                //     currentBookId,
+                //     currentChapterId,
+                //     selectedVersionName,
+                //     null
+                //   )
+                // })
+
+                loadChapterContent(
+                  currentBookId,       
+                  currentChapterId,    
+                  versionId,           
+                  null                 
+              );
+
+
+
 
                 // Close the versions dialog
                 versionsDialog.close()
@@ -1502,49 +1516,70 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 })
 
-function clearBooksSession (language) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-    xhr.open('POST', iqbible_ajax.ajaxurl, true)
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        try {
-          const response = JSON.parse(xhr.responseText)
-          if (response.status === 'success') {
-            console.log(response.message)
-            resolve() // Resolve the Promise on success
-          } else {
-            const errorMsg =
-              iqbible_ajax?.i18n?.errorSessionClear || 'Error clearing session:'
-            console.error(errorMsg, response.message)
-            reject(new Error(response.message)) // Reject on failure
-          }
-        } catch (e) {
-          reject(new Error('Invalid JSON response'))
-        }
-      } else {
-        const errorMsg =
-          iqbible_ajax?.i18n?.errorAjaxStatus ||
-          'AJAX request failed with status:'
-        console.error(errorMsg, xhr.status)
-        reject(new Error(`Status code: ${xhr.status}`)) // Reject on HTTP error
-      }
-    }
 
-    xhr.onerror = function () {
-      reject(new Error('Network error occurred')) // Reject on network error
-    }
 
-    xhr.send(
-      'action=clear_books_session&language=' +
-        encodeURIComponent(language) +
-        '&security=' +
-        encodeURIComponent(iqbible_ajax.nonce)
-    )
-  })
-}
+
+
+
+
+// function clearBooksSession (language) {
+//   return new Promise((resolve, reject) => {
+//     const xhr = new XMLHttpRequest()
+//     xhr.open('POST', iqbible_ajax.ajaxurl, true)
+//     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+
+//     xhr.onload = function () {
+//       if (xhr.status === 200) {
+//         try {
+//           const response = JSON.parse(xhr.responseText)
+//           if (response.status === 'success') {
+//             console.log(response.message)
+//             resolve() // Resolve the Promise on success
+//           } else {
+//             const errorMsg =
+//               iqbible_ajax?.i18n?.errorSessionClear || 'Error clearing session:'
+//             console.error(errorMsg, response.message)
+//             reject(new Error(response.message)) // Reject on failure
+//           }
+//         } catch (e) {
+//           reject(new Error('Invalid JSON response'))
+//         }
+//       } else {
+//         const errorMsg =
+//           iqbible_ajax?.i18n?.errorAjaxStatus ||
+//           'AJAX request failed with status:'
+//         console.error(errorMsg, xhr.status)
+//         reject(new Error(`Status code: ${xhr.status}`)) // Reject on HTTP error
+//       }
+//     }
+
+//     xhr.onerror = function () {
+//       reject(new Error('Network error occurred')) // Reject on network error
+//     }
+
+//     xhr.send(
+//       'action=iq_bible_update_language_and_clear_cache&language=' +
+//         encodeURIComponent(language) +
+//         '&security=' +
+//         encodeURIComponent(iqbible_ajax.nonce)
+//     )
+//   })
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Notes
 // --------------

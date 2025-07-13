@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 
     <div id="iqbible-header-container">
 
-        <?php echo esc_html($bookName); ?>
+        <?php //echo esc_html($bookName); ?>
 
         <h2 title="Change book or chapter" id="fetch-books-header"></h2>
 

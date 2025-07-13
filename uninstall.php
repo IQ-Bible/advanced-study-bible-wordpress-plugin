@@ -1,6 +1,6 @@
 <?php
 /**
- * IQ Bible Plugin Uninstallation.
+ * IQBible Advanced Study Bible Plugin Uninstallation.
  *
  * This file runs automatically ONLY when the user clicks the "Delete"
  * link for the IQ Bible plugin in the WordPress admin area.

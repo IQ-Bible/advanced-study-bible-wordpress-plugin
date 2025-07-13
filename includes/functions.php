@@ -110,9 +110,9 @@ function iq_bible_search_ajax_handler()
             $verse = $result['v'];
             $text = $result['t'];
 
-            iq_bible_ensure_books_session();
 
-            $books = $_SESSION['books'];
+            $books_data = iq_bible_get_books_data();
+            $books = $books_data['all'];
 
             $bookName = __('Unknown Book Name', 'iqbible');
             foreach ($books as $book) {
@@ -264,8 +264,12 @@ function iq_bible_get_cross_references_handler()
     $crossReferences = iq_bible_api_get_data('GetCrossReferences', array('verseId' => $verseId));
 
     if (!empty($crossReferences)) {
-        iq_bible_ensure_books_session();
-        $books = $_SESSION['books'];
+
+
+        $books_data = iq_bible_get_books_data(); // Call the helper
+        $books = $books_data['all']; // Get the 'all' books array
+
+
         // Prepare the list to display cross references
         $referencesList = '<ul class="cross-references-list">';
 
@@ -507,9 +511,13 @@ function iq_bible_plans_ajax_handler()
     // --- Generate Reading List HTML ---
     echo "<div class='reading-plan-list'>"; // Start list container
 
-    // Prepare book map safely
-    iq_bible_ensure_books_session(); // Call function to load book data if needed
-    $books = $_SESSION['books'] ?? array();
+
+
+    $books_data = iq_bible_get_books_data(); // Call the helper
+    $books = $books_data['all'] ?? array(); // Get 'all' books, default to empty array
+
+
+
     $book_map = array();
     // Ensure $books is a non-empty array before proceeding
     if (is_array($books) && !empty($books)) {
@@ -794,8 +802,11 @@ function iq_bible_chapter_ajax_handler()
             $crosshair_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/crosshair.svg');
             $share_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/share.svg');
             $bookmark_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg');
-            // Ensure session language is escaped if used directly in JS onclick
-            $current_lang_esc = esc_js($language);
+
+
+
+
+
             // Ensure base URL is clean for data attribute
             $base_url_esc = esc_url($_SESSION['baseUrl']);
             // Build share URL components safely
@@ -804,6 +815,16 @@ function iq_bible_chapter_ajax_handler()
                 'chapterId' => $chapterId,
                 'versionId' => $versionId
             ], $base_url_esc) . '#verse-' . $verseId;
+
+
+
+            // --- Determine text direction for copy function based on versionId ---
+            $copy_text_direction = 'ltr'; // Default to Left-to-Right
+            $rtl_versions = ['svd']; // Add known RTL version abbreviations here (lowercase)
+            if (in_array(strtolower($versionId), $rtl_versions, true)) {
+                $copy_text_direction = 'rtl';
+            }
+            // --- End direction determination ---
 
 
             $response['chapterContent'] .= sprintf(
@@ -833,7 +854,7 @@ function iq_bible_chapter_ajax_handler()
                 intval($chapterNumber),                // %3$d - chapterNumber (integer)
                 esc_js($versionId),                    // %4$s - versionId (escaped for JS)
                 esc_js($siteName),                     // %5$s - siteName (escaped for JS)
-                $current_lang_esc,                     // %6$s - session language (already escaped)
+                esc_js($copy_text_direction),                     // %6$s - session language (already escaped)
                 $copy_icon_url,                        // %7$s - copy icon URL
                 esc_attr__('Copy Icon', 'iqbible'),    // %8$s - copy icon alt text
                 esc_html__('Copy', 'iqbible'),         // %9$s - copy button text
@@ -920,26 +941,80 @@ function iq_bible_chapter_count_ajax_handler()
 
 
 
-function iq_bible_ensure_books_session()
+
+
+
+
+
+
+
+
+
+/**
+ * Retrieves the current language preference.
+ * !!! TEMPORARY VERSION: Reads from $_SESSION['language'] for now. !!!
+ * This will be replaced later. It's needed now only to key the books transient.
+ *
+ * @return string The language code (e.g., 'english').
+ */
+function iq_bible_get_current_language()
 {
-    // Check if the books session is empty
-    if (empty($_SESSION['books'])) {
-        // Fetch Old Testament books
-        $booksOT = iq_bible_api_get_data('GetBooksOT', array(
-            'language' => $_SESSION['language'] ?? 'english'
-        ));
-
-        // Fetch New Testament books
-        $booksNT = iq_bible_api_get_data('GetBooksNT', array(
-            'language' => $_SESSION['language'] ?? 'english'
-        ));
-
-        // Merge and store in session
-        $_SESSION['booksOT'] = $booksOT;
-        $_SESSION['booksNT'] = $booksNT;
-        $_SESSION['books'] = array_merge($booksOT, $booksNT);
-    }
+    // Temporarily read from session - will be replaced later.
+    $language = isset($_SESSION['language']) ? sanitize_text_field($_SESSION['language']) : 'english';
+    return empty($language) ? 'english' : $language;
 }
+
+/**
+ * Gets Bible book data (OT, NT, All) for a specific language, using transients for caching.
+ * Replaces the logic previously in iq_bible_ensure_books_session.
+ *
+ * @param string|null $language The language code. If null, uses iq_bible_get_current_language().
+ * @return array An array containing 'ot', 'nt', and 'all' book lists, or empty arrays on failure.
+ */
+function iq_bible_get_books_data($language = null)
+{
+    if (empty($language)) {
+        // Use the temporary session-reading function to get the language
+        $language = iq_bible_get_current_language();
+    }
+    $transient_key = 'iqbible_books_' . sanitize_key($language);
+    $cached_books = get_transient($transient_key);
+
+    // Validate cached data structure
+    if (
+        false !== $cached_books && is_array($cached_books)
+        && isset($cached_books['ot']) && is_array($cached_books['ot'])
+        && isset($cached_books['nt']) && is_array($cached_books['nt'])
+        && isset($cached_books['all']) && is_array($cached_books['all'])
+    ) {
+        return $cached_books; // Return valid cached data
+    }
+
+    // Transient empty or invalid, fetch from API using the determined language
+    $booksOT = iq_bible_api_get_data('GetBooksOT', ['language' => $language]);
+    $booksNT = iq_bible_api_get_data('GetBooksNT', ['language' => $language]);
+
+    // Ensure results are arrays
+    $booksOT = is_array($booksOT) ? $booksOT : [];
+    $booksNT = is_array($booksNT) ? $booksNT : [];
+
+    $books_data = [
+        'ot'  => $booksOT,
+        'nt'  => $booksNT,
+        'all' => array_merge($booksOT, $booksNT),
+    ];
+
+    // Cache for 1 day (adjust as needed)
+    set_transient($transient_key, $books_data, DAY_IN_SECONDS);
+
+    return $books_data;
+}
+
+
+
+
+
+
 
 
 
@@ -953,20 +1028,10 @@ function iq_bible_books_ajax_handler()
     // ---> End Verify Nonce <---
 
 
-    if (empty($_SESSION['books'])) {
-        // Only make API calls if we don't have the data
-        $booksOT = iq_bible_api_get_data('GetBooksOT', array('language' => $_SESSION['language']));
-        $booksNT = iq_bible_api_get_data('GetBooksNT', array('language' => $_SESSION['language']));
 
-        // Store in session
-        $_SESSION['booksOT'] = $booksOT;
-        $_SESSION['booksNT'] = $booksNT;
-        $_SESSION['books'] = array_merge($booksOT, $booksNT);
-    }
-
-    // Use session data whether it was just set or already existed
-    $booksOT = $_SESSION['booksOT'];
-    $booksNT = $_SESSION['booksNT'];
+    $books_data = iq_bible_get_books_data(); // Call the helper
+    $booksOT = $books_data['ot']; // Get 'ot' books from the result
+    $booksNT = $books_data['nt']; // Get 'nt' books from the result
 
 
 
@@ -1509,24 +1574,77 @@ function iq_bible_get_saved_verses_ajax_handler()
 }
 add_action('wp_ajax_iq_bible_get_saved_verses', 'iq_bible_get_saved_verses_ajax_handler');
 
-// Helper function to get book name
+
+
+
+
+/**
+ * Helper function to get book name and chapter string (e.g., "Genesis 1").
+ * Checks transient cache first, then falls back to API.
+ *
+ * @param string $bookId The book ID (e.g., '01', '40').
+ * @param string $chapterId The chapter ID (e.g., '001', '10').
+ * @return string The formatted book name and chapter (e.g., "Genesis 1"),
+ *                or a fallback string like "Unknown Book 1".
+ */
 function iq_bible_get_book_name($bookId, $chapterId)
 {
-    // Try to get book name from session first
-    if (!empty($_SESSION['books'])) {
-        $bookKey = array_search($bookId, array_column($_SESSION['books'], 'b'));
-        if ($bookKey !== false) {
-            return $_SESSION['books'][$bookKey]['n'] . ' ' . intval($chapterId);
+    // Step 1: Try to get the book name from the transient cache first.
+    // The iq_bible_get_books_data() helper handles getting the language
+    // (temporarily via session) and checking the transient.
+    $books_data = iq_bible_get_books_data(); // Uses iq_bible_get_current_language() internally
+    $books = $books_data['all']; // Get the combined list ('ot' + 'nt')
+
+    // Ensure $books is a non-empty array before searching
+    if (is_array($books) && !empty($books)) {
+        // Use array_column safely to get just the book IDs ('b' column)
+        // Suppress errors just in case the 'b' key isn't in every element
+        $book_id_column = @array_column($books, 'b');
+
+        if (is_array($book_id_column)) {
+            // Search for the $bookId within the extracted column
+            $bookKey = array_search($bookId, $book_id_column);
+
+            // Check if found and if the original $books array has the 'n' (name) key at that index
+            if ($bookKey !== false && isset($books[$bookKey]['n'])) {
+                // Found in cache! Return the name and chapter number.
+                // Use intval() to remove leading zeros from chapter for display.
+                return $books[$bookKey]['n'] . ' ' . intval($chapterId);
+            }
         }
     }
 
-    // Fallback to API call if needed
-    $bookName = iq_bible_api_get_data('GetBookAndChapterNameByBookAndChapterId', array(
-        'bookAndChapterId' => $bookId . $chapterId,
-        'language' => $_SESSION['language'] ?? 'english'
+    // Step 2: Fallback to API call if not found in cache.
+    // Determine the language for the API call.
+    // !!! We still use the temporary function here which reads from session !!!
+    $api_language = iq_bible_get_current_language();
+
+    // Pad the chapter ID if required by the specific API endpoint 'GetBookAndChapterNameByBookAndChapterId'.
+    // Assuming it expects a 5-digit format (BBCCC - BookBookChapterChapterChapter)
+    $padded_chapterId = str_pad($chapterId, 3, '0', STR_PAD_LEFT);
+    $bookAndChapterId_param = $bookId . $padded_chapterId; // e.g., "01001"
+
+    // Make the API call
+    $bookNameData = iq_bible_api_get_data('GetBookAndChapterNameByBookAndChapterId', array(
+        'bookAndChapterId' => $bookAndChapterId_param,
+        'language' => $api_language // Use the determined language
     ));
-    return $bookName;
+
+    // Process the API response
+    // Adjust the checks below based on the *actual* structure returned by your API
+    if (is_array($bookNameData) && !empty($bookNameData) && isset($bookNameData[0]['name'])) {
+        // Example: Assuming API returns like [{ "name": "Genesis 1" }]
+        return $bookNameData[0]['name'];
+    } elseif (is_string($bookNameData) && !empty($bookNameData)) {
+        // Example: Assuming API returns the string directly "Genesis 1"
+        return $bookNameData;
+    }
+    // Add more conditions here if the API returns data differently
+
+    // Step 3: Ultimate fallback if API fails or returns unexpected data.
+    return __('Unknown Book', 'iqbible') . ' ' . intval($chapterId);
 }
+
 
 
 
@@ -1579,30 +1697,59 @@ add_action('wp_ajax_iq_bible_delete_saved_verse', 'iq_bible_delete_saved_verse_a
 
 
 
-function clear_books_session()
-{
 
-    // ---> Verify Nonce <---
-    check_ajax_referer('iqbible_ajax_nonce', 'security');
-    // ---> End Verify Nonce <---
+/**
+ * AJAX handler to update language preference and clear the related book cache transient.
+ * !!! TEMPORARY: Still interacts with $_SESSION['language'] !!!
+ */
+// function iq_bible_update_language_and_clear_cache() // <-- Renamed function
+// {
+//     check_ajax_referer('iqbible_ajax_nonce', 'security');
 
-    if (isset($_POST['language'])) {
-        $language = sanitize_text_field($_POST['language']);
-        // Handle the language as needed, e.g., store it in the session or perform other actions
-        $_SESSION['language'] = $language; // Example of saving it to session
-    }
+//     $message = __('Language updated and book cache cleared.', 'iqbible');
+//     $language_updated = false;
+//     $target_language = null; // Language for which cache needs clearing
 
-    // Clear the books session
-    unset($_SESSION['books']);
+//     if (isset($_POST['language'])) {
+//         $new_language = sanitize_text_field($_POST['language']);
+//         if (!empty($new_language)) {
+//             // --- TEMPORARY: Still set session language for now ---
+//             $_SESSION['language'] = $new_language;
+//             // --- End Temporary ---
+//             $target_language = $new_language; // Clear cache for the new language
+//             $language_updated = true;
+//         } else {
+//             $message = __('Invalid language provided.', 'iqbible');
+//             // Optionally clear cache for current language anyway? Or send error?
+//             // For now, just send message and don't clear cache.
+//             wp_send_json_error(['message' => $message]);
+//             return; // Exit early
+//         }
+//     } else {
+//         // If no language is posted, determine the current language to clear its cache
+//         $target_language = iq_bible_get_current_language(); // Gets current lang via session (temporary)
+//         $message = __('Books cache cleared for current language.', 'iqbible');
+//     }
 
-    // Return a success response
-    echo json_encode(['status' => 'success', 'message' => __('Books session cleared successfully', 'iqbible')]);
-    wp_die(); // Required to terminate the AJAX request properly
-}
+//     // Clear the transient for the target language
+//     if ($target_language) {
+//         $transient_key = 'iqbible_books_' . sanitize_key($target_language);
+//         delete_transient($transient_key);
+//     } else {
+//         // This case should ideally not happen based on logic above, but handle defensively
+//         $message = __('Could not determine language to clear cache.', 'iqbible');
+//         // Optionally log this state
+//     }
 
-// Hook the AJAX actions
-add_action('wp_ajax_clear_books_session', 'clear_books_session');
-add_action('wp_ajax_nopriv_clear_books_session', 'clear_books_session');
+
+//     wp_send_json_success(['message' => $message, 'language_updated' => $language_updated]);
+// }
+
+// // Hook the AJAX actions using the NEW action name
+// add_action('wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache');
+// add_action('wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache');
+
+// ---> Action: Ensure your JavaScript AJAX call uses the new action: 'iq_bible_update_language_and_clear_cache' <---
 
 
 
