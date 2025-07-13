@@ -28,17 +28,32 @@ function iq_bible_api_shortcode()
 
     // Set a few session vars
     // ---------------------------
-    $_SESSION['baseUrl'] = get_permalink();
-    $_SESSION['siteName'] = get_bloginfo('name'); // Get the site name
+    // $_SESSION['baseUrl'] = get_permalink();
+    set_transient( 'iqbible_baseUrl', get_permalink(), DAY_IN_SECONDS );
+
+    // $_SESSION['siteName'] = get_bloginfo('name'); // Get the site name
+    set_transient( 'iqbible_siteName', get_bloginfo('name'), DAY_IN_SECONDS );
+
 
     // Set default language to 'english' if not already set
     // This session logic might need replacing later with user meta/options
-    if (!isset($_SESSION['language'])) {
-        $_SESSION['language'] = 'english';
-    }
+    // if (!isset($_SESSION['language'])) {
+    //     $_SESSION['language'] = 'english';
+    // }
+    if ( ! get_transient( 'iqbible_language' ) ) {
+    set_transient( 'iqbible_language', 'english', DAY_IN_SECONDS );
+}
+
 
     // Fetch stories
-    $current_language = isset($_SESSION['language']) ? $_SESSION['language'] : 'english'; // Defensive check
+    // $current_language = isset($_SESSION['language']) ? $_SESSION['language'] : 'english'; // Defensive check
+
+    $current_language = get_transient( 'iqbible_language' );
+if ( ! $current_language ) {
+    $current_language = 'english';
+}
+
+
     $stories = iq_bible_api_get_data('GetStories', array('language' => $current_language));
 
     $stories_by_verse = array();
@@ -50,7 +65,9 @@ function iq_bible_api_shortcode()
             $stories_by_verse[$story['verse_id']] = $story['story'];
         }
     }
-    $_SESSION['stories_by_verse'] = $stories_by_verse; // Consider replacing session with Transients
+    // $_SESSION['stories_by_verse'] = $stories_by_verse;
+    set_transient( 'iqbible_stories_by_verse', $stories_by_verse, DAY_IN_SECONDS );
+
 ?>
 
     <div class="iqbible-main" id="iqbible-main">

@@ -9,7 +9,12 @@ if (!defined('ABSPATH')) {
 
 <div class="iqbible-topics-container">
     <?php
-    $current_language = $_SESSION['language'] ?? 'english'; 
+    // $current_language = $_SESSION['language'] ?? 'english'; 
+    $current_language = get_transient( 'iqbible_language' );
+if ( ! $current_language ) {
+    $current_language = 'english';
+}
+
     $topics = iq_bible_api_get_data('GetTopics'); 
 
     if (!empty($topics) && is_array($topics)) : 

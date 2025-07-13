@@ -175,13 +175,22 @@ function iq_bible_define_ajax_handler()
     }
 
     // Fetch the biblical definition using the API
-    $_SESSION['dictionaryId'] = 'smiths';
-    $_SESSION['dictionaryIdFullName'] = __('Smith\'s Bible Dictionary', 'iqbible');
-    $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => $_SESSION['dictionaryId']));
+    // $_SESSION['dictionaryId'] = 'smiths';
+    set_transient('iqbible_dictionaryId', 'smiths', DAY_IN_SECONDS);
+
+    // $_SESSION['dictionaryIdFullName'] = __('Smith\'s Bible Dictionary', 'iqbible');
+    set_transient('iqbible_dictionaryIdFullName', __('Smith\'s Bible Dictionary', 'iqbible'), DAY_IN_SECONDS);
+
+    // $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => $_SESSION['dictionaryId']));
+
+    $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => get_transient('iqbible_dictionaryId')));
+
 
     if (!empty($definition_biblical)) {
         // translators: %s: The name of the Bible dictionary (e.g., Smith's Bible Dictionary).
-        echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'), esc_html($_SESSION['dictionaryIdFullName'])) . '</i></small><br>';
+        // echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'), esc_html($_SESSION['dictionaryIdFullName'])) . '</i></small><br>';
+
+        echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'),     esc_html(get_transient('iqbible_dictionaryIdFullName'))) . '</i></small><br>';
 
         // Display the word being defined
         echo '<h3>' . esc_html($definition_biblical['word']) . '</h3>';
@@ -731,13 +740,14 @@ function iq_bible_chapter_ajax_handler()
     $verseIdPrefix = $paddedBookId . $paddedChapterId;
 
     // Get all saved verses for this chapter and user
-    $saved_verses = $_SESSION['saved_verses'] = $wpdb->get_col($wpdb->prepare(
+    $saved_verses = $wpdb->get_col($wpdb->prepare(
         "SELECT verse_id FROM $table_name 
         WHERE user_id = %d 
         AND verse_id LIKE %s",
         $user_id,
         $verseIdPrefix . '%'
     ));
+    set_transient('iqbible_saved_verses', $saved_verses, DAY_IN_SECONDS);
 
     // Fetch the Bible chapter data using the API
     $chapter = iq_bible_api_get_data('GetChapter', array(
@@ -749,7 +759,9 @@ function iq_bible_chapter_ajax_handler()
     // Fetch the book name by book ID
     $bookNameResponse = iq_bible_api_get_data('GetBookNameByBookId', array(
         'bookId' => $bookId,
-        'language' => $_SESSION['language']
+        // 'language' => $_SESSION['language']
+        'language' => get_transient('iqbible_language')
+
     ));
 
     // Extract the book name from the response
@@ -764,7 +776,13 @@ function iq_bible_chapter_ajax_handler()
     );
 
     // Fetch stories from session
-    $stories_by_verse = isset($_SESSION['stories_by_verse']) ? $_SESSION['stories_by_verse'] : array();
+    // $stories_by_verse = isset($_SESSION['stories_by_verse']) ? $_SESSION['stories_by_verse'] : array();
+
+    $stories_by_verse = get_transient('iqbible_stories_by_verse');
+    if (! $stories_by_verse) {
+        $stories_by_verse = array();
+    }
+
 
     // Format the chapter content
     if (!empty($chapter)) {
@@ -792,7 +810,9 @@ function iq_bible_chapter_ajax_handler()
 
             // Add verse options
             $chapterNumber = $paddedChapterId;
-            $siteName = $_SESSION['siteName'];
+            // $siteName = $_SESSION['siteName'];
+            $siteName = get_transient('iqbible_siteName');
+
 
 
             // Verse options section - Using sprintf for cleaner I18N
@@ -808,7 +828,9 @@ function iq_bible_chapter_ajax_handler()
 
 
             // Ensure base URL is clean for data attribute
-            $base_url_esc = esc_url($_SESSION['baseUrl']);
+            // $base_url_esc = esc_url($_SESSION['baseUrl']);
+            $base_url_esc = esc_url(get_transient('iqbible_baseUrl'));
+
             // Build share URL components safely
             $share_url = add_query_arg([
                 'bookId' => $bookId,
@@ -907,8 +929,11 @@ function iq_bible_chapter_count_ajax_handler()
 
 
     // Clear previous book data
-    unset($_SESSION['bookId']);
-    unset($_SESSION['chapterData']);
+    // unset($_SESSION['bookId']);
+    // unset($_SESSION['chapterData']);
+    delete_transient('iqbible_bookId');
+    delete_transient('iqbible_chapterData');
+
 
     // Get book ID from AJAX request
     $bookId = isset($_POST['bookId']) ? sanitize_text_field($_POST['bookId']) : '';
@@ -960,8 +985,15 @@ function iq_bible_chapter_count_ajax_handler()
 function iq_bible_get_current_language()
 {
     // Temporarily read from session - will be replaced later.
-    $language = isset($_SESSION['language']) ? sanitize_text_field($_SESSION['language']) : 'english';
-    return empty($language) ? 'english' : $language;
+    //     $language = isset($_SESSION['language']) ? sanitize_text_field($_SESSION['language']) : 'english';
+    //     return empty($language) ? 'english' : $language;
+    // }
+
+    $language = get_transient('iqbible_language');
+    if (!$language) {
+        $language = 'english'; // Default to 'english' if transient is not set
+    }
+    return $language;
 }
 
 /**
