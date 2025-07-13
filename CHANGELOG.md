@@ -15,6 +15,8 @@ The shortcode for this plugin is [IQBible].
 - Successfully converted all $_SESSION vars to transients!
 ### Removed
 - Lingering Session functions
+### Fixed
+- Issue with wrong language book names when switching version (langs)
 
 ## [1.0.0-alpha-9] - 2025-05-05
 ### Changed

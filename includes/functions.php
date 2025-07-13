@@ -1980,6 +1980,36 @@ function iq_bible_book_intro_ajax_handler()
 }
 
 
+/**
+ * AJAX handler to update the user's language and clear the relevant book cache.
+ */
+function iq_bible_update_language_and_clear_cache_handler() {
+    // ---> Verify Nonce <---
+    check_ajax_referer('iqbible_ajax_nonce', 'security');
+
+    if ( ! isset( $_POST['language'] ) ) {
+        wp_send_json_error( [ 'message' => __( 'Language not provided.', 'iqbible' ) ] );
+    }
+
+    $new_language = sanitize_text_field( $_POST['language'] );
+    $old_language = get_transient( 'iqbible_language' );
+
+    // If the language is changing and we have an old language set, clear the old cache.
+    if ( $new_language !== $old_language && ! empty( $old_language ) ) {
+        $old_transient_key = 'iqbible_books_' . sanitize_key( $old_language );
+        delete_transient( $old_transient_key );
+    }
+
+    // Set the new language transient.
+    set_transient( 'iqbible_language', $new_language, DAY_IN_SECONDS );
+
+    wp_send_json_success( [ 'message' => __( 'Language updated and cache cleared.', 'iqbible' ) ] );
+}
+add_action( 'wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler' );
+add_action( 'wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler' );
+
+
+
 // Register the AJAX action for logged-in and guest users
 add_action('wp_ajax_iq_bible_book_intro', 'iq_bible_book_intro_ajax_handler');
 add_action('wp_ajax_nopriv_iq_bible_book_intro', 'iq_bible_book_intro_ajax_handler');

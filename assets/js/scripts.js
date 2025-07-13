@@ -1460,23 +1460,18 @@ document.addEventListener('DOMContentLoaded', function () {
                   'data-version-language'
                 ).toLowerCase()
 
-                // Clear session var holding book names so we can
-                // refetch them in correct lang, then load chapter
-                // clearBooksSession(selectedLanguage).then(() => {
-                //   loadChapterContent(
-                //     currentBookId,
-                //     currentChapterId,
-                //     selectedVersionName,
-                //     null
-                //   )
-                // })
-
-                loadChapterContent(
-                  currentBookId,       
-                  currentChapterId,    
-                  versionId,           
-                  null                 
-              );
+                // Clear the old book cache and update the language,
+                // then load the new chapter content.
+                updateLanguageAndClearCache(selectedLanguage).then(() => {
+                  loadChapterContent(
+                    currentBookId,
+                    currentChapterId,
+                    selectedVersionName,
+                    null
+                  )
+                }).catch(error => {
+                    console.error("Failed to update language:", error);
+                });
 
 
 
@@ -1517,55 +1512,46 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 
+/**
+ * Updates the language preference and clears the old book cache via AJAX.
+ * @param {string} language The new language to set.
+ * @returns {Promise} A promise that resolves on success and rejects on failure.
+ */
+function updateLanguageAndClearCache (language) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', iqbible_ajax.ajaxurl, true)
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
 
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        try {
+          const response = JSON.parse(xhr.responseText)
+          if (response.success) {
+            resolve() // Resolve the Promise on success
+          } else {
+            reject(new Error(response.data.message || 'Unknown error')) // Reject on failure
+          }
+        } catch (e) {
+          reject(new Error('Invalid JSON response from server.'))
+        }
+      } else {
+        reject(new Error(`AJAX request failed with status: ${xhr.status}`)) // Reject on HTTP error
+      }
+    }
 
+    xhr.onerror = function () {
+      reject(new Error('Network error occurred.')) // Reject on network error
+    }
 
-
-
-
-// function clearBooksSession (language) {
-//   return new Promise((resolve, reject) => {
-//     const xhr = new XMLHttpRequest()
-//     xhr.open('POST', iqbible_ajax.ajaxurl, true)
-//     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-
-//     xhr.onload = function () {
-//       if (xhr.status === 200) {
-//         try {
-//           const response = JSON.parse(xhr.responseText)
-//           if (response.status === 'success') {
-//             console.log(response.message)
-//             resolve() // Resolve the Promise on success
-//           } else {
-//             const errorMsg =
-//               iqbible_ajax?.i18n?.errorSessionClear || 'Error clearing session:'
-//             console.error(errorMsg, response.message)
-//             reject(new Error(response.message)) // Reject on failure
-//           }
-//         } catch (e) {
-//           reject(new Error('Invalid JSON response'))
-//         }
-//       } else {
-//         const errorMsg =
-//           iqbible_ajax?.i18n?.errorAjaxStatus ||
-//           'AJAX request failed with status:'
-//         console.error(errorMsg, xhr.status)
-//         reject(new Error(`Status code: ${xhr.status}`)) // Reject on HTTP error
-//       }
-//     }
-
-//     xhr.onerror = function () {
-//       reject(new Error('Network error occurred')) // Reject on network error
-//     }
-
-//     xhr.send(
-//       'action=iq_bible_update_language_and_clear_cache&language=' +
-//         encodeURIComponent(language) +
-//         '&security=' +
-//         encodeURIComponent(iqbible_ajax.nonce)
-//     )
-//   })
-// }
+    xhr.send(
+      'action=iq_bible_update_language_and_clear_cache&language=' +
+        encodeURIComponent(language) +
+        '&security=' +
+        encodeURIComponent(iqbible_ajax.nonce)
+    )
+  })
+}
 
 
 
