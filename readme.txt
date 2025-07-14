@@ -14,7 +14,7 @@ Embed a comprehensive, interactive Bible study experience directly into your Wor
 
 == Description ==
 
-Embed a comprehensive, interactive Bible study experience directly into your WordPress site with the **IQBible Advanced Study Bible Plugin**. This open-source plugin leverages the powerful IQ Bible API](https://rapidapi.com/vibrantmiami/api/iq-bible) (requires a free or paid API key from RapidAPI) to fetch and display a wide range of Bible-related data dynamically.
+Embed a comprehensive, interactive Bible study experience directly into your WordPress site with the **IQBible Advanced Study Bible Plugin**. This open-source plugin leverages the powerful IQ Bible API (https://rapidapi.com/vibrantmiami/api/iq-bible) (requires a free or paid API key from RapidAPI) to fetch and display a wide range of Bible-related data dynamically.
 
 Offer your visitors the ability to:
 
