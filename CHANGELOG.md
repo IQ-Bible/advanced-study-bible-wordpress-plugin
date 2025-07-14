@@ -1,5 +1,5 @@
 # Changelog
-IQBible - Study Bible
+IQBible - Advanced Study Bible
 All notable changes to this project will be documented in this file.
 The shortcode for this plugin is [IQBible].
 
@@ -15,6 +15,11 @@ The shortcode for this plugin is [IQBible].
 - Lingering iqbible_start_session() in iqbible-api.php
 ### Fixed
 - Copy paste error in functions.php within the iq_bible_books_ajax_handler (OT assigned to both NT and OT)
+- iq_bible_chapter_ajax_handler and iq_bible_get_book_name make separate API calls just to get a book's name. The plugin already fetches and caches the entire list of books for the current language.
+- Fixed/removed duplicate 'IQBible' shortcode in iqbible-api.php
+### Changed
+- GetOriginalText now includes the joined glossary from the API update (q.v.), so we are now efficient and no longer have to loop through each word.
+- All text instances of 'Study Bible' to 'Advanced Study Bible'
 
 ## [1.0.0-alpha-11] - 2025-07-13
 ### Added
@@ -103,7 +108,7 @@ The shortcode for this plugin is [IQBible].
 
 ## [0.14.1-alpha] - 2024-11-09
 ### Fixed
-- Edit API Key button not working in admin > IQBible - Study Bible settings.
+- Edit API Key button not working in admin > IQBible - Advanced Study Bible settings.
 
 ## [0.14.0-alpha] - 2024-11-08
 ### Changed

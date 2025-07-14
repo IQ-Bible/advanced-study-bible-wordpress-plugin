@@ -156,9 +156,65 @@ function iq_bible_search_ajax_handler()
 
 // Definitions AJAX handler
 // -------------------------
+// function iq_bible_define_ajax_handler()
+// {
+
+//     // ---> Verify Nonce <---
+//     check_ajax_referer('iqbible_ajax_nonce', 'security');
+//     // ---> End Verify Nonce <---
+
+//     // Check if query is set and sanitize it
+//     $query = isset($_POST['iqbible-definition-query']) ? sanitize_text_field($_POST['iqbible-definition-query']) : '';
+
+//     // Convert the query to lowercase for case-insensitive search
+//     $query = strtolower($query);
+
+//     if (empty($query)) {
+//         esc_html_e('Please enter a biblical word to define.', 'iqbible');
+//         wp_die();
+//     }
+
+//     // Fetch the biblical definition using the API
+//     set_transient('iqbible_dictionaryId', 'smiths', DAY_IN_SECONDS);
+
+//     set_transient('iqbible_dictionaryIdFullName', __('Smith\'s Bible Dictionary', 'iqbible'), DAY_IN_SECONDS);
+
+//     $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => get_transient('iqbible_dictionaryId')));
+
+
+//     if (!empty($definition_biblical)) {
+//         echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'),     esc_html(get_transient('iqbible_dictionaryIdFullName'))) . '</i></small><br>';
+
+//         // Display the word being defined
+//         echo '<h3>' . esc_html($definition_biblical['word']) . '</h3>';
+
+//         // Handle the XML-like <see> tag and replace it with "See WORD"
+//         $definition_text = $definition_biblical['definition'];
+
+//         // Use preg_replace_callback to find <see> tags and replace them
+//         $definition_text = preg_replace_callback(
+//             '/<see target="x-self">(.*?)<\/see>/i',
+//             function ($matches) {
+//                 // Return the formatted text w/o the XML
+//                 return esc_html($matches[1]);
+//             },
+//             $definition_text
+//         );
+
+//         // Output the cleaned-up definition text
+//         echo esc_html($definition_text) . '<br>';
+//     } else {
+//         // translators: %s: The word the user tried to define.
+//         echo sprintf(esc_html__('No biblical definition found for %s.', 'iqbible'), esc_html($query));
+//     }
+
+//     wp_die();
+// }
+
+// Definitions AJAX handler
+// -------------------------
 function iq_bible_define_ajax_handler()
 {
-
     // ---> Verify Nonce <---
     check_ajax_referer('iqbible_ajax_nonce', 'security');
     // ---> End Verify Nonce <---
@@ -174,16 +230,18 @@ function iq_bible_define_ajax_handler()
         wp_die();
     }
 
+    // Use local variables instead of transients for dictionary info
+    $dictionaryId = 'smiths';
+    $dictionaryFullName = __('Smith\'s Bible Dictionary', 'iqbible');
+
     // Fetch the biblical definition using the API
-    set_transient('iqbible_dictionaryId', 'smiths', DAY_IN_SECONDS);
-
-    set_transient('iqbible_dictionaryIdFullName', __('Smith\'s Bible Dictionary', 'iqbible'), DAY_IN_SECONDS);
-
-    $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => get_transient('iqbible_dictionaryId')));
-
+    $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array(
+        'query' => $query,
+        'dictionaryId' => $dictionaryId
+    ));
 
     if (!empty($definition_biblical)) {
-        echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'),     esc_html(get_transient('iqbible_dictionaryIdFullName'))) . '</i></small><br>';
+        echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'), esc_html($dictionaryFullName)) . '</i></small><br>';
 
         // Display the word being defined
         echo '<h3>' . esc_html($definition_biblical['word']) . '</h3>';
@@ -210,6 +268,7 @@ function iq_bible_define_ajax_handler()
 
     wp_die();
 }
+
 
 // Strong's Concordance AJAX handler
 // ----------------------------------
@@ -317,15 +376,14 @@ function iq_bible_get_cross_references_handler()
 
 
 // Original Text AJAX handler
-// ----------------------------
-function iq_bible_get_original_text_ajax_handler()
-{
+// -------------------------------------
+function iq_bible_get_original_text_ajax_handler() {
 
     // ---> Verify Nonce <---
     check_ajax_referer('iqbible_ajax_nonce', 'security');
     // ---> End Verify Nonce <---
 
-    // Check if verseId is set and sanitize it
+    // Sanitize verseId
     $verseId = isset($_POST['verseId']) ? sanitize_text_field($_POST['verseId']) : '';
 
     if (empty($verseId)) {
@@ -333,14 +391,19 @@ function iq_bible_get_original_text_ajax_handler()
         wp_die();
     }
 
-    // Fetch the original text using the API
+    // Get joined Original Text + Glossary
     $originalTexts = iq_bible_api_get_data('GetOriginalText', array('verseId' => $verseId));
 
-    // Determine if it's Hebrew (Old Testament) or Greek (New Testament)
-    $isHebrew = $originalTexts[0]['book'] <= 39;
+    if (empty($originalTexts) || !isset($originalTexts[0]['book'])) {
+        esc_html_e('No original text found for the specified verse ID.', 'iqbible');
+        wp_die();
+    }
+
+    // Determine OT or NT
+    $isHebrew = intval($originalTexts[0]['book']) <= 39;
     $lexicon = $isHebrew ? "H" : "G";
 
-    // Display language header
+    // Header
     if ($isHebrew) {
         esc_html_e('Hebrew', 'iqbible');
         echo '<br><small><i>' . esc_html__('Original Hebrew is read from right to left &larr;', 'iqbible') . '</i></small>';
@@ -348,65 +411,50 @@ function iq_bible_get_original_text_ajax_handler()
         esc_html_e('Greek', 'iqbible');
     }
 
-    // Display original text with numbers
-    $ct = 0;
+    // Word line
     echo "<h3 " . ($isHebrew ? 'style="direction: rtl; text-align: right;"' : '') . ">";
 
-    if (!empty($originalTexts)) {
-        foreach ($originalTexts as $originalTextWord) {
-            $ct++;
-            if ($isHebrew) {
-                // For Hebrew: place number to the right of the word (will appear on the right when rendered RTL)
-                echo "<span class='hebrew-word-container' style='display: inline-block; margin: 0 2px;'>" .
-                    "<sup>#$ct</sup>" . $originalTextWord['word'] .
-                    "</span> ";
-            } else {
-                // For Greek: keep original LTR format
-                echo "<sup>#$ct</sup> " . $originalTextWord['word'] . " ";
-            }
+    $ct = 0;
+    foreach ($originalTexts as $word) {
+        $ct++;
+        if ($isHebrew) {
+            echo "<span class='hebrew-word-container' style='display: inline-block; margin: 0 2px;'>" .
+                "<sup>#$ct</sup>" . esc_html($word['word']) .
+                "</span> ";
+        } else {
+            echo "<sup>#$ct</sup> " . esc_html($word['word']) . " ";
         }
-        echo "</h3>";
-        echo "<hr>";
+    }
+    echo "</h3><hr>";
 
-        // Rest of the display code remains the same
-        $ct = 0;
-        foreach ($originalTexts as $originalText) {
-            $ct++;
-            $strongs = iq_bible_api_get_data('GetStrongs', array(
-                'lexiconId' => $lexicon,
-                'id' => $originalText['strongs']
-            ));
-            $glossary = $strongs[0]['glossary'];
+    // Word details with joined glossary
+    $ct = 0;
+    foreach ($originalTexts as $word) {
+        $ct++;
+        $pronunciation = json_decode($word['pronun'], true);
+        $glossary = $word['glossary'];
 
-            $pronunciation = json_decode($originalText['pronun'], true);
-            echo '<div style="margin-bottom: 15px; ' . ($isHebrew ? 'direction: rtl; text-align: right;' : '') . '">';
+        echo '<div style="margin-bottom: 15px; ' . ($isHebrew ? 'direction: rtl; text-align: right;' : '') . '">';
 
-            if ($isHebrew) {
-                // All details in LTR, only the Hebrew word itself is RTL
-                // translators: %d: The sequential number for a word in the original text view.
-                echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . ' </strong>';
-                // Just the Hebrew word is RTL
-                echo '<span style="direction: rtl; display: inline-block;">' . esc_html($originalText['word']) . '</span><br>';
-                echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-                echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . $lexicon . esc_html($originalText['strongs']) . '<br>';
-                echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . esc_html($glossary) . '<br>';
-                echo '</div>';
-            } else {
-                // Greek word details (all LTR)
-                echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ' . esc_html($originalText['word']) . '<br>';
-                echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-                echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($originalText['strongs']) . '<br>';
-                echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . $glossary . '<br>';
-            }
-
-            echo '</div>';
+        if ($isHebrew) {
+            echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ';
+            echo '<span style="direction: rtl; display: inline-block;">' . esc_html($word['word']) . '</span><br>';
+            echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
+        } else {
+            echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ' . esc_html($word['word']) . '<br>';
+            echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
         }
-    } else {
-        esc_html_e('No original text found for the specified verse ID.', 'iqbible');
+
+        echo '</div>';
     }
 
     wp_die();
 }
+
 
 
 
@@ -740,8 +788,7 @@ function iq_bible_chapter_ajax_handler()
         $user_id,
         $verseIdPrefix . '%'
     ));
-    set_transient('iqbible_saved_verses', $saved_verses, DAY_IN_SECONDS);
-
+ 
     // Fetch the Bible chapter data using the API
     $chapter = iq_bible_api_get_data('GetChapter', array(
         'bookId' => $bookId,
@@ -749,15 +796,7 @@ function iq_bible_chapter_ajax_handler()
         'versionId' => $versionId
     ));
 
-    // Fetch the book name by book ID
-    $bookNameResponse = iq_bible_api_get_data('GetBookNameByBookId', array(
-        'bookId' => $bookId,
-        'language' => get_transient('iqbible_language')
-
-    ));
-
-    // Extract the book name from the response
-    $bookName = isset($bookNameResponse[0]['n']) ? $bookNameResponse[0]['n'] : __('Unknown Book', 'iqbible');
+    $bookName = iq_bible_get_book_name($bookId, $chapterId);
 
     // Prepare the response
     $response = array(
@@ -801,8 +840,6 @@ function iq_bible_chapter_ajax_handler()
             // Add verse options
             $chapterNumber = $paddedChapterId;
             $siteName = get_transient('iqbible_siteName');
-
-
 
             // Verse options section - Using sprintf for cleaner I18N
             $copy_icon_url = esc_url(plugin_dir_url(__DIR__) . 'assets/img/clipboard.svg');
@@ -1612,7 +1649,7 @@ function iq_bible_get_book_name($bookId, $chapterId)
             if ($bookKey !== false && isset($books[$bookKey]['n'])) {
                 // Found in cache! Return the name and chapter number.
                 // Use intval() to remove leading zeros from chapter for display.
-                return $books[$bookKey]['n'] . ' ' . intval($chapterId);
+                return $books[$bookKey]['n'];
             }
         }
     }

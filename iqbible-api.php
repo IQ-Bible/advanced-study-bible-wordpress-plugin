@@ -102,12 +102,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 /* Shortcode */
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
-
 // I18N
 add_action('plugins_loaded', 'iqbible_load_textdomain');
-
-// Shortcode
-add_shortcode('IQBible', 'iq_bible_api_shortcode');
 
 /* Frontend Styles and Scripts */
 add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
