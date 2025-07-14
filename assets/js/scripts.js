@@ -896,28 +896,64 @@ function showCrossReferences (verseId) {
 
 // Original Text
 // ----------------
-function showOriginalText (verseId) {
-  var xhr = new XMLHttpRequest()
-  xhr.open('POST', iqbible_ajax.ajaxurl, true)
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+// function showOriginalText (verseId) {
+//   var xhr = new XMLHttpRequest()
+//   xhr.open('POST', iqbible_ajax.ajaxurl, true)
+//   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+//   xhr.onload = function () {
+//     if (xhr.status === 200) {
+//       document.getElementById('original-text').innerHTML = xhr.responseText // Use innerHTML
+//       document.getElementById('original-text-dialog').showModal() // Show the modal
+//     } else {
+//       showMessageDialog(
+//         iqbible_ajax.i18n.errorFetchOriginalText + ' ' + xhr.status,
+//         'error'
+//       )
+//     }
+//   }
+//   xhr.send(
+//     'action=iq_bible_get_original_text&verseId=' +
+//       encodeURIComponent(verseId) +
+//       '&security=' +
+//       encodeURIComponent(iqbible_ajax.nonce)
+//   )
+// }
+
+function showOriginalText(verseId) {
+  // Get the verse text from the page directly
+  var verseElement = document.querySelector('#verse-' + verseId + ' .copyable-text');
+  var verseText = verseElement ? verseElement.innerHTML : '[Verse text not found]';
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', iqbible_ajax.ajaxurl, true);
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
   xhr.onload = function () {
     if (xhr.status === 200) {
-      document.getElementById('original-text').innerHTML = xhr.responseText // Use innerHTML
-      document.getElementById('original-text-dialog').showModal() // Show the modal
+      // The response is expected to be raw HTML (or could be JSON if you want)
+      var originalTextHtml = xhr.responseText;
+
+      // Combine the copied verse text and the original text from the server
+      var combinedHtml = '<h3>' + verseText + '</h3>' + originalTextHtml;
+
+      document.getElementById('original-text').innerHTML = combinedHtml;
+      document.getElementById('original-text-dialog').showModal();
     } else {
       showMessageDialog(
         iqbible_ajax.i18n.errorFetchOriginalText + ' ' + xhr.status,
         'error'
-      )
+      );
     }
-  }
+  };
+
   xhr.send(
     'action=iq_bible_get_original_text&verseId=' +
       encodeURIComponent(verseId) +
       '&security=' +
       encodeURIComponent(iqbible_ajax.nonce)
-  )
+  );
 }
+
 
 // Copy verse
 // ------------------

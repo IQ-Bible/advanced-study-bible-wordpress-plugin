@@ -412,7 +412,7 @@ function iq_bible_get_original_text_ajax_handler() {
     }
 
     // Word line
-    echo "<h3 " . ($isHebrew ? 'style="direction: rtl; text-align: right;"' : '') . ">";
+    echo "<h3 " . ($isHebrew ? 'style="direction: rtl; text-align: left;"' : '') . ">";
 
     $ct = 0;
     foreach ($originalTexts as $word) {
@@ -434,22 +434,28 @@ function iq_bible_get_original_text_ajax_handler() {
         $pronunciation = json_decode($word['pronun'], true);
         $glossary = $word['glossary'];
 
-        echo '<div style="margin-bottom: 15px; ' . ($isHebrew ? 'direction: rtl; text-align: right;' : '') . '">';
+echo '<div style="margin-bottom: 15px;">';
 
-        if ($isHebrew) {
-            echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ';
-            echo '<span style="direction: rtl; display: inline-block;">' . esc_html($word['word']) . '</span><br>';
-            echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-            echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
-            echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
-        } else {
-            echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ' . esc_html($word['word']) . '<br>';
-            echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-            echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
-            echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
-        }
+if ($isHebrew) {
+    echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ';
+    esc_html($word['word']);
+    echo '<br>';
 
-        echo '</div>';
+    // Other info forced LTR
+    echo '<div style="direction: ltr; text-align: left;">';
+    echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+    echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
+    echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
+    echo '</div>';
+} else {
+    echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ' . esc_html($word['word']) . '<br>';
+    echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+    echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
+    echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
+}
+
+echo '</div>';
+
     }
 
     wp_die();

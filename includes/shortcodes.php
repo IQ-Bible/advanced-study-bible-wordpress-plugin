@@ -250,7 +250,6 @@ if ( ! $current_language ) {
     <div class="iqbible-dialog-content">
         <span class="iqbible-dialog-close" onclick="document.getElementById('original-text-dialog').close()">×</span>
         <h2><?php esc_html_e('Original Text', 'iqbible'); // Translate heading ?></h2>
-         <!-- John 3:16 is example text, likely replaced by JS -->
         <div id="original-text"></div>
     </div>
 </dialog>

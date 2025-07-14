@@ -21,6 +21,7 @@ The shortcode for this plugin is [iqbible_advanced].
 - GetOriginalText now includes the joined glossary from the API update (q.v.), so we are now efficient and no longer have to loop through each word.
 - All text instances of 'Study Bible' to 'Advanced Study Bible'
 - All instances of shortcode ['IQBible'] to ['iqbible_advanced']
+- Hebrew chars remain RTL but line itself left-aligned
 
 ## [1.0.0-alpha-11] - 2025-07-13
 ### Added
