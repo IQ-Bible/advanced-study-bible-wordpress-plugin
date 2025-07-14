@@ -31,7 +31,7 @@ function iq_bible_api_settings_page()
                 esc_html__('IQBible API version %s', 'iqbible'),
                 esc_html($info['version'])
             ),
-            esc_html__('Use the shortcode [IQBible] to display on any page.', 'iqbible')
+            esc_html__('Use the shortcode [iqbible_advanced] to display on any page.', 'iqbible')
         );
     } else {
         $api_status_string = sprintf(

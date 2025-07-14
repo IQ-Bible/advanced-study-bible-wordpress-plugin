@@ -1,7 +1,7 @@
 # Changelog
 IQBible - Advanced Study Bible
 All notable changes to this project will be documented in this file.
-The shortcode for this plugin is [IQBible].
+The shortcode for this plugin is [iqbible_advanced].
 
 ## Unreleased
 - Dictionary
@@ -20,6 +20,7 @@ The shortcode for this plugin is [IQBible].
 ### Changed
 - GetOriginalText now includes the joined glossary from the API update (q.v.), so we are now efficient and no longer have to loop through each word.
 - All text instances of 'Study Bible' to 'Advanced Study Bible'
+- All instances of shortcode ['IQBible'] to ['iqbible_advanced']
 
 ## [1.0.0-alpha-11] - 2025-07-13
 ### Added

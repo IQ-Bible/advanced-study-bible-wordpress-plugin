@@ -27,7 +27,7 @@ msgstr ""
 
 #. Description of the plugin
 #: iqbible-api.php
-msgid "A WordPress plugin to display an Advanced Study Bible and other features via the IQBible API. Use the shortcode [IQBible] to display on any page. For settings, go to Settings > IQBible."
+msgid "A WordPress plugin to display an Advanced Study Bible and other features via the IQBible API. Use the shortcode [iqbible_advanced] to display on any page. For settings, go to Settings > IQBible."
 msgstr ""
 
 #. Author of the plugin
@@ -46,7 +46,7 @@ msgid "IQBible API version %s"
 msgstr ""
 
 #: includes/admin-settings.php:34
-msgid "Use the shortcode [IQBible] to display on any page."
+msgid "Use the shortcode [iqbible_advanced] to display on any page."
 msgstr ""
 
 #: includes/admin-settings.php:40

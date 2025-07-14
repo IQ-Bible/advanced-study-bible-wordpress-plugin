@@ -34,7 +34,7 @@ The plugin interface is fully translatable and uses AJAX for a smooth user exper
 
 **Requires an API Key:** This plugin requires an API key from the third-party IQ Bible API service hosted on RapidAPI. Subscription plans (including a free tier) are managed on RapidAPI.
 
-**Main Usage:** Place the shortcode `[IQBible]` on any page or post to display the full advanced study bible interface.
+**Main Usage:** Place the shortcode `[iqbible_advanced]` on any page or post to display the full advanced study bible interface.
 
 == Installation ==
 
@@ -76,7 +76,7 @@ You can get an API key by subscribing to the [IQ Bible API on RapidAPI](https://
 
 = How do I display the Bible interface? =
 
-Simply place the shortcode `[IQBible]` onto any WordPress page or post where you want the advanced study bible to appear.
+Simply place the shortcode `[iqbible_advanced]` onto any WordPress page or post where you want the advanced study bible to appear.
 
 = Does this work with any theme? =
 
