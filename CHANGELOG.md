@@ -14,7 +14,7 @@ The shortcode for this plugin is [IQBible].
 ### Removed
 - Lingering iqbible_start_session() in iqbible-api.php
 ### Fixed
-- Copy paste error in functions.php within the q_bible_books_ajax_handler (OT assigned to both NT and OT)
+- Copy paste error in functions.php within the iq_bible_books_ajax_handler (OT assigned to both NT and OT)
 
 ## [1.0.0-alpha-11] - 2025-07-13
 ### Added
