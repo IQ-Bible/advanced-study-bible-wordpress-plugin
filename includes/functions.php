@@ -377,7 +377,8 @@ function iq_bible_get_cross_references_handler()
 
 // Original Text AJAX handler
 // -------------------------------------
-function iq_bible_get_original_text_ajax_handler() {
+function iq_bible_get_original_text_ajax_handler()
+{
 
     // ---> Verify Nonce <---
     check_ajax_referer('iqbible_ajax_nonce', 'security');
@@ -434,28 +435,27 @@ function iq_bible_get_original_text_ajax_handler() {
         $pronunciation = json_decode($word['pronun'], true);
         $glossary = $word['glossary'];
 
-echo '<div style="margin-bottom: 15px;">';
+        echo '<div style="margin-bottom: 15px;">';
 
-if ($isHebrew) {
-    echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ';
-    esc_html($word['word']);
-    echo '<br>';
+        if ($isHebrew) {
+            echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ';
+            esc_html($word['word']);
+            echo '<br>';
 
-    // Other info forced LTR
-    echo '<div style="direction: ltr; text-align: left;">';
-    echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-    echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
-    echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
-    echo '</div>';
-} else {
-    echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ' . esc_html($word['word']) . '<br>';
-    echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
-    echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
-    echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
-}
+            // Other info forced LTR
+            echo '<div style="direction: ltr; text-align: left;">';
+            echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
+            echo '</div>';
+        } else {
+            echo '<strong>' . sprintf(esc_html__('#%d:', 'iqbible'), $ct) . '</strong> ' . esc_html($word['word']) . '<br>';
+            echo '<strong>' . esc_html__('Pronunciation:', 'iqbible') . '</strong> ' . esc_html($pronunciation['dic_mod']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s ID:', 'iqbible') . '</strong> ' . $lexicon . esc_html($word['strongs']) . '<br>';
+            echo '<strong>' . esc_html__('Strong\'s Glossary:', 'iqbible') . '</strong> ' . nl2br(esc_html($glossary)) . '<br>';
+        }
 
-echo '</div>';
-
+        echo '</div>';
     }
 
     wp_die();
@@ -637,10 +637,11 @@ function iq_bible_plans_ajax_handler()
                 // Use book map safely with null coalescing operator ??
                 $bookName  = $book_map[$bookId] ?? __('Unknown Book', 'iqbible');
 
+                
                 $readings_html[] = sprintf(
-                    '<label class="chapter-checkbox-label" style="margin-right: 10px;">
-                        <input type="checkbox" class="chapter-checkbox" data-reading-ref="%s">
-                        <a href="#" class="reading-plan-link" data-book-id="%s" data-chapter-id="%s">%s %s</a>
+                    '<label class="chapter-checkbox-label" style="display: inline-flex; align-items: center; gap: 5px; margin-right: 10px; white-space: nowrap;">
+                    <input type="checkbox" class="chapter-checkbox" data-reading-ref="%s">
+                    <a href="#" class="reading-plan-link" data-book-id="%s" data-chapter-id="%s">%s %s</a>
                     </label>',
                     esc_attr($bookId . '-' . $chapterId),
                     esc_attr($bookId),
@@ -648,6 +649,7 @@ function iq_bible_plans_ajax_handler()
                     esc_html($bookName),
                     esc_html($chapterId)
                 );
+
             } // End foreach $id
 
             // Only implode if there's something to implode
@@ -794,7 +796,7 @@ function iq_bible_chapter_ajax_handler()
         $user_id,
         $verseIdPrefix . '%'
     ));
- 
+
     // Fetch the Bible chapter data using the API
     $chapter = iq_bible_api_get_data('GetChapter', array(
         'bookId' => $bookId,
@@ -2026,30 +2028,31 @@ function iq_bible_book_intro_ajax_handler()
 /**
  * AJAX handler to update the user's language and clear the relevant book cache.
  */
-function iq_bible_update_language_and_clear_cache_handler() {
+function iq_bible_update_language_and_clear_cache_handler()
+{
     // ---> Verify Nonce <---
     check_ajax_referer('iqbible_ajax_nonce', 'security');
 
-    if ( ! isset( $_POST['language'] ) ) {
-        wp_send_json_error( [ 'message' => __( 'Language not provided.', 'iqbible' ) ] );
+    if (! isset($_POST['language'])) {
+        wp_send_json_error(['message' => __('Language not provided.', 'iqbible')]);
     }
 
-    $new_language = sanitize_text_field( $_POST['language'] );
-    $old_language = get_transient( 'iqbible_language' );
+    $new_language = sanitize_text_field($_POST['language']);
+    $old_language = get_transient('iqbible_language');
 
     // If the language is changing and we have an old language set, clear the old cache.
-    if ( $new_language !== $old_language && ! empty( $old_language ) ) {
-        $old_transient_key = 'iqbible_books_' . sanitize_key( $old_language );
-        delete_transient( $old_transient_key );
+    if ($new_language !== $old_language && ! empty($old_language)) {
+        $old_transient_key = 'iqbible_books_' . sanitize_key($old_language);
+        delete_transient($old_transient_key);
     }
 
     // Set the new language transient.
-    set_transient( 'iqbible_language', $new_language, DAY_IN_SECONDS );
+    set_transient('iqbible_language', $new_language, DAY_IN_SECONDS);
 
-    wp_send_json_success( [ 'message' => __( 'Language updated and cache cleared.', 'iqbible' ) ] );
+    wp_send_json_success(['message' => __('Language updated and cache cleared.', 'iqbible')]);
 }
-add_action( 'wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler' );
-add_action( 'wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler' );
+add_action('wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');
+add_action('wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');
 
 
 

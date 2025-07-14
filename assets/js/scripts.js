@@ -2298,3 +2298,22 @@ function shareVerse (verseId) {
       })
   }
 }
+
+
+/* Close dialog when clicking outside content area */
+  document.addEventListener('DOMContentLoaded', function () {
+  const dialogs = document.querySelectorAll('dialog.iqbible-dialog');
+
+  dialogs.forEach(function (dialog) {
+    dialog.addEventListener('click', function (event) {
+      // If click target is not inside the dialog content, close dialog
+      const content = dialog.querySelector('.iqbible-dialog-content');
+
+      if (!content.contains(event.target)) {
+        dialog.close();
+      }
+    });
+  });
+});
+
+

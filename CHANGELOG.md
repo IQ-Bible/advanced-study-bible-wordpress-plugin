@@ -4,11 +4,8 @@ All notable changes to this project will be documented in this file.
 The shortcode for this plugin is [iqbible_advanced].
 
 ## Unreleased
-- Dictionary
 - Parables
 - Prophecies
-- Extra-biblical
-- Save Bible Reading Plan
 
 ## [1.0.0-alpha-12] - 2025-07-14
 ### Removed
@@ -22,6 +19,8 @@ The shortcode for this plugin is [iqbible_advanced].
 - All text instances of 'Study Bible' to 'Advanced Study Bible'
 - All instances of shortcode ['IQBible'] to ['iqbible_advanced']
 - Hebrew chars remain RTL but line itself left-aligned
+### Added
+- Close dialog when clicking outside content area
 
 ## [1.0.0-alpha-11] - 2025-07-13
 ### Added
