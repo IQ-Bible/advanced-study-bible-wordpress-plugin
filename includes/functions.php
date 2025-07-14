@@ -1057,7 +1057,7 @@ function iq_bible_books_ajax_handler()
         echo '<h3>' . esc_html__('New Testament', 'iqbible') . '</h3>';
         echo '<ul>';
         foreach ($booksNT as $bookNT) {
-            echo '<li class="book-item" data-book-id="' . esc_attr($bookNT['b']) . '" data-book-category="OT">' . esc_html($bookNT['n']) . '</li>';
+            echo '<li class="book-item" data-book-id="' . esc_attr($bookNT['b']) . '" data-book-category="NT">' . esc_html($bookNT['n']) . '</li>';
         }
         echo '</ul>';
     }

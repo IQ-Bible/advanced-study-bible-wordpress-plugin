@@ -40,12 +40,12 @@ function iqbible_load_textdomain()
 }
 
 // Start the session
-function iqbible_start_session()
-{
-    if (!session_id()) {
-        session_start();
-    }
-}
+// function iqbible_start_session()
+// {
+//     if (!session_id()) {
+//         session_start();
+//     }
+// }
 
 // Create notes table on plugin activation
 function iqbible_create_notes_table()
@@ -106,8 +106,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 
 
 /* Registries
-/* Session */
-add_action('init', 'iqbible_start_session', 1);
+
+// add_action('init', 'iqbible_start_session', 1);
 
 /* Shortcode */
 add_shortcode('IQBible', 'iq_bible_api_shortcode');
