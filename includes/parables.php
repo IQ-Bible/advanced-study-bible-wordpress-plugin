@@ -24,10 +24,10 @@ $parables         = iq_bible_api_get_data( 'GetParables', array( 'language' => $
 
                     <p><strong><?php echo esc_html( $parable_name ); ?></strong></p>
                     <?php if ( ! empty( $verses ) && is_array( $verses ) ) : ?>
-                        <ul class="verse-list">
+                        <ul class="iqbible-verse-list">
                             <?php foreach ( $verses as $verse_citation ) : ?>
 
-                                <li class="verse-item"><?php echo esc_html( $verse_citation ); ?></li>
+                                <li class="iqbible-verse-item"><?php echo esc_html( $verse_citation ); ?></li>
                             <?php endforeach; ?>
                         </ul>
                     <?php endif; ?>

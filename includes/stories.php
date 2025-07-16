@@ -30,7 +30,7 @@ if (!defined('ABSPATH')) {
                 $chapterId = intval(substr($verseId, 2, 3)); // Convert chapter to integer
 
                 // Prepare data attributes for JavaScript to use
-                echo '<p><sup>' . $ct . ' </sup><a href="javascript:void(0);" class="story-link" data-book-id="' . esc_attr($bookId) . '" data-chapter-id="' . esc_attr($chapterId) . '" data-verse-id="' . esc_attr($verseId) . '">' . esc_html($story['story']) . '</a><br>';
+                echo '<p><sup>' . $ct . ' </sup><a href="javascript:void(0);" class="iqbible-story-link" iqbible-data-book-id="' . esc_attr($bookId) . '" iqbible-data-chapter-id="' . esc_attr($chapterId) . '" iqbible-data-verse-id="' . esc_attr($verseId) . '">' . esc_html($story['story']) . '</a><br>';
 
                 // Output verses in parentheses and smaller font
                 echo '<span class="story-verses">(' . esc_html($story['verses_1']) . ')</span></p>'; // Added parentheses for clarity

@@ -77,7 +77,7 @@
 }
 
 /* Explicitly specify font to descendants of .iqbible-main to avoid font conflicts with themes */
-.iqbible-main #fetch-books-header,
+.iqbible-main #iqbible-fetch-books-header,
 .iqbible-main .iqbible-tab-text,
 .iqbible-main .iqbible-tab-content-container,
 .iqbible-main form,
@@ -92,10 +92,17 @@
 }
 
 /* Saved verse icon */
-.saved-icon {
-    opacity: .5;
-    width: 15px;
+.iqbible-saved-icon {
+  display: inline-block;          
+  vertical-align: middle;         
+  color: currentColor;            
+  opacity: 0.7;                   
+  width: 1em;                     
+  height: auto;                   
+  margin-left: 4px;               
+  filter: brightness(1.5);        
 }
+
 
 
 
@@ -131,25 +138,58 @@
     padding-bottom: 10px;
 }
 
-.iqbible-tab-button {
-    background-color: var(--tab-button-background-color);
-    color: var(--tab-button-color);
-    font-size: 12px;
-    border: none;
-    padding: 5px;
-    cursor: pointer;
-    text-align: center;
-    border-radius: 4px;
-    transition: background-color 0.3s, color 0.3s;
+
+/* Base button styles shared by tab buttons and option buttons */
+.iqbible-tab-button,
+.iqbible-option-button {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+
+  background-color: var(--tab-button-background-color, #6c757d);
+  color: var(--tab-button-color, #fff);
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.iqbible-tab-button.active {
-    background-color: var(--tab-active-background-color);
-    color: var(--tab-button-color);
+/* Margin for vertical spacing on option buttons */
+.iqbible-option-button {
+  margin: 2px 0;
 }
 
-.iqbible-tab-button:hover {
-    background-color: var(--tab-button-hover-background-color);
+/* Hover effect for both */
+.iqbible-tab-button:hover,
+.iqbible-option-button:hover {
+  background-color: var(--tab-active-background-color, #495057);
+  color: var(--tab-button-color, #fff);
+}
+
+/* Icon container inside tab buttons */
+.iqbible-tab-button .iqbible-tab-icon img,
+.iqbible-option-button img {
+  filter: invert(100%);
+  display: block;
+  width: 1em;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* Ensure the text inside tabs stays visible and no filter or opacity affects it */
+.iqbible-tab-button .iqbible-tab-text {
+  /* Explicitly set color so hover doesn't hide text */
+  color: inherit;
+}
+
+/* Remove any hover text hiding or opacity changes */
+.iqbible-tab-button:hover .iqbible-tab-text {
+  color: inherit;
 }
 
 
@@ -219,37 +259,23 @@
     width: auto;
 }
 
-#fetch-books-header {
+#iqbible-fetch-books-header {
     display: inline-flex;
     align-items: center;
     gap: 8px;
 }
 
-#fetch-books-header-version {
+#iqbible-fetch-books-header-version {
     font-size: 0.8em;
     color: gray;
 }
 
-.book-item {
+.iqbible-book-item {
     cursor: pointer;
 }
 
 
 
-/**
-*
-* Prev | Next buttons
-*
-*/
-#iqbible-prev-next span.disabled {
-    color: #999;
-    cursor: default;
-    text-decoration: none;
-}
-
-#iqbible-prev-next span.disabled:hover {
-    text-decoration: none;
-}
 
 
 
@@ -269,7 +295,6 @@
 
 .iqbible-chapter-item {
     width: calc(20% - 10px);
-    /* Set width to 20% minus margin */
     text-align: center;
     padding: 5px;
     background-color: #f0f0f0;
@@ -277,12 +302,11 @@
     cursor: pointer;
     margin-right: 10px;
     margin-bottom: 5px;
-    /* Space between rows */
+    color:currentColor;
 }
 
 .iqbible-chapter-item:nth-child(5n) {
     margin-right: 0;
-    /* Remove margin from the last button in the row */
 }
 
 
@@ -297,8 +321,8 @@
 }
 
 
-/* Highlighted class for shaking effect */
-.highlighted {
+/* Highlighted */
+.iqbible-highlighted {
     background-color: yellow;
     transition: background-color 0.5s ease;
 }
@@ -571,7 +595,7 @@ dialog::backdrop {
 * Verse container 
 *
 */
-.verse {
+.iqbible-verse {
     position: relative;
     padding: 5px;
     border-radius: 4px;
@@ -580,7 +604,7 @@ dialog::backdrop {
 }
 
 /* Style for the verse options box */
-.verse-options {
+.iqbible-verse-options {
   display: none;
   position: absolute;
   align-items: flex-start;
@@ -599,38 +623,8 @@ dialog::backdrop {
   gap: 2px;
 }
 
-.option-button {
-  display: inline-flex;        
-  flex-direction: row;         
-  justify-content: flex-start; 
-  align-items: center;         
-  gap: 6px;                   
-  background: #6c757d;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  cursor: pointer;
-  margin: 2px 0;
-  font-size: 14px;
-  text-align: left;            
-}
-
-.option-button:hover {
-  background: #495057;
-}
-
-.option-button img {
-  filter: invert(100%);
-  display: block;
-  width: 1em;
-  height: auto;
-  flex-shrink: 0;          
-}
-
-
 /* Hover effect for verse */
-.verse:hover {
+.iqbible-verse:hover {
     background-color: white;
     transition: background-color 0.3s, color 0.3s;
     color: black;
@@ -638,12 +632,12 @@ dialog::backdrop {
 }
 
 /* Display the options box on hover */
-.verse:hover .verse-options {
+.iqbible-verse:hover .iqbible-verse-options {
     display: flex;
 }
 
 /* Loading Dialog */
-#loading-dialog {
+#iqbible-loading-dialog {
     background-color: transparent;
     /* Make the dialog background transparent */
     border: none;
@@ -656,7 +650,7 @@ dialog::backdrop {
 }
 
 /* Dialog Content (Spinner or any other content) */
-#loading-dialog .iqbible-dialog-content {
+#iqbible-loading-dialog .iqbible-dialog-content {
     background-color: transparent;
     /* Make the dialog content background transparent */
     border: none;
@@ -731,7 +725,7 @@ input:checked+.iqbible-slider:before {
 
 
 /* Spinner styles in loading dialog */
-.spinner {
+.iqbible-spinner {
     border: 8px solid #f3f3f3;
     /* Light grey */
     border-top: 8px solid purple;
@@ -755,7 +749,7 @@ input:checked+.iqbible-slider:before {
 }
 
 /* Style for loading dialog to center the spinner */
-#loading-dialog .iqbible-dialog-content {
+#iqbible-loading-dialog .iqbible-dialog-content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -770,7 +764,7 @@ input:checked+.iqbible-slider:before {
 *
 */
 
-.note-content {
+.iqbible-note-content {
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -800,6 +794,22 @@ input:checked+.iqbible-slider:before {
     text-decoration: underline;
 }
 
+/**
+*
+* Prev | Next buttons
+*
+*/
+#iqbible-prev-next span.disabled {
+    color: #999;
+    cursor: default;
+    text-decoration: none;
+}
+
+#iqbible-prev-next span.disabled:hover {
+    text-decoration: none;
+}
+
+
 
 
 /**
@@ -823,7 +833,7 @@ input:checked+.iqbible-slider:before {
         display: none;
     }
 
-    #fetch-books-header {
+    #iqbible-fetch-books-header {
         font-size: 1.3rem;
         white-space: nowrap;
     }

@@ -154,11 +154,11 @@ function iq_bible_search_ajax_handler()
 
             // Use verse-{verseId} format for the verse identifier
             echo "<li><a href='javascript:void(0)' 
-                     class='bible-search-result'
-                    data-book-id='" . esc_attr($bookId) . "'
-                    data-chapter-id='" . esc_attr($chapterId) . "'
-                    data-verse-id='verse-" . esc_attr($verseId) . "'
-                    data-version-id='" . esc_attr($versionId) . "'>{$boldText}</a><br> 
+                     class='iqbible-bible-search-result'
+                    iqbible-data-book-id='" . esc_attr($bookId) . "'
+                    iqbible-data-chapter-id='" . esc_attr($chapterId) . "'
+                    iqbible-data-verse-id='iqbible-verse-" . esc_attr($verseId) . "'
+                    iqbible-data-version-id='" . esc_attr($versionId) . "'>{$boldText}</a><br> 
                    - " . esc_html($bookName) . " " . intval($chapterId) . ":" . intval($verse) . " (" . esc_html(strtoupper($versionId)) . ")</li><br>";
         }
 
@@ -318,9 +318,9 @@ function iq_bible_get_cross_references_handler()
             // Create link with data attributes instead of direct URL
             $referencesList .= sprintf(
                 '<li><a href="#" class="cross-reference-link" ' .
-                    'data-book-id="%s" ' .
-                    'data-chapter-id="%s" ' .
-                    'data-verse-id="%s">%s %d:%d</a></li>',
+                    'iqbible-data-book-id="%s" ' .
+                    'iqbible-data-chapter-id="%s" ' .
+                    'iqbible-data-verse-id="%s">%s %d:%d</a></li>',
                 esc_attr($bookId),
                 esc_attr($chapterId),
                 esc_attr($sv),
@@ -606,7 +606,7 @@ function iq_bible_plans_ajax_handler()
                 $readings_html[] = sprintf(
                     '<label class="chapter-checkbox-label" style="display: inline-flex; align-items: center; gap: 5px; margin-right: 10px; white-space: nowrap;">
                     <input type="checkbox" class="chapter-checkbox" data-reading-ref="%s">
-                    <a href="#" class="reading-plan-link" data-book-id="%s" data-chapter-id="%s">%s %s</a>
+                    <a href="#" class="reading-plan-link" iqbible-data-book-id="%s" iqbible-data-chapter-id="%s">%s %s</a>
                     </label>',
                     esc_attr($bookId . '-' . $chapterId),
                     esc_attr($bookId),
@@ -699,7 +699,7 @@ function iq_bible_topics_ajax_handler()
 
                 // Create a link with data attributes 
                 $verseLinks[] = sprintf(
-                    '<small><a href="#" class="topic-verse-link" data-book-id="%s" data-chapter-id="%s" data-verse-id="%s">%s</a></small>',
+                    '<small><a href="#" class="iqbible-topic-verse-link" iqbible-data-book-id="%s" iqbible-data-chapter-id="%s" iqbible-data-verse-id="%s">%s</a></small>',
                     esc_attr($bookId),
                     esc_attr($chapterId),
                     esc_attr($firstVerseId),
@@ -799,7 +799,7 @@ function iq_bible_chapter_ajax_handler()
             }
 
             // Start verse content
-            $response['chapterContent'] .= '<div class="verse" id="verse-' . esc_attr($verseId) . '" data-verse-id="' . esc_attr($verseId) . '" data-version-id="' . esc_attr($versionId) . '">';
+            $response['chapterContent'] .= '<div class="iqbible-verse" id="iqbible-verse-' . esc_attr($verseId) . '" iqbible-data-verse-id="' . esc_attr($verseId) . '" data-version-id="' . esc_attr($versionId) . '">';
 
             $response['chapterContent'] .= '<sup>' . esc_html($verse['v']) . '</sup>&nbsp;';
             $response['chapterContent'] .= '<span class="copyable-text">' . esc_html($verse['t']) . '</span>';
@@ -807,7 +807,7 @@ function iq_bible_chapter_ajax_handler()
 
             // Add saved icon if verse is saved
             if (in_array($verseId, $saved_verses)) {
-                $response['chapterContent'] .= '&nbsp;<img src="' . esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg') . '" alt="' . esc_attr__('Saved Verse Icon', 'iqbible') . '" class="saved-icon" title="' . esc_attr__('Saved Verse', 'iqbible') . '" >';
+                $response['chapterContent'] .= '&nbsp;<img src="' . esc_url(plugin_dir_url(__DIR__) . 'assets/img/bookmark.svg') . '" alt="' . esc_attr__('Saved Verse Icon', 'iqbible') . '" class="iqbible-saved-icon" title="' . esc_attr__('Saved Verse', 'iqbible') . '" >';
             }
 
             // Add verse options
@@ -832,7 +832,7 @@ function iq_bible_chapter_ajax_handler()
                 'bookId' => $bookId,
                 'chapterId' => $chapterId,
                 'versionId' => $versionId
-            ], $base_url_esc) . '#verse-' . $verseId;
+            ], $base_url_esc) . '#iqbible-verse-' . $verseId;
 
 
 
@@ -846,26 +846,26 @@ function iq_bible_chapter_ajax_handler()
 
 
             $response['chapterContent'] .= sprintf(
-                '<div class="verse-options">
-                    <button class="option-button" onclick="copyVerse(\'%1$s\', \'%2$s\', %3$d, \'%4$s\', \'%5$s\', \'%6$s\')">
+                '<div class="iqbible-verse-options">
+                    <button class="iqbible-option-button" onclick="copyVerse(\'%1$s\', \'%2$s\', %3$d, \'%4$s\', \'%5$s\', \'%6$s\')">
                         <img src="%7$s" alt="%8$s"> %9$s
                     </button>
-                    <button class="option-button" onclick="showOriginalText(\'%1$s\')">
+                    <button class="iqbible-option-button" onclick="showOriginalText(\'%1$s\')">
                         <img src="%10$s" alt="%11$s"> %12$s
                     </button>
-                    <button class="option-button" onclick="showCommentary(\'%1$s\')">
+                    <button class="iqbible-option-button" onclick="showCommentary(\'%1$s\')">
                         <img src="%13$s" alt="%14$s"> %15$s
                     </button>
-                    <button class="option-button" onclick="showCrossReferences(\'%1$s\')">
+                    <button class="iqbible-option-button" onclick="showCrossReferences(\'%1$s\')">
                         <img src="%16$s" alt="%17$s"> %18$s
                     </button>
-                    <button class="option-button" onclick="shareVerse(\'%1$s\')" data-url="%19$s">
+                    <button class="iqbible-option-button" onclick="shareVerse(\'%1$s\')" data-url="%19$s">
                         <img src="%20$s" alt="%21$s"> %22$s
                     </button>
-                    <button class="option-button" onclick="saveVerse(\'%1$s\')">
+                    <button class="iqbible-option-button" onclick="saveVerse(\'%1$s\')">
                         <img src="%23$s" alt="%24$s"> %25$s
                     </button>
-                    <div class="verse-message" id="verse-message-%1$s"></div>
+                    <div class="iqbible-verse-message" id="iqbible-verse-message-%1$s"></div>
                 </div>',
                 esc_js($verseId),                      // %1$s - verseId (escaped for JS)
                 esc_js($bookName),                     // %2$s - bookName (escaped for JS)
@@ -930,7 +930,7 @@ function iq_bible_chapter_count_ajax_handler()
 
 
     // Get book ID from AJAX request
-    $bookId = isset($_POST['bookId']) ? sanitize_text_field($_POST['bookId']) : '';
+    $bookId = isset($_POST['iqbible-bookId']) ? sanitize_text_field($_POST['iqbible-bookId']) : '';
     $bookCategory = isset($_POST['bookCategory']) ? sanitize_text_field($_POST['bookCategory']) : '';
 
     // Log the bookId being sent to the API
@@ -1057,7 +1057,7 @@ function iq_bible_books_ajax_handler()
         echo '<h3>' . esc_html__('Old Testament', 'iqbible') . '</h3>';
         echo '<ul>';
         foreach ($booksOT as $bookOT) {
-            echo '<li class="book-item" data-book-id="' . esc_attr($bookOT['b']) . '" data-book-category="OT">' . esc_html($bookOT['n']) . '</li>';
+            echo '<li class="iqbible-book-item" iqbible-data-book-id="' . esc_attr($bookOT['b']) . '" iqbible-data-book-category="OT">' . esc_html($bookOT['n']) . '</li>';
         }
         echo '</ul>';
     }
@@ -1067,7 +1067,7 @@ function iq_bible_books_ajax_handler()
         echo '<h3>' . esc_html__('New Testament', 'iqbible') . '</h3>';
         echo '<ul>';
         foreach ($booksNT as $bookNT) {
-            echo '<li class="book-item" data-book-id="' . esc_attr($bookNT['b']) . '" data-book-category="NT">' . esc_html($bookNT['n']) . '</li>';
+            echo '<li class="iqbible-book-item" iqbible-data-book-id="' . esc_attr($bookNT['b']) . '" iqbible-data-book-category="NT">' . esc_html($bookNT['n']) . '</li>';
         }
         echo '</ul>';
     }

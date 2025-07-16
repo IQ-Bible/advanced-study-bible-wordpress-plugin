@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function showLoadingDialog () {
     // Only show if we still have active requests
     if (activeRequests > 0) {
-      const loadingDialog = document.getElementById('loading-dialog')
+      const loadingDialog = document.getElementById('iqbible-loading-dialog')
       if (loadingDialog) {
         loadingDialog.showModal()
       }
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function closeLoadingDialog () {
     clearTimeout(loaderTimeout) // Clear any pending loader timeout
-    const loadingDialog = document.getElementById('loading-dialog')
+    const loadingDialog = document.getElementById('iqbible-loading-dialog')
     if (loadingDialog) {
       try {
         loadingDialog.close()
@@ -164,11 +164,11 @@ function scrollToElementById (elementId, verseId = null) {
     // Only add highlight if verseId is provided
     if (verseId) {
       // Add the highlight class to the element
-      element.classList.add('highlighted')
+      element.classList.add('iqbible-highlighted')
       // Optionally remove the highlight after a certain time
       setTimeout(() => {
-        element.classList.remove('highlighted')
-      }, 3000)
+        element.classList.remove('iqbible-highlighted')
+      }, 5000)
     }
   }
 }
@@ -176,15 +176,15 @@ function scrollToElementById (elementId, verseId = null) {
 // Update the URL parameters
 // ------------------------------
 function updateURL (bookId, chapterId, version, verseId = null) {
-  let newUrl = `${window.location.pathname}?bookId=${encodeURIComponent(
+  let newUrl = `${window.location.pathname}?iqbible-bookId=${encodeURIComponent(
     bookId
-  )}&chapterId=${encodeURIComponent(chapterId)}&versionId=${encodeURIComponent(
+  )}&iqbible-chapterId=${encodeURIComponent(chapterId)}&iqbible-versionId=${encodeURIComponent(
     version.toLowerCase()
   )}`
 
   // Append verseId if provided
   if (verseId) {
-    newUrl += `&verseId=${encodeURIComponent(verseId)}`
+    newUrl += `&iqbible-verseId=${encodeURIComponent(verseId)}`
   }
 
   window.history.pushState({ path: newUrl }, '', newUrl)
@@ -217,8 +217,8 @@ function loadChapterContent (
       // Update Prev/Next Button State based on response
       const currentChapterNum = parseInt(chapterId, 10) // Use chapterId passed to function
       const totalChapters = parseInt(response.totalChapters, 10) || 0 // Get total from response
-      const prevBtn = document.getElementById('prev-chapter')
-      const nextBtn = document.getElementById('next-chapter')
+      const prevBtn = document.getElementById('iqbible-prev-chapter')
+      const nextBtn = document.getElementById('iqbible-next-chapter')
 
       if (prevBtn) {
         prevBtn.classList.toggle('disabled', currentChapterNum <= 1)
@@ -305,7 +305,7 @@ function loadChapterContent (
         66: 'revelation'
       }
 
-      const headerElement = document.getElementById('fetch-books-header')
+      const headerElement = document.getElementById('iqbible-fetch-books-header')
       const bookName = response.bookName
       const chapterNum = parseInt(chapterId, 10)
       const currentBookIdPadded = String(bookId).padStart(2, '0')
@@ -340,13 +340,13 @@ function loadChapterContent (
           headerElement.textContent = (bookName || 'Book') + ' ' + chapterNum // Fallback includes book name
         }
         if (!headerElement)
-          console.error('Element "#fetch-books-header" not found.')
+          console.error('Element "#iqbible-fetch-books-header" not found.')
         if (!bookName) console.error('Book name missing in response.')
         if (!iqbible_ajax.iconBaseUrl)
           console.error('iconBaseUrl missing in iqbible_ajax object.')
       }
 
-      document.getElementById('fetch-books-header-version').innerText =
+      document.getElementById('iqbible-fetch-books-header-version').innerText =
         ' (' + version.toUpperCase() + ')'
 
       // Set text direction based on version
@@ -549,8 +549,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     e.preventDefault()
 
                     // Retrieve the bookId and chapterId from the clicked link's data attributes
-                    currentBookId = this.getAttribute('data-book-id')
-                    currentChapterId = this.getAttribute('data-chapter-id')
+                    currentBookId = this.getAttribute('iqbible-data-book-id')
+                    currentChapterId = this.getAttribute('iqbible-data-chapter-id')
+                    
                     loadChapterContent(
                       currentBookId,
                       currentChapterId,
@@ -739,7 +740,7 @@ document
     xhr.send(
       'action=iq_bible_search&query=' +
         encodeURIComponent(query) +
-        '&versionId=' +
+        '&iqbible-versionId=' +
         encodeURIComponent(versionId) +
         '&security=' +
         encodeURIComponent(iqbible_ajax.nonce) // <-- ADDED NONCE
@@ -748,7 +749,7 @@ document
 
 // Function to attach handlers to search results
 function attachSearchResultHandlers () {
-  document.querySelectorAll('.bible-search-result').forEach(function (link) {
+  document.querySelectorAll('.iqbible-bible-search-result').forEach(function (link) {
     link.addEventListener('click', function (e) {
       e.preventDefault()
 
@@ -865,15 +866,15 @@ function showCrossReferences (verseId) {
             e.preventDefault()
 
             // Get data attributes
-            const bookId = this.getAttribute('data-book-id')
-            const chapterId = this.getAttribute('data-chapter-id')
-            const verseId = this.getAttribute('data-verse-id')
+            const bookId = this.getAttribute('iqbible-data-book-id')
+            const chapterId = this.getAttribute('iqbible-data-chapter-id')
+            const verseId = this.getAttribute('iqbible-data-verse-id')
 
             // Close the dialog
             document.getElementById('cross-references-dialog').close()
 
             // Load the new chapter content
-            loadChapterContent(bookId, chapterId, versionId, 'verse-' + verseId)
+            loadChapterContent(bookId, chapterId, versionId, 'iqbible-verse-' + verseId)
           })
         })
 
@@ -921,7 +922,7 @@ function showCrossReferences (verseId) {
 
 function showOriginalText(verseId) {
   // Get the verse text from the page directly
-  var verseElement = document.querySelector('#verse-' + verseId + ' .copyable-text');
+  var verseElement = document.querySelector('#iqbible-verse-' + verseId + ' .copyable-text');
   var verseText = verseElement ? verseElement.innerHTML : '[Verse text not found]';
 
   var xhr = new XMLHttpRequest();
@@ -966,7 +967,7 @@ function copyVerse (
   language
 ) {
   // Find the verse container
-  var verseElement = document.getElementById('verse-' + verseId)
+  var verseElement = document.getElementById('iqbible-verse-' + verseId)
 
   // Get the copyable-text span content only
   var copyableSpan = verseElement.querySelector('.copyable-text')
@@ -1007,7 +1008,7 @@ function copyVerse (
   document.body.removeChild(textarea)
 
   // Update message
-  var messageDiv = document.getElementById('verse-message-' + verseId)
+  var messageDiv = document.getElementById('iqbible-verse-message-' + verseId)
   if (messageDiv) {
     showMessageDialog(iqbible_ajax.i18n.verseCopied, 'success', 3000)
   }
@@ -1033,7 +1034,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // GetBookInfo
   // --------------
   document
-    .getElementById('fetch-books-header-intro')
+    .getElementById('iqbible-fetch-books-header-intro')
     .addEventListener('click', function () {
       var dialog = document.getElementById('book-intro-dialog')
       var content = document.getElementById('book-intro-content')
@@ -1103,12 +1104,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Story click
   // ---------------
-  document.querySelectorAll('.story-link').forEach(function (storyLink) {
+  document.querySelectorAll('.iqbible-story-link').forEach(function (storyLink) {
     storyLink.addEventListener('click', function (e) {
       // Retrieve the bookId, chapterId, and verseId from the clicked link's data attributes
-      currentBookId = this.getAttribute('data-book-id')
-      currentChapterId = this.getAttribute('data-chapter-id')
-      const verseId = this.getAttribute('data-verse-id')
+      currentBookId = this.getAttribute('iqbible-data-book-id')
+      currentChapterId = this.getAttribute('iqbible-data-chapter-id')
+      const verseId = this.getAttribute('iqbible-data-verse-id')
       // Trigger the reload of the Bible chapter content with the correct params
       loadChapterContent(
         currentBookId,
@@ -1143,7 +1144,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     xhrChapterCount.send(
-      'action=iq_bible_chapter_count_ajax_handler&bookId=' +
+      'action=iq_bible_chapter_count_ajax_handler&iqbible-bookId=' +
         bookId +
         '&security=' +
         encodeURIComponent(iqbible_ajax.nonce)
@@ -1153,11 +1154,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // Handle prev chapter click
   // -----------------------------
   document
-    .getElementById('prev-chapter')
+    .getElementById('iqbible-prev-chapter')
     .addEventListener('click', function () {
       // Read currentBookId and currentChapterId from the URL each time the button is clicked
-      let currentBookId = getURLParameter('bookId')
-      let currentChapterId = parseInt(getURLParameter('chapterId'))
+      let currentBookId = getURLParameter('iqbible-bookId')
+      let currentChapterId = parseInt(getURLParameter('iqbible-chapterId'))
 
       if (currentChapterId > 1) {
         // Decrease chapter ID for the previous chapter
@@ -1174,11 +1175,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // Handle next chapter click
   // -----------------------------
   document
-    .getElementById('next-chapter')
+    .getElementById('iqbible-next-chapter')
     .addEventListener('click', function () {
       // Read currentBookId and currentChapterId from the URL each time the button is clicked
-      let currentBookId = getURLParameter('bookId')
-      let currentChapterId = parseInt(getURLParameter('chapterId'))
+      let currentBookId = getURLParameter('iqbible-bookId')
+      let currentChapterId = parseInt(getURLParameter('iqbible-chapterId'))
 
       getChapterCount(currentBookId, function (chapterCount) {
         if (currentChapterId < chapterCount) {
@@ -1252,17 +1253,17 @@ document.addEventListener('DOMContentLoaded', function () {
   // Function to initialize verse link click handlers
   // --------------------------------------------------
   function initializeTopicVerseLinks (container) {
-    container.querySelectorAll('.topic-verse-link').forEach(function (link) {
+    container.querySelectorAll('.iqbible-topic-verse-link').forEach(function (link) {
       link.addEventListener('click', function (e) {
         e.preventDefault()
 
         // Get data attributes
-        const bookId = this.getAttribute('data-book-id')
-        const chapterId = this.getAttribute('data-chapter-id')
-        const verseId = this.getAttribute('data-verse-id')
+        const bookId = this.getAttribute('iqbible-data-book-id')
+        const chapterId = this.getAttribute('iqbible-data-chapter-id')
+        const verseId = this.getAttribute('iqbible-data-verse-id')
 
         // Load the chapter content
-        loadChapterContent(bookId, chapterId, versionId, 'verse-' + verseId)
+        loadChapterContent(bookId, chapterId, versionId, 'iqbible-verse-' + verseId)
 
         // Switch to Bible tab
         openTab('bible')
@@ -1291,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Open Book Dialog when the "Fetch Books" header is clicked
   // -----------------------------------------------------------
   document
-    .getElementById('fetch-books-header')
+    .getElementById('iqbible-fetch-books-header')
     .addEventListener('click', function () {
       var xhr = new XMLHttpRequest()
       xhr.open('POST', iqbible_ajax.ajaxurl, true)
@@ -1318,11 +1319,11 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
   // Handle clicks on book items and generate chapter buttons
-  // ----------------------------------------------------------
+  // ---------------------------------------------------------
   document.getElementById('books-list').addEventListener('click', function (e) {
-    if (e.target && e.target.classList.contains('book-item')) {
-      var bookId = e.target.getAttribute('data-book-id')
-      var bookCategory = e.target.getAttribute('data-book-category')
+    if (e.target && e.target.classList.contains('iqbible-book-item')) {
+      var bookId = e.target.getAttribute('iqbible-data-book-id')
+      var bookCategory = e.target.getAttribute('iqbible-data-book-category')
 
       var xhr = new XMLHttpRequest()
       xhr.open('POST', iqbible_ajax.ajaxurl, true)
@@ -1353,8 +1354,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var button = document.createElement('button')
             button.classList.add('iqbible-chapter-item')
-            button.setAttribute('data-chapter-id', i)
-            button.setAttribute('data-book-id', bookId)
+            button.setAttribute('iqbible-data-chapter-id', i)
+            button.setAttribute('iqbible-data-book-id', bookId)
             button.textContent = i // Display chapter number as button text
 
             currentBookId = bookId // Update current book
@@ -1362,7 +1363,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Add event listener to load the chapter content when clicked
             // Add event listener to load the chapter content when clicked
             button.addEventListener('click', function () {
-              var chapterId = this.getAttribute('data-chapter-id')
+              var chapterId = this.getAttribute('iqbible-data-chapter-id')
 
               // Ensure global variables are updated
               currentBookId = bookId // Set the correct current book ID globally
@@ -1379,9 +1380,9 @@ document.addEventListener('DOMContentLoaded', function () {
             row.appendChild(button)
           }
 
-          // Find the book-item element and append the chapter list under it
+          // Find the iqbible-book-item element and append the chapter list under it
           var bookItem = document.querySelector(
-            '.book-item[data-book-id="' + bookId + '"]'
+            '.iqbible-book-item[iqbible-data-book-id="' + bookId + '"]'
           )
           if (bookItem) {
             bookItem.insertAdjacentElement('afterend', chapterContainer)
@@ -1394,9 +1395,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Send AJAX request with bookId and bookCategory
       xhr.send(
-        'action=iq_bible_chapter_count_ajax_handler&bookId=' +
+        'action=iq_bible_chapter_count_ajax_handler&iqbible-bookId=' +
           encodeURIComponent(bookId) +
-          '&bookCategory=' +
+          '&iqbible-bookCategory=' +
           encodeURIComponent(bookCategory) +
           '&security=' +
           encodeURIComponent(iqbible_ajax.nonce)
@@ -1411,7 +1412,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Open the Versions Dialog when the version text is clicked
   // -----------------------------------------------------------
   document
-    .getElementById('fetch-books-header-version')
+    .getElementById('iqbible-fetch-books-header-version')
     .addEventListener('click', function () {
       var xhr = new XMLHttpRequest()
       xhr.open('POST', iqbible_ajax.ajaxurl, true)
@@ -1539,7 +1540,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Function to open the chapter dropdown of a specific book
   function openChapterDropdown (bookId) {
     var bookItem = document.querySelector(
-      '.book-item[data-book-id="' + bookId + '"]'
+      '.iqbible-book-item[iqbible-data-book-id="' + bookId + '"]'
     )
     if (bookItem) {
       bookItem.click() // Simulate clicking the book to reopen the chapter dropdown
@@ -1735,7 +1736,7 @@ document.addEventListener('DOMContentLoaded', function () {
             noteDiv.innerHTML = `  
                          <hr> 
                           <div class="note-title">${noteTextTitle}</div>            
-                            <div class="note-content" style='display:none;'>${noteTextDecoded}</div>
+                            <div class="iqbible-note-content" style='display:none;'>${noteTextDecoded}</div>
 
                           <small>${createdText} ${note.created_at} | ${updatedText} ${note.updated_at}</small>
                             
@@ -1769,7 +1770,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function editNote () {
     var noteId = this.getAttribute('data-note-id')
     var noteContent =
-      this.closest('.note-item').querySelector('.note-content').innerHTML
+      this.closest('.note-item').querySelector('.iqbible-note-content').innerHTML
 
     tinymce.get('iqbible_editor').setContent(noteContent)
     currentNoteId = noteId
@@ -1876,7 +1877,7 @@ function showCommentary (verseId) {
 // Save verse
 // ---------------
 function saveVerse (verseId) {
-  var messageDiv = document.getElementById('verse-message-' + verseId)
+  var messageDiv = document.getElementById('iqbible-verse-message-' + verseId)
 
   // Check if the user is logged in
   if (iqbible_ajax.isUserLoggedIn !== '1') {
@@ -1897,8 +1898,8 @@ function saveVerse (verseId) {
   xhr.onload = function () {
     if (xhr.status === 200) {
       var response = JSON.parse(xhr.responseText)
-      var messageDiv = document.getElementById('verse-message-' + verseId)
-      var verseElement = document.getElementById('verse-' + verseId)
+      var messageDiv = document.getElementById('iqbible-verse-message-' + verseId)
+      var verseElement = document.getElementById('iqbible-verse-' + verseId)
 
       if (response.success) {
         // Update message
@@ -1909,7 +1910,7 @@ function saveVerse (verseId) {
         // Add saved icon after the verse
         if (verseElement) {
           // Remove any existing saved icon first
-          var existingIcon = verseElement.querySelector('.saved-icon')
+          var existingIcon = verseElement.querySelector('.iqbible-saved-icon')
           if (!existingIcon) {
             var savedIcon = document.createElement('img')
             savedIcon.src = iqbible_ajax.plugin_url + 'assets/img/bookmark.svg'
@@ -1922,7 +1923,7 @@ function saveVerse (verseId) {
                 : 'Saved!'
             savedIcon.alt = savedAltText
 
-            savedIcon.classList.add('saved-icon')
+            savedIcon.classList.add('iqbible-saved-icon')
 
             const verseSavedTitle =
               typeof iqbible_ajax !== 'undefined' &&
@@ -1950,7 +1951,7 @@ function saveVerse (verseId) {
   }
 
   // Get verse element and its data
-  var verseElement = document.getElementById('verse-' + verseId)
+  var verseElement = document.getElementById('iqbible-verse-' + verseId)
   var versionId = verseElement ? verseElement.dataset.versionId : null
   var verseText = verseElement
     ? verseElement.querySelector('.copyable-text').textContent
@@ -2020,7 +2021,7 @@ function loadSavedVerses () {
             : 'Biblical Order'
 
         sortControls.innerHTML = `
-                    <select id="verse-sort" onchange="sortVerses(this.value)">
+                    <select id="iqbible-verse-sort" onchange="sortVerses(this.value)">
 
 <option value="date-new">${dateNewText}</option>
 
@@ -2078,34 +2079,6 @@ function displayVerses (sortOrder) {
     }
   })
 
-  // verses.forEach(function (verse) {
-  //   var verseElement = document.createElement('div')
-  //   verseElement.className = 'saved-verse'
-  //   var formattedDate = new Date(verse.savedAt).toLocaleDateString()
-
-  //   verseElement.innerHTML = `
-  //           <div class="verse-content">
-  //               <div class="verse-text">
-  //                   ${verse.verseText} - ${verse.bookName}:${parseInt(
-  //     verse.verseNumber,
-  //     10
-  //   )}
-  //                   <span class="version-id">(${verse.versionId.toUpperCase()})</span>
-  //               </div>
-
-  //               <div class="saved-date"><small>${
-  //                 iqbible_ajax.i18n.savedOn
-  //               } ${formattedDate}</small></div>
-
-  //               <button onclick="deleteVerse('${
-  //                 verse.verseId
-  //               }')" class="delete-verse">${iqbible_ajax.i18n.remove}</button>
-  //               <p></p>
-  //           </div>
-  //       `
-
-  //   versesContainer.appendChild(verseElement)
-  // }
 
   verses.forEach(function (verse) {
     const verseElement = document.createElement('div')
@@ -2113,10 +2086,10 @@ function displayVerses (sortOrder) {
     verseElement.dataset.verseId = verse.verseId // Store ID for deletion
 
     const contentDiv = document.createElement('div')
-    contentDiv.className = 'verse-content'
+    contentDiv.className = 'iqbible-verse-content'
 
     const textDiv = document.createElement('div')
-    textDiv.className = 'verse-text'
+    textDiv.className = 'iqbible-verse-text'
     // Escape text content before setting
     textDiv.textContent = `${verse.verseText} - ${escapeHTML(
       verse.bookName
@@ -2185,18 +2158,18 @@ function deleteVerse (verseId) {
         })
 
         // Find the verse element by ID
-        var verseElement = document.getElementById('verse-' + verseId)
+        var verseElement = document.getElementById('iqbible-verse-' + verseId)
 
         // If the verse element exists, remove the saved icon
         if (verseElement) {
-          var existingIcon = verseElement.querySelector('.saved-icon')
+          var existingIcon = verseElement.querySelector('.iqbible-saved-icon')
           if (existingIcon) {
             verseElement.removeChild(existingIcon)
           }
         }
 
         // Refresh the display with current sort order
-        var currentSort = document.getElementById('verse-sort').value
+        var currentSort = document.getElementById('iqbible-verse-sort').value
         displayVerses(currentSort)
 
         if (window.savedVerses.length === 0) {
@@ -2260,7 +2233,7 @@ function shareVerse (verseId) {
     try {
       const url = new URL(verseUrl)
       // Set the verseId parameter with the desired format
-      url.searchParams.set('verseId', 'verse-' + verseId)
+      url.searchParams.set('verseId', 'iqbible-verse-' + verseId)
       url.hash = ''
       verseUrl = url.toString()
     } catch (error) {
@@ -2287,7 +2260,7 @@ function shareVerse (verseId) {
       .writeText(verseUrl)
       .then(() => {
         console.log('URL copied to clipboard successfully')
-        var messageDiv = document.getElementById('verse-message-' + verseId)
+        var messageDiv = document.getElementById('iqbible-verse-message-' + verseId)
         if (messageDiv) {
           showMessageDialog(iqbible_ajax.i18n.linkCopied, 'success', 3000)
         }

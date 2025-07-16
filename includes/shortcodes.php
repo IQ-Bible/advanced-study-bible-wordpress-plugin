@@ -273,9 +273,9 @@ if ( ! $current_language ) {
 </dialog>
 
 <!-- Dialog Box for Loading... -->
-<dialog class="iqbible-dialog" id="loading-dialog">
+<dialog class="iqbible-dialog" id="iqbible-loading-dialog">
     <div class="iqbible-dialog-content">
-        <div class="spinner"></div>
+        <div class="iqbible-spinner"></div>
         <!-- Optional: Add translatable loading text -->
         <!-- <p><?php // esc_html_e('Loading...', 'iqbible'); ?></p> -->
     </div>

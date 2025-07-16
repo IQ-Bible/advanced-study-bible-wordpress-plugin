@@ -11,12 +11,12 @@ if (!defined('ABSPATH')) {
 
         <?php //echo esc_html($bookName); ?>
 
-        <h2 title="Change book or chapter" id="fetch-books-header"></h2>
+        <h2 title="Change book or chapter" id="iqbible-fetch-books-header"></h2>
 
 
-        <small title="Change version" id="fetch-books-header-version"></small>
+        <small title="Change version" id="iqbible-fetch-books-header-version"></small>
 
-        <small title="Book Information" id="fetch-books-header-intro">&#9432;</small>
+        <small title="Book Information" id="iqbible-fetch-books-header-intro">&#9432;</small>
 
     </div>
 
@@ -32,7 +32,7 @@ if (!defined('ABSPATH')) {
 <hr>
 <!-- Prev/Next -->
 <div id="iqbible-prev-next">
-    <span id="prev-chapter">
+    <span id="iqbible-prev-chapter">
         < <?php esc_html_e('prev', 'iqbible'); ?> </span> |
-            <span id="next-chapter"> <?php esc_html_e('next', 'iqbible'); ?> > </span>
+            <span id="iqbible-next-chapter"> <?php esc_html_e('next', 'iqbible'); ?> > </span>
 </div>
