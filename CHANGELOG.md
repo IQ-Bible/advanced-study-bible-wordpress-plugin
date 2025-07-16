@@ -15,7 +15,7 @@ The shortcode for this plugin is [iqbible_advanced].
 ### Fixed
 - CSS Styling to accomodate more themes (prevent icons and text breaking on themes like Twenty Twenty, e.g.)
 ### Removed
-- Inport themes in CSS - now, pkugin inherits styles like font-family, etc.
+- Import themes in CSS - now, pkugin inherits styles like font-family, etc.
 
 ## [1.0.0-alpha-12] - 2025-07-14 to 2025-07-15
 ### Removed
