@@ -14,6 +14,7 @@ The shortcode for this plugin is [iqbible_advanced].
 - Separate PUBLIC and PRIVATE repos and folders in order to releaase PUBLIC (w/o PRIVATE's .git) to GitHub (OpenSource)
 ### Fixed
 - CSS Styling to accomodate more themes (prevent icons and text breaking on themes like Twenty Twenty, e.g.)
+- Prefixing error with search links fix
 ### Removed
 - Import themes in CSS - now, pkugin inherits styles like font-family, etc.
 
