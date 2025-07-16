@@ -5,6 +5,27 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// VERSION:
+// Get the latest version from the changelog.md
+// to add to the WordPress Admin UI (wp-admin)
+// ---------------------------------------------
+// Ensure changelog.md is in the root.
+// This function will find the second
+// instance of [x.x.x] and return it.
+// It ignores the first as this should be [Unreleased].
+// Adheres to semantic versioning.
+function iqbible_get_latest_plugin_version() {
+    $changelog_path = plugin_dir_path( dirname( __FILE__ ) ) . 'CHANGELOG.md';
+
+    if ( file_exists( $changelog_path ) ) {
+        $subject = file_get_contents( $changelog_path );
+        preg_match_all( '/\[.*?\]/', $subject, $matches );
+        if ( isset( $matches[0][1] ) ) {
+            return 'v' . str_replace( array( '[', ']' ), '', $matches[0][1] );
+        }
+    }
+    return 'Unknown';
+}
 
 
 // Book icons
@@ -154,62 +175,6 @@ function iq_bible_search_ajax_handler()
     wp_die();
 }
 
-// Definitions AJAX handler
-// -------------------------
-// function iq_bible_define_ajax_handler()
-// {
-
-//     // ---> Verify Nonce <---
-//     check_ajax_referer('iqbible_ajax_nonce', 'security');
-//     // ---> End Verify Nonce <---
-
-//     // Check if query is set and sanitize it
-//     $query = isset($_POST['iqbible-definition-query']) ? sanitize_text_field($_POST['iqbible-definition-query']) : '';
-
-//     // Convert the query to lowercase for case-insensitive search
-//     $query = strtolower($query);
-
-//     if (empty($query)) {
-//         esc_html_e('Please enter a biblical word to define.', 'iqbible');
-//         wp_die();
-//     }
-
-//     // Fetch the biblical definition using the API
-//     set_transient('iqbible_dictionaryId', 'smiths', DAY_IN_SECONDS);
-
-//     set_transient('iqbible_dictionaryIdFullName', __('Smith\'s Bible Dictionary', 'iqbible'), DAY_IN_SECONDS);
-
-//     $definition_biblical = iq_bible_api_get_data('GetDefinitionBiblical', array('query' => $query, 'dictionaryId' => get_transient('iqbible_dictionaryId')));
-
-
-//     if (!empty($definition_biblical)) {
-//         echo '<small><i>' . sprintf(esc_html__('From %s:', 'iqbible'),     esc_html(get_transient('iqbible_dictionaryIdFullName'))) . '</i></small><br>';
-
-//         // Display the word being defined
-//         echo '<h3>' . esc_html($definition_biblical['word']) . '</h3>';
-
-//         // Handle the XML-like <see> tag and replace it with "See WORD"
-//         $definition_text = $definition_biblical['definition'];
-
-//         // Use preg_replace_callback to find <see> tags and replace them
-//         $definition_text = preg_replace_callback(
-//             '/<see target="x-self">(.*?)<\/see>/i',
-//             function ($matches) {
-//                 // Return the formatted text w/o the XML
-//                 return esc_html($matches[1]);
-//             },
-//             $definition_text
-//         );
-
-//         // Output the cleaned-up definition text
-//         echo esc_html($definition_text) . '<br>';
-//     } else {
-//         // translators: %s: The word the user tried to define.
-//         echo sprintf(esc_html__('No biblical definition found for %s.', 'iqbible'), esc_html($query));
-//     }
-
-//     wp_die();
-// }
 
 // Definitions AJAX handler
 // -------------------------
@@ -1115,63 +1080,6 @@ function iq_bible_books_ajax_handler()
 
 
 
-
-
-
-
-
-// function iq_bible_clear_plugin_cache($old_value, $new_value)
-// {
-//     global $wpdb;
-
-//     // Check if the API key has changed
-//     if ($old_value !== $new_value) {
-//         // Clear all transients related to the IQBible plugin
-//         $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_iqbible_%'");
-//         $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_timeout_iqbible_%'");
-
-//         error_log("Cache cleared due to API key update!");
-//     }
-// }
-
-// // Manual cache clearing via form submission
-// add_action('admin_post_iqbible_clear_plugin_cache', 'iq_bible_clear_plugin_cache_form');
-
-// function iq_bible_clear_plugin_cache_form()
-// {
-
-//     check_admin_referer('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
-
-//     if (!current_user_can('manage_options')) {
-//         wp_die(esc_html__('You do not have sufficient permissions to perform this action.', 'iqbible'));
-//     }
-
-//     global $wpdb;
-
-//     // Clear all transients related to the IQBible plugin
-//     $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_iqbible_%'");
-//     $wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE '%_transient_timeout_iqbible_%'");
-
-//     error_log("Cache manually cleared!");
-
-//     // Redirect back to the settings page with a success message
-//     wp_redirect(add_query_arg('cache_cleared', 'true', wp_get_referer()));
-//     exit;
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function iq_bible_clear_plugin_cache($old_value, $new_value)
 {
     global $wpdb;
@@ -1234,11 +1142,6 @@ function iq_bible_clear_plugin_cache_form()
     wp_safe_redirect($redirect_url);
     exit;
 }
-
-
-
-
-
 
 
 

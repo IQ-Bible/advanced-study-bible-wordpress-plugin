@@ -7,9 +7,9 @@ if (!defined('ABSPATH')) {
 
 function iq_bible_api_register_settings()
 {
-    register_setting( 'iq_bible_api_options', 'iq_bible_api_key', 'sanitize_text_field' );
-    register_setting( 'iq_bible_api_options', 'iq_bible_api_cache', 'absint' );
-    register_setting( 'iq_bible_api_options', 'iq_bible_custom_login_url', 'esc_url_raw' );
+    register_setting('iq_bible_api_options', 'iq_bible_api_key', 'sanitize_text_field');
+    register_setting('iq_bible_api_options', 'iq_bible_api_cache', 'absint');
+    register_setting('iq_bible_api_options', 'iq_bible_custom_login_url', 'esc_url_raw');
 }
 add_action('admin_init', 'iq_bible_api_register_settings');
 
@@ -28,7 +28,7 @@ function iq_bible_api_settings_page()
             '✔', // Checkmark entity
             sprintf(
                 // translators: %s: The current version number of the IQ Bible API.
-                esc_html__('IQBible API version %s', 'iqbible'),
+                esc_html__('IQBible API version: %s', 'iqbible'),
                 esc_html($info['version'])
             ),
             esc_html__('Use the shortcode [iqbible_advanced] to display on any page.', 'iqbible')
@@ -51,18 +51,30 @@ function iq_bible_api_settings_page()
     }
 ?>
     <div class="wrap">
-        <h1><?php esc_html_e('IQBible - Advanced Study Bible Settings', 'iqbible'); // Changed title slightly ?></h1>
 
-        <p><?php printf(esc_html__('Version: %s', 'iqbible'), esc_html(IQBIBLE_VERSION)); ?></p>
+        <h1>
+            <img
+                src="<?php echo esc_url(plugin_dir_url(dirname(__FILE__)) . 'assets/img/iqbible-logo.png'); ?>"
+                alt="<?php esc_attr_e('IQBible Logo', 'iqbible'); ?>"
+                style="height: 32px; vertical-align: middle; margin-right: 8px;">
+            <?php esc_html_e('IQBible - Advanced Study Bible Settings', 'iqbible'); ?>
+        </h1>
+
+
+        <p>
+            <strong><?php esc_html_e('Plugin Version:', 'iqbible'); ?></strong>
+            <?php echo esc_html(iqbible_get_latest_plugin_version()); ?>
+        </p>
+
 
         <!-- Manual Cache Clear Form -->
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="iqbible_clear_plugin_cache" />
             <?php
-             wp_nonce_field('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
-             // Use __() for button text passed to function
-             submit_button(__('Manually Clear Plugin Cache', 'iqbible'));
-             ?>
+            wp_nonce_field('iqbible_clear_cache_action', 'iqbible_clear_cache_nonce');
+            // Use __() for button text passed to function
+            submit_button(__('Manually Clear Plugin Cache', 'iqbible'));
+            ?>
         </form>
         <!-- End Manual Cache Clear Form -->
 
@@ -79,13 +91,17 @@ function iq_bible_api_settings_page()
                     <th scope="row"><?php esc_html_e('API Key', 'iqbible'); ?></th>
                     <td>
                         <p id="api-key-display">
-                            <span><?php echo esc_html($masked_api_key); // Use esc_html for display ?></span>
+                            <span><?php echo esc_html($masked_api_key); // Use esc_html for display 
+                                    ?></span>
                             <button type="button" id="edit-api-key-btn" class="button">
-                                <?php esc_html_e('Edit', 'iqbible'); // Translate button text ?>
+                                <?php esc_html_e('Edit', 'iqbible'); // Translate button text 
+                                ?>
                             </button>
                         </p>
-                        <input type="text" id="api-key-input" name="iq_bible_api_key" value="<?php echo esc_attr($api_key); // Use esc_attr for value attribute ?>" size="60" style="display:none;" autocomplete="off" minlength="10" />
-                        <?php echo $api_status_string; // Output the prepared status string (already escaped/kses'd) ?>
+                        <input type="text" id="api-key-input" name="iq_bible_api_key" value="<?php echo esc_attr($api_key); // Use esc_attr for value attribute 
+                                                                                                ?>" size="60" style="display:none;" autocomplete="off" minlength="10" />
+                        <?php echo $api_status_string; // Output the prepared status string (already escaped/kses'd) 
+                        ?>
                     </td>
                 </tr>
 
@@ -93,7 +109,8 @@ function iq_bible_api_settings_page()
                     <th scope="row"><?php esc_html_e('Caching', 'iqbible'); ?></th>
                     <td>
                         <input type="checkbox" id="iq_bible_api_cache_id" name="iq_bible_api_cache" value="1" <?php checked(1, get_option('iq_bible_api_cache'), true); ?> />
-                        <label for="iq_bible_api_cache_id"><?php esc_html_e('Enable caching for CSS and API data', 'iqbible'); ?></label> <?php // Changed label 'for' to match potential ID change if needed ?>
+                        <label for="iq_bible_api_cache_id"><?php esc_html_e('Enable caching for CSS and API data', 'iqbible'); ?></label> <?php // Changed label 'for' to match potential ID change if needed 
+                                                                                                                                            ?>
                         <p class="description"><?php esc_html_e('Caching improves performance by storing data temporarily, reducing API calls and loading times, which is especially important for a smooth user experience.', 'iqbible'); ?></p>
                     </td>
                 </tr>
@@ -101,8 +118,11 @@ function iq_bible_api_settings_page()
                 <tr valign="top">
                     <th scope="row"><?php esc_html_e('Custom Login URL', 'iqbible'); ?></th>
                     <td>
-                        <input type="text" id="iq_bible_custom_login_url_id" name="iq_bible_custom_login_url" value="<?php echo esc_url(get_option('iq_bible_custom_login_url', wp_login_url())); ?>" size="60" placeholder="<?php esc_attr_e('e.g., https://yourdomain.com/login', 'iqbible'); // Example placeholder ?>" /> <?php // Changed placeholder ?>
-                        <label for="iq_bible_custom_login_url_id" style="display:none;"><?php esc_html_e('Custom Login URL Input', 'iqbible'); ?></label> <?php // Added hidden label for accessibility ?>
+                        <input type="text" id="iq_bible_custom_login_url_id" name="iq_bible_custom_login_url" value="<?php echo esc_url(get_option('iq_bible_custom_login_url', wp_login_url())); ?>" size="60" placeholder="<?php esc_attr_e('e.g., https://yourdomain.com/login', 'iqbible'); // Example placeholder 
+                                                                                                                                                                                                                                ?>" /> <?php
+                                                                                                                                                                                                                                        ?>
+                        <label for="iq_bible_custom_login_url_id" style="display:none;"><?php esc_html_e('Custom Login URL Input', 'iqbible'); ?></label> <?php // Added hidden label for accessibility 
+                                                                                                                                                            ?>
                         <p class="description"><?php esc_html_e('Enter a custom URL for the login page. Leave blank to use the default WordPress login URL.', 'iqbible'); ?></p>
                     </td>
                 </tr>
@@ -114,6 +134,26 @@ function iq_bible_api_settings_page()
         </form>
         <!-- End Main Settings Form -->
     </div>
+
+
+    <h2><?php esc_html_e('Useful Links', 'iqbible'); ?></h2>
+    <ul>
+        <li>
+            <a href="https://iqbible.com" target="_blank" rel="noopener noreferrer">
+                <?php esc_html_e('Official IQBible Website', 'iqbible'); ?>
+            </a>
+        </li>
+        <li>
+            <a href="https://rapidapi.com/vibrantmiami/api/iq-bible/" target="_blank" rel="noopener noreferrer">
+                <?php esc_html_e('API on RapidAPI', 'iqbible'); ?>
+            </a>
+        </li>
+        <li>
+            <a href="https://jodypm.com" target="_blank" rel="noopener noreferrer">
+                <?php esc_html_e('Developer Site', 'iqbible'); ?>
+            </a>
+        </li>
+    </ul>
 
 <?php
 }

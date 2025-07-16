@@ -8,12 +8,20 @@ if (!defined('ABSPATH')) {
 function iq_bible_api_enqueue_assets()
 {
 
+    // wp_enqueue_style(
+    //     'iq-bible-api-style',
+    //     plugin_dir_url(__DIR__) . 'assets/css/style.css', 
+    //     array(),
+    //     IQBIBLE_VERSION 
+    // );
+
     wp_enqueue_style(
-        'iq-bible-api-style',
-        plugin_dir_url(__DIR__) . 'assets/css/style.css', // Use __DIR__ assuming enqueue.php is in 'includes'
-        array(),
-        IQBIBLE_VERSION 
-    );
+    'iq-bible-api-style',
+    plugin_dir_url(__DIR__) . 'assets/css/style.css', 
+    array(),
+    filemtime(plugin_dir_path(__DIR__) . 'assets/css/style.css')
+);
+
 
     wp_enqueue_script(
         'iqbible-script',
@@ -114,13 +122,6 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
     // Only load on the specific settings page for this plugin
     if ($hook_suffix === 'settings_page_iq_bible_api') {
 
-        // Enqueue admin styles
-        // wp_enqueue_style(
-        //     'iq-bible-admin-style',
-        //     plugin_dir_url(__DIR__) . 'assets/css/admin-style.css',
-        //     array(),
-        //     IQBIBLE_VERSION 
-        // );
 
         // Enqueue admin scripts
         wp_enqueue_script(

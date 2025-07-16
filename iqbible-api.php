@@ -20,24 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Define Plugin Version Constant
-if ( ! defined( 'IQBIBLE_VERSION' ) ) {
-    define( 'IQBIBLE_VERSION', '1.0.0' ); 
-}
 
-// --- I18N SETUP ---
-/**
- * Load plugin textdomain.
- * @since 1.0.0 // version
- */
-function iqbible_load_textdomain()
-{
-    load_plugin_textdomain(
-        'iqbible',
-        false,
-        dirname(plugin_basename(__FILE__)) . '/languages/'
-    );
-}
 
 // Create notes table on plugin activation
 function iqbible_create_notes_table()
@@ -96,6 +79,25 @@ require_once plugin_dir_path(__FILE__) . 'includes/functions.php';
 require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 
+
+// Define Plugin Version Constant
+if ( ! defined( 'IQBIBLE_VERSION' ) ) {
+    define( 'IQBIBLE_VERSION', '1.0.0' ); 
+}
+
+// --- I18N SETUP ---
+/**
+ * Load plugin textdomain.
+ * @since 1.0.0 // version
+ */
+function iqbible_load_textdomain()
+{
+    load_plugin_textdomain(
+        'iqbible',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages/'
+    );
+}
 
 /* Registries */
 
@@ -160,3 +162,7 @@ add_action('update_option_iq_bible_api_key', 'iq_bible_clear_plugin_cache', 10, 
 /* Language Update AJAX */
 add_action('wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');
 add_action('wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');
+
+
+
+

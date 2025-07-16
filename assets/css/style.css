@@ -26,14 +26,38 @@
  */
 
 
-/**
+
+ /**
 *
-* Import
+* Root Variables
 *
 */
-@import url('theme-default.css');
-/* @import url('theme-none.css'); */
-/* @import url('theme-dark.css'); */
+:root {
+    /* General vars */
+    --font-family: inherit;
+    --background-color: #f8f9fa; 
+    --text-color: #343a40; 
+    --hover-background-color: #e9ecef;
+    
+    /* Tab vars */
+    --tab-button-background-color: #6c757d; 
+    --tab-button-color: #fff; 
+    --tab-button-hover-background-color: #495057; 
+    --tab-active-background-color: #343a40; 
+    --tab-border-color: #dee2e6; 
+    
+    /* Form and btns vars */
+    --form-border-color: #ced4da; 
+    --button-background-color: #6c757d; 
+    --button-color: #fff; 
+    --button-hover-opacity: 0.85; 
+    --input-background-color: #ffffff; 
+
+    /* Audio vars */
+    --audio-shadow-color: rgba(52, 58, 64, 0.2); 
+    --audio-controls-color: #495057; 
+}
+
 
 
 /**
@@ -46,7 +70,7 @@
 .iqbible-main {
     font-family: var(--font-family);
     background-color: var(--background-color);
-    color:var(--text-color);
+    color: var(--text-color);
     padding: 15px;
     border: 1px solid gray;
     border-radius: 15px;
@@ -59,21 +83,21 @@
 .iqbible-main form,
 .iqbible-main input,
 .iqbible-main button,
-.iqbible-main select { 
+.iqbible-main select {
     font-family: inherit;
 }
 
 .iqbible-main h2 {
-    font-size:2rem;
+    font-size: 2rem;
 }
-
-
 
 /* Saved verse icon */
 .saved-icon {
     opacity: .5;
     width: 15px;
 }
+
+
 
 /**
 *
@@ -98,8 +122,6 @@
 .iqbible-tab-content.active {
     display: block;
 }
-
-
 
 .iqbible-tabs {
     display: flex;
@@ -180,30 +202,32 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    margin:1rem 0;
+    margin: 1rem 0;
 }
 
-.iqbible-main #iqbible-header-container > h2,
-.iqbible-main #iqbible-header-container > small,
-.iqbible-main #iqbible-header-container > img { 
-    margin: 0; 
-    padding: 0; 
-    vertical-align: middle; 
-    line-height: 1.2; 
+.iqbible-main #iqbible-header-container>h2,
+.iqbible-main #iqbible-header-container>small,
+.iqbible-main #iqbible-header-container>img {
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+    line-height: 1.2;
 }
 
-.iqbible-main #iqbible-header-container > img {
-   max-height: 1.5em;
-   width: auto;
+.iqbible-main #iqbible-header-container>img {
+    max-height: 1.5em;
+    width: auto;
 }
 
+#fetch-books-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
 
-/* Adjust the small element to be in sync with h2 styling */
 #fetch-books-header-version {
     font-size: 0.8em;
-    /* Adjust the size relative to h2 */
     color: gray;
-    /* Adjust color if needed */
 }
 
 .book-item {
@@ -211,26 +235,22 @@
 }
 
 
+
 /**
 *
-* IQ Bible Errors and Success text
+* Prev | Next buttons
 *
 */
-/* #iqbible-error-text {
-    padding:10px;
-    color: red;
+#iqbible-prev-next span.disabled {
+    color: #999;
+    cursor: default;
+    text-decoration: none;
 }
 
-#iqbible-success-text {
-    padding:10px;
-    color: green;
-} */
+#iqbible-prev-next span.disabled:hover {
+    text-decoration: none;
+}
 
-
-/* Prev | Next btns
--------------------- */
-#iqbible-prev-next span.disabled { color: #999; cursor: default; text-decoration: none; }
-#iqbible-prev-next span.disabled:hover { text-decoration: none; }
 
 
 /**
@@ -238,7 +258,6 @@
 * Chapter buttons
 *
 */
-
 .iqbible-chapter-row {
     display: flex;
     justify-content: flex-start;
@@ -268,17 +287,11 @@
 
 
 
-
-
 /**
 *
 * Bible Text 
 *
 */
-/* #iqbible-chapter .story-title {
-    padding: 20px 0;
-} */
-
 .iqbible-story-title {
     padding: 10px 0px 10px;
 }
@@ -313,6 +326,7 @@
 }
 
 
+
 /**
 *
 * Audio 
@@ -323,13 +337,14 @@
 }
 
 #iqbible-audio-player {
-    margin:1rem 0;
+    margin: 1rem 0;
 }
 
 .iqbible-audio-indicator img {
     padding-left: 5px;
     width: 10px;
 }
+
 
 
 /**
@@ -340,6 +355,7 @@
 .iqbible-topic-item {
     cursor: pointer;
 }
+
 
 
 /**
@@ -442,6 +458,7 @@
 }
 
 
+
 /**
 *
 * Dialogs
@@ -450,13 +467,13 @@
 
 /* Dialog Backdrop */
 dialog::backdrop {
-    background: rgba(0, 0, 0, 0.6);
-    /* Semi-transparent black background */
+    background: rgba(0, 0, 0, .6);
 }
 
 /* Dialog Container */
 .iqbible-dialog {
-    z-index: 1000; /* Modal z-index */
+    z-index: 1000;
+    /* Modal z-index */
     margin-top: 75px;
     border: 1px solid var(--background-color);
     border-radius: 15px;
@@ -540,20 +557,20 @@ dialog::backdrop {
     cursor: pointer;
 }
 
-
 .iqbible-dialog.iqbible-message-dialog {
-    opacity:.8;
+
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
+}
 
 
 
-
-
-
-/* Style for the verse container */
+/**
+*
+* Verse container 
+*
+*/
 .verse {
     position: relative;
     padding: 5px;
@@ -564,45 +581,53 @@ dialog::backdrop {
 
 /* Style for the verse options box */
 .verse-options {
-    display: none;
-    position: absolute;
-    align-items: center;
-    background: #ffffff;
-    padding: 10px;
-    /* Adjusted padding */
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    top: 100%;
-    left: 0;
-    z-index: 10;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    box-sizing: border-box;
-    /* Added box-sizing to include padding in width */
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    /* This ensures multiple buttons wrap if necessary */
-    gap: 5px;
-    /* Optional: adds spacing between buttons */
+  display: none;
+  position: absolute;
+  align-items: flex-start;
+  justify-content: flex-start; 
+  background: #ffffff;
+  padding: 10px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  gap: 2px;
 }
 
-/* Style for the option buttons */
 .option-button {
-    background: #6c757d;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
-    margin: 2px 0;
-    font-size: 14px;
-    text-align: center;
+  display: inline-flex;        
+  flex-direction: row;         
+  justify-content: flex-start; 
+  align-items: center;         
+  gap: 6px;                   
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  margin: 2px 0;
+  font-size: 14px;
+  text-align: left;            
 }
 
 .option-button:hover {
-    background: #495057;
+  background: #495057;
 }
+
+.option-button img {
+  filter: invert(100%);
+  display: block;
+  width: 1em;
+  height: auto;
+  flex-shrink: 0;          
+}
+
 
 /* Hover effect for verse */
 .verse:hover {
@@ -612,20 +637,10 @@ dialog::backdrop {
     border-bottom-left-radius: 0;
 }
 
-.option-button img {
-    filter: invert(100%);
-    width: 10px;
-}
-
 /* Display the options box on hover */
 .verse:hover .verse-options {
     display: flex;
 }
-
-
-
-
-
 
 /* Loading Dialog */
 #loading-dialog {
@@ -749,8 +764,6 @@ input:checked+.iqbible-slider:before {
 
 
 
-
-
 /**
 *
 * Notes
@@ -764,7 +777,6 @@ input:checked+.iqbible-slider:before {
     text-overflow: ellipsis;
     width: 90%
 }
-
 
 
 
@@ -790,18 +802,6 @@ input:checked+.iqbible-slider:before {
 
 
 
-
-
-
-
-
-  
-  
-
-
-
-
-
 /**
 *
 * Media Queries
@@ -819,19 +819,19 @@ input:checked+.iqbible-slider:before {
 /* Max */
 @media (max-width: 767px) {
 
-        .iqbible-tab-text {
+    .iqbible-tab-text {
         display: none;
     }
 
     #fetch-books-header {
-        font-size:1.3rem;
+        font-size: 1.3rem;
         white-space: nowrap;
-      }
+    }
 
     .iqbible-tab-icon img {
         filter: brightness(0) invert(1);
-      }
-      
+    }
+
 
     #iqbible-reading-plan-form-container {
         padding: 10px;
@@ -860,7 +860,4 @@ input:checked+.iqbible-slider:before {
         font-size: 10px;
     }
 
-
 }
-
-

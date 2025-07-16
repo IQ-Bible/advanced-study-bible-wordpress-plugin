@@ -7,7 +7,17 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
-## [1.0.0-alpha-12] - 2025-07-14
+## [1.0.0-alpha-13] - 2025-07-16
+### Added
+- Plugin version from CHANGELOG functionality to admin-settings.php UI
+### Changed
+- Separate PUBLIC and PRIVATE repos and folders in order to releaase PUBLIC (w/o PRIVATE's .git) to GitHub (OpenSource)
+### Fixed
+- CSS Styling to accomodate more themes (prevent icons and text breaking on themes like Twenty Twenty, e.g.)
+### Removed
+- Inport themes in CSS - now, pkugin inherits styles like font-family, etc.
+
+## [1.0.0-alpha-12] - 2025-07-14 to 2025-07-15
 ### Removed
 - Lingering iqbible_start_session() in iqbible-api.php
 ### Fixed
