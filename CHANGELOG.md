@@ -7,6 +7,10 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-alpha-14] - 2025-07-17
+### Fixed
+- Search results click to correct verse not working
+
 ## [1.0.0-alpha-13] - 2025-07-16
 ### Added
 - Plugin version from CHANGELOG functionality to admin-settings.php UI

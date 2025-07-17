@@ -30,7 +30,7 @@ if (!defined('ABSPATH')) {
 
         <h3><?php esc_html_e('My Saved Verses', 'iqbible'); ?></h3>
         
-        <div class="my-saved-verses"></div>
+        <div class="iqbible-my-saved-verses"></div>
 
         <?php } else {
         include('logged-out.php');

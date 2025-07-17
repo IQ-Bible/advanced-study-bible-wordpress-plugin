@@ -153,11 +153,11 @@ function iq_bible_search_ajax_handler()
             );
 
             // Use verse-{verseId} format for the verse identifier
-            echo "<li><a href='javascript:void(0)' 
+            echo "<li><a href='#' 
                      class='iqbible-bible-search-result'
                     iqbible-data-book-id='" . esc_attr($bookId) . "'
-                    iqbible-data-chapter-id='" . esc_attr($chapterId) . "'
-                    iqbible-data-verse-id='iqbible-verse-" . esc_attr($verseId) . "'
+                    iqbible-data-chapter-id='" . esc_attr(intval($chapterId)) . "'
+                    iqbible-data-verse-id='" . esc_attr($verseId) . "'
                     iqbible-data-version-id='" . esc_attr($versionId) . "'>{$boldText}</a><br> 
                    - " . esc_html($bookName) . " " . intval($chapterId) . ":" . intval($verse) . " (" . esc_html(strtoupper($versionId)) . ")</li><br>";
         }
@@ -703,7 +703,7 @@ function iq_bible_topics_ajax_handler()
                     esc_attr($bookId),
                     esc_attr($chapterId),
                     esc_attr($firstVerseId),
-                    esc_html($entry['citation'])
+                    esc_html($entry['citation'])                    
                 );
             }
         }
