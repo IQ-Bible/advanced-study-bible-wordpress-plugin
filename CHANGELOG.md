@@ -7,6 +7,11 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-alpha-15] - 2025-08-05
+### Added
+- Cache checkbox in settings set to checked by default
+- PUC (Plugin Update Checker) library
+
 ## [1.0.0-alpha-14] - 2025-07-17
 ### Fixed
 - Search results click to correct verse not working

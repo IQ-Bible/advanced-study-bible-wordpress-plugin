@@ -51,6 +51,49 @@ function iqbible_create_notes_table()
 register_activation_hook(__FILE__, 'iqbible_create_notes_table');
 
 
+
+
+// Ensure default options are set on plugin activation
+register_activation_hook(__FILE__, 'iqbible_set_default_options');
+
+function iqbible_set_default_options() {
+    if (get_option('iq_bible_api_cache') === false) {
+        update_option('iq_bible_api_cache', 1);
+    }
+}
+
+
+
+
+
+
+
+// Namespace import MUST be at top level.
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+// Include the PUC library
+$puc_path = plugin_dir_path(__FILE__) . 'plugin-update-checker-5.6/plugin-update-checker.php';
+
+if (!file_exists($puc_path)) {
+    error_log('PUC file missing!');
+} else {
+    error_log('PUC file found and will be included.');
+    require_once $puc_path;
+
+    $myUpdateChecker = PucFactory::buildUpdateChecker(
+        'https://jodypm.com/updates/iqbible-plugin.json',
+        __FILE__,
+        'iqbible-advanced'
+    );
+}
+
+
+
+
+
+
+
+
 // Create saved verses table on plugin activation
 function iq_bible_create_saved_verses_table()
 {
