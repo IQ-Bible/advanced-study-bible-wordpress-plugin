@@ -1,25 +1,18 @@
 name: Build and Upload Plugin ZIP
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Prepare Plugin Folder
-        run: |
-          mkdir iqbible-advanced
-          shopt -s extglob
-          mv !(iqbible-advanced|.git|.github) iqbible-advanced/
-
-      - name: Zip Plugin
+      - name: Zip Plugin folder
         run: zip -r IQBiblePlugin.zip iqbible-advanced
 
       - name: Upload ZIP to GitHub Release

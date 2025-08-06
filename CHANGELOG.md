@@ -7,15 +7,16 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
-## [1.0.0-beta-2] - 2025-08-06
-### Added
-- Added GitHub Actions workflow to package the plugin ZIP with the proper folder structure required by WordPress (plugin files now correctly nested inside a root plugin folder in the ZIP), ensuring seamless plugin installation and automatic updates.
 
 ## [1.0.0-beta-1] - 2025-08-06
 ### Changed
 - Moved repo to IQ Bible org.
 - First beta version release preparation
 - PUC (Plugin Update Checker) build URL
+### Changed
+- Workflow release.yml
+### Added
+- Added GitHub Actions workflow to package the plugin ZIP with the proper folder structure required by WordPress (plugin files now correctly nested inside a root plugin folder in the ZIP), ensuring seamless plugin installation and automatic updates.
 
 
 ## [1.0.0-alpha-16] - 2025-08-06
