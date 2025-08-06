@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Zip Plugin folder
-        run: zip -r IQBiblePlugin.zip iqbible-advanced
+        run: zip -r IQBiblePlugin.zip iqbible-advanced-study-bible-wordpress-plugin
 
       - name: Upload ZIP to GitHub Release
         uses: softprops/action-gh-release@v1
