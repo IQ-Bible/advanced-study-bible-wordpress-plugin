@@ -71,7 +71,7 @@ if (!file_exists($puc_path)) {
     require_once $puc_path;
 
     $myUpdateChecker = PucFactory::buildUpdateChecker(
-        'https://2-us.com/releases/iqbible-wordpress-plugin.json',
+        'https://github.com/IQ-Bible/advanced-study-bible-wordpress-plugin/',
         __FILE__,
         'iqbible-advanced'
     );
