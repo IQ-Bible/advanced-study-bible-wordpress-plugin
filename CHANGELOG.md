@@ -8,6 +8,14 @@ The shortcode for this plugin is [iqbible_advanced].
 - Prophecies
 
 
+## [1.0.0-beta-5] - 2025-08-06
+### Fixed
+- incorrect workflows dir name
+
+## [1.0.0-beta-4] - 2025-08-06
+### Added
+- New yml file to create separate zip file for release
+
 ## [1.0.0-beta-2] - 2025-08-06
 ### Removed
 - GitHub Actions workflow (nesting issues)
