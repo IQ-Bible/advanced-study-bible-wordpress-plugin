@@ -20,8 +20,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-
-
 // Create notes table on plugin activation
 function iqbible_create_notes_table()
 {
@@ -51,8 +49,6 @@ function iqbible_create_notes_table()
 register_activation_hook(__FILE__, 'iqbible_create_notes_table');
 
 
-
-
 // Ensure default options are set on plugin activation
 register_activation_hook(__FILE__, 'iqbible_set_default_options');
 
@@ -62,13 +58,7 @@ function iqbible_set_default_options() {
     }
 }
 
-
-
-
-
-
-
-// Namespace import MUST be at top level.
+// Namespace for PUC (Plugin Update Checker)
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 // Include the PUC library
@@ -81,18 +71,11 @@ if (!file_exists($puc_path)) {
     require_once $puc_path;
 
     $myUpdateChecker = PucFactory::buildUpdateChecker(
-        'https://jodypm.com/updates/iqbible-plugin.json',
+        'https://2-us.com/releases/iqbible-wordpress-plugin.json',
         __FILE__,
         'iqbible-advanced'
     );
 }
-
-
-
-
-
-
-
 
 // Create saved verses table on plugin activation
 function iq_bible_create_saved_verses_table()
@@ -121,7 +104,6 @@ require_once plugin_dir_path(__FILE__) . 'includes/enqueue.php';
 require_once plugin_dir_path(__FILE__) . 'includes/functions.php';
 require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
-
 
 // Define Plugin Version Constant
 if ( ! defined( 'IQBIBLE_VERSION' ) ) {
@@ -205,7 +187,3 @@ add_action('update_option_iq_bible_api_key', 'iq_bible_clear_plugin_cache', 10, 
 /* Language Update AJAX */
 add_action('wp_ajax_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');
 add_action('wp_ajax_nopriv_iq_bible_update_language_and_clear_cache', 'iq_bible_update_language_and_clear_cache_handler');
-
-
-
-
