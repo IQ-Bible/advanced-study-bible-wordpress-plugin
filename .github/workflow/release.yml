@@ -9,10 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Zip Plugin folder
+      - name: Create Plugin Directory
+        run: |
+          mkdir iqbible-advanced-study-bible-wordpress-plugin
+          shopt -s extglob
+          mv !(iqbible-advanced-study-bible-wordpress-plugin|.git|.github) iqbible-advanced-study-bible-wordpress-plugin/
+
+      - name: Zip Plugin Folder
         run: zip -r IQBiblePlugin.zip iqbible-advanced-study-bible-wordpress-plugin
 
       - name: Upload ZIP to GitHub Release
