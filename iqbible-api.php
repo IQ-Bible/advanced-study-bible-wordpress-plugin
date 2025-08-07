@@ -58,6 +58,8 @@ function iqbible_set_default_options() {
     }
 }
 
+
+
 // Namespace for PUC (Plugin Update Checker)
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
@@ -65,17 +67,28 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 $puc_path = plugin_dir_path(__FILE__) . 'plugin-update-checker-5.6/plugin-update-checker.php';
 
 if (!file_exists($puc_path)) {
-    error_log('PUC file missing!');
+    error_log('PUC file missing at: ' . $puc_path);
 } else {
     error_log('PUC file found and will be included.');
     require_once $puc_path;
 
     $myUpdateChecker = PucFactory::buildUpdateChecker(
-        'https://github.com/IQ-Bible/advanced-study-bible-wordpress-plugin/',
+        'https://github.com/IQ-Bible/advanced-study-bible-wordpress-plugin/', // Your actual repo URL
         __FILE__,
-        'iqbible-advanced'
+        'iqbible-advanced-study-bible-wordpress-plugin' // Keep this as your local directory name
     );
+
+    // Optional: Set the branch for updates (if you want updates from a specific branch)
+    // $myUpdateChecker->setBranch('main'); // or 'develop' if you want dev updates
+    
+    // Optional: Add authentication if your repo is private (remove if public)
+    // $myUpdateChecker->setAuthentication('your-github-token');
+    
+    // Optional: Enable release assets (recommended for better update experience)
+    $myUpdateChecker->getVcsApi()->enableReleaseAssets();
 }
+
+
 
 // Create saved verses table on plugin activation
 function iq_bible_create_saved_verses_table()
