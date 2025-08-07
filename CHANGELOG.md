@@ -7,6 +7,10 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-beta-14] - 2025-08-07
+### Changed
+- Incorrect README url to https://github.com/IQ-Bible/advanced-study-bible-wordpress-plugin/issues
+
 ## [1.0.0-beta-13] - 2025-08-07
 ### Changed
 - Updated version in README
