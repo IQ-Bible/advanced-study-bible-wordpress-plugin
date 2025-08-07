@@ -31,6 +31,6 @@ jobs:
         with:
           # Use the GITHUB_WORKSPACE (repository root) and the defined PLUGIN_DIR to construct the path.
           # The script places the zip file directly in GITHUB_WORKSPACE (the repository root).
-          files: "${{ github.workspace }}/${{ env.PLUGIN_DIR }}.zip" 
+          files: "${{ env.PLUGIN_DIR }}.zip" 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
