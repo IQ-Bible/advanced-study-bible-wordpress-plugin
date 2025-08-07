@@ -3,7 +3,7 @@
 Plugin Name:    IQBible Advanced Study Bible
 Plugin URI:     https://iqbible.com
 Description:    A WordPress plugin to display an Advanced Study Bible and other features via the IQBible API. Use the shortcode [iqbible_advanced] to display on any page. For settings, go to Settings > IQBible.
-Version:        1.0.0-beta-15
+Version:        1.0.0-beta-16
 Requires at least: 6.0
 Tested up to:   6.8
 Requires PHP:   7.4
@@ -59,7 +59,6 @@ function iqbible_set_default_options() {
 }
 
 
-
 // Namespace for PUC (Plugin Update Checker)
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
@@ -73,21 +72,13 @@ if (!file_exists($puc_path)) {
     require_once $puc_path;
 
     $myUpdateChecker = PucFactory::buildUpdateChecker(
-        'https://github.com/IQ-Bible/advanced-study-bible-wordpress-plugin/', // Your actual repo URL
+        'https://github.com/IQ-Bible/advanced-study-bible-wordpress-plugin/',
         __FILE__,
-        'iqbible-advanced-study-bible-wordpress-plugin' // Keep this as your local directory name
+        'iqbible-advanced-study-bible-wordpress-plugin' 
     );
 
-    // Optional: Set the branch for updates (if you want updates from a specific branch)
-    // $myUpdateChecker->setBranch('main'); // or 'develop' if you want dev updates
-    
-    // Optional: Add authentication if your repo is private (remove if public)
-    // $myUpdateChecker->setAuthentication('your-github-token');
-    
-    // Optional: Enable release assets (recommended for better update experience)
     $myUpdateChecker->getVcsApi()->enableReleaseAssets();
 }
-
 
 
 // Create saved verses table on plugin activation

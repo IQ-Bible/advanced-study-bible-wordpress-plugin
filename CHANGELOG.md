@@ -7,6 +7,10 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-beta-16] - 2025-08-07
+### Changed
+- Updated PUC snippet in main php file
+
 ## [1.0.0-beta-15] - 2025-08-07
 ### Changed
 - Updated README style
