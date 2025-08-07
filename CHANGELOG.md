@@ -7,6 +7,9 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-beta-8] - 2025-08-07
+### Fixed
+- Org settings to allow read/write permissions for workflows
 
 ## [1.0.0-beta-7] - 2025-08-07
 ### Fixed
