@@ -8,6 +8,10 @@ The shortcode for this plugin is [iqbible_advanced].
 - Prophecies
 
 
+## [1.0.0-beta-7] - 2025-08-07
+### Fixed
+- Permissions issue with shell script for create-release-zip.sh
+
 ## [1.0.0-beta-6] - 2025-08-07
 ### Fixed
 - Shell script to zip release (single-nest) and GH Action to trigger on release
