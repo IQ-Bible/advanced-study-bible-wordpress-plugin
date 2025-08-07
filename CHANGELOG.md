@@ -8,6 +8,10 @@ The shortcode for this plugin is [iqbible_advanced].
 - Prophecies
 
 
+## [1.0.0-beta-6] - 2025-08-07
+### Fixed
+- Shell script to zip release (single-nest) and GH Action to trigger on release
+
 ## [1.0.0-beta-5] - 2025-08-06
 ### Fixed
 - incorrect workflows dir name
