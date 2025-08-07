@@ -10,6 +10,8 @@ The shortcode for this plugin is [iqbible_advanced].
 ## [1.0.0-beta-11] - 2025-08-07
 ### Changed
 - Updated PUC
+### Fixed
+- Incorrect URL for RapidAPI page in README.md
 
 ## [1.0.0-beta-10.2] - 2025-08-07
 ### Fixed
