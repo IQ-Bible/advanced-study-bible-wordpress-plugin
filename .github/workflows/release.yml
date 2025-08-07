@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Grant write permissions to the GITHUB_TOKEN for uploading release assets
+    env:
+      # Define the plugin directory name here.
+      # This assumes your main plugin directory is named 'advanced-study-bible-wordpress-plugin'.
+      # Adjust this if your plugin's main directory has a different name.
+      PLUGIN_DIR: advanced-study-bible-wordpress-plugin 
 
     steps:
       - name: Checkout code
@@ -16,11 +21,16 @@ jobs:
 
       - name: Create release zip
         run: |
-          ./create-release-zip.sh # Assuming your shell script is named create-release-zip.sh
+          # The script assumes it's being run from the plugin's root directory,
+          # which is the case when actions/checkout@v4 places the repository content.
+          # The script then changes directory to the parent to create the zip.
+          ./create-release-zip.sh
 
       - name: Upload release asset
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ github.workspace }}/${{ env.PLUGIN_DIR }}.zip # Assuming your zip is named plugin-dir.zip
+          # Use the GITHUB_WORKSPACE (repository root) and the defined PLUGIN_DIR to construct the path.
+          # The script places the zip file directly in GITHUB_WORKSPACE (the repository root).
+          files: "${{ github.workspace }}/${{ env.PLUGIN_DIR }}.zip" 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
