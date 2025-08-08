@@ -7,6 +7,15 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-beta-17] - 2025-08-07
+### Added
+- Helper text for Strong's tab (explaining about Strong's numbers)
+### Changed
+- Updated logo for admin iqbible settings
+- Updated styling for verse options buttons and tab buttons
+### Fixed
+- README incorrect instructions #12
+
 ## [1.0.0-beta-16] - 2025-08-07
 ### Changed
 - Updated PUC snippet in main php file

@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: IQBible Advanced Study Bible 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/iqbible\n"
+"Project-Id-Version: IQBible Advanced Study Bible 1.0.0-beta-16\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/iqbible-advanced-study-bible-wordpress-plugin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-06T15:07:22+02:00\n"
+"POT-Creation-Date: 2025-08-08T01:06:21+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: iqbible\n"
@@ -848,7 +848,7 @@ msgstr ""
 #: includes/search.php:8
 #: includes/search.php:13
 #: includes/shortcodes.php:81
-#: includes/strongs.php:13
+#: includes/strongs.php:14
 msgid "Search"
 msgstr ""
 
@@ -1184,8 +1184,12 @@ msgstr ""
 msgid "No stories available."
 msgstr ""
 
-#: includes/strongs.php:11
-msgid "Search Strong's..."
+#: includes/strongs.php:9
+msgid "Search using Strong’s numbers - identifiers for original Hebrew (Hxxxx) and Greek (Gxxxx) words in the Bible."
+msgstr ""
+
+#: includes/strongs.php:12
+msgid "Enter Strong's number (e.g., H21)"
 msgstr ""
 
 #: includes/topics.php:31

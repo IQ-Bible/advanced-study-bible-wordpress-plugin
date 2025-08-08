@@ -27,7 +27,7 @@
 
 
 
- /**
+/**
 *
 * Root Variables
 *
@@ -35,27 +35,27 @@
 :root {
     /* General vars */
     --font-family: inherit;
-    --background-color: #f8f9fa; 
-    --text-color: #343a40; 
+    --background-color: #f8f9fa;
+    --text-color: #343a40;
     --hover-background-color: #e9ecef;
-    
+
     /* Tab vars */
-    --tab-button-background-color: #6c757d; 
-    --tab-button-color: #fff; 
-    --tab-button-hover-background-color: #495057; 
-    --tab-active-background-color: #343a40; 
-    --tab-border-color: #dee2e6; 
-    
+    --tab-button-background-color: #6c757d;
+    --tab-button-color: #fff;
+    --tab-button-hover-background-color: #495057;
+    --tab-active-background-color: #343a40;
+    --tab-border-color: #dee2e6;
+
     /* Form and btns vars */
-    --form-border-color: #ced4da; 
-    --button-background-color: #6c757d; 
-    --button-color: #fff; 
-    --button-hover-opacity: 0.85; 
-    --input-background-color: #ffffff; 
+    --form-border-color: #ced4da;
+    --button-background-color: #6c757d;
+    --button-color: #fff;
+    --button-hover-opacity: 0.85;
+    --input-background-color: #ffffff;
 
     /* Audio vars */
-    --audio-shadow-color: rgba(52, 58, 64, 0.2); 
-    --audio-controls-color: #495057; 
+    --audio-shadow-color: rgba(52, 58, 64, 0.2);
+    --audio-controls-color: #495057;
 }
 
 
@@ -93,14 +93,14 @@
 
 /* Saved verse icon */
 .iqbible-saved-icon {
-  display: inline-block;          
-  vertical-align: middle;         
-  color: currentColor;            
-  opacity: 0.7;                   
-  width: 1em;                     
-  height: auto;                   
-  margin-left: 4px;               
-  filter: brightness(1.5);        
+    display: inline-block;
+    vertical-align: middle;
+    color: currentColor;
+    opacity: 0.7;
+    width: 1em;
+    height: auto;
+    margin-left: 4px;
+    filter: brightness(1.5);
 }
 
 
@@ -131,66 +131,62 @@
 }
 
 .iqbible-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: left;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, auto);
     gap: 3px;
     padding-bottom: 10px;
+    max-width: 1200px;
 }
 
-
-/* Base button styles shared by tab buttons and option buttons */
 .iqbible-tab-button,
 .iqbible-option-button {
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 6px;
-
-  background-color: var(--tab-button-background-color, #6c757d);
-  color: var(--tab-button-color, #fff);
-  border: none;
-  border-radius: 4px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-size: 14px;
-  text-align: left;
-  transition: background-color 0.3s ease, color 0.3s ease;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--tab-button-background-color, #6c757d);
+    color: var(--tab-button-color, #fff);
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-width: 0;
+    width: 100%;
 }
 
-/* Margin for vertical spacing on option buttons */
 .iqbible-option-button {
-  margin: 2px 0;
+    margin: 2px 0;
 }
 
-/* Hover effect for both */
 .iqbible-tab-button:hover,
 .iqbible-option-button:hover {
-  background-color: var(--tab-active-background-color, #495057);
-  color: var(--tab-button-color, #fff);
+    background-color: var(--tab-active-background-color, #495057);
+    color: var(--tab-button-color, #fff);
 }
 
-/* Icon container inside tab buttons */
 .iqbible-tab-button .iqbible-tab-icon img,
 .iqbible-option-button img {
-  filter: invert(100%);
-  display: block;
-  width: 1em;
-  height: auto;
-  flex-shrink: 0;
+    filter: invert(100%);
+    display: block;
+    width: 1em;
+    height: auto;
+    flex-shrink: 0;
 }
 
-/* Ensure the text inside tabs stays visible and no filter or opacity affects it */
 .iqbible-tab-button .iqbible-tab-text {
-  /* Explicitly set color so hover doesn't hide text */
-  color: inherit;
+    color: inherit;
 }
 
-/* Remove any hover text hiding or opacity changes */
 .iqbible-tab-button:hover .iqbible-tab-text {
-  color: inherit;
+    color: inherit;
 }
+
+
 
 
 
@@ -302,7 +298,7 @@
     cursor: pointer;
     margin-right: 10px;
     margin-bottom: 5px;
-    color:currentColor;
+    color: currentColor;
 }
 
 .iqbible-chapter-item:nth-child(5n) {
@@ -603,27 +599,6 @@ dialog::backdrop {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Style for the verse options box */
-.iqbible-verse-options {
-  display: none;
-  position: absolute;
-  align-items: flex-start;
-  justify-content: flex-start; 
-  background: #ffffff;
-  padding: 10px;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  top: 100%;
-  left: 0;
-  z-index: 10;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  box-sizing: border-box;
-  flex-wrap: wrap;
-  gap: 2px;
-}
-
-/* Hover effect for verse */
 .iqbible-verse:hover {
     background-color: white;
     transition: background-color 0.3s, color 0.3s;
@@ -631,10 +606,44 @@ dialog::backdrop {
     border-bottom-left-radius: 0;
 }
 
-/* Display the options box on hover */
 .iqbible-verse:hover .iqbible-verse-options {
     display: flex;
 }
+
+
+.iqbible-verse-options {
+    display: none;
+    position: absolute;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background: #ffffff;
+    padding: 5px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    top: 100%;
+    left: 0;
+    z-index: 10;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 2px;
+}
+
+.iqbible-verse:hover .iqbible-verse-options {
+    display: grid;
+}
+
+.iqbible-verse-options .iqbible-option-button {
+    justify-content: flex-start;
+    text-align: left;
+    width: 100%;
+    white-space: nowrap;
+    font-size:12px;
+}
+
+
 
 /* Loading Dialog */
 #iqbible-loading-dialog {
@@ -828,10 +837,21 @@ input:checked+.iqbible-slider:before {
 
 /* Max */
 @media (max-width: 767px) {
+    .iqbible-tab-icon {
+        display: block;
+    }
 
     .iqbible-tab-text {
         display: none;
     }
+
+
+
+    .iqbible-verse-options {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, auto);
+    }
+
 
     #iqbible-fetch-books-header {
         font-size: 1.3rem;
@@ -867,7 +887,7 @@ input:checked+.iqbible-slider:before {
     }
 
     .iqbible-tab-button {
-        font-size: 10px;
+        font-size: 16px;
     }
 
 }
