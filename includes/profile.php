@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) {
 } ?>
  
 <h2><?php esc_html_e('My Profile', 'iqbible'); ?></h2>
-<p>Version in beta</p>
+
 <div class="iqbible-profile-container">
 
 
