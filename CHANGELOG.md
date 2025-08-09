@@ -7,6 +7,10 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-beta-23] - 2025-08-09
+### Fixed
+- Mixed media (w/ old theme fonts)
+- Reverting to pre-rocket-loader code
 
 ## [1.0.0-beta-22] - 2025-08-09
 ### Fixed
