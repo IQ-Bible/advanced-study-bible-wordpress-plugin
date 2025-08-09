@@ -2014,14 +2014,18 @@ function saveVerse (verseId) {
 // })
 
 document.addEventListener('DOMContentLoaded', function () {
-  document
-    .querySelector('.iqbible-tab-button[title="My Profile"]')
-    ?.addEventListener('click', function () {
-      if (iqbible_ajax.isUserLoggedIn == '1') {
+  const profileBtn = document.querySelector('.iqbible-tab-button[title="My Profile"]');
+  if (profileBtn) {
+    profileBtn.addEventListener('click', function () {
+      if (iqbible_ajax.isUserLoggedIn === '1') {
         loadSavedVerses();
       }
     });
+  } else {
+    console.error('Profile button not found');
+  }
 });
+
 
 
 // Updated JavaScript for loading, sorting, and deleting verses
