@@ -7,6 +7,10 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-beta-21] - 2025-08-09
+### Fixed
+- Caching issues with progile tab
+
 ## [1.0.0-beta-20] - 2025-08-09
 ### Fixed
 - Saved verses not showing on live site implementations and adding correct version to main file
