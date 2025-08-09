@@ -6,14 +6,13 @@ if (!defined('ABSPATH')) {
 } ?>
  
 <h2><?php esc_html_e('My Profile', 'iqbible'); ?></h2>
-
+<p>Version in beta</p>
 <div class="iqbible-profile-container">
 
 
 <?php if (is_user_logged_in()) {
         // Get the current user information
         $current_user = wp_get_current_user();
-        //print_r($current_user);
 
         // Get the current user's first name and display name
         $first_name = get_user_meta($current_user->ID, 'first_name', true);

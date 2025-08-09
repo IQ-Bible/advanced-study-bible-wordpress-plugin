@@ -769,12 +769,12 @@ function attachSearchResultHandlers () {
         const versionId = this.getAttribute('iqbible-data-version-id')
 
         // Format the verseId correctly for loadChapterContent
-        verseId = verseId ? 'iqbible-verse-' + verseId : null;
+        verseId = verseId ? 'iqbible-verse-' + verseId : null
 
         // Switch to the Bible tab
         openTab('bible')
 
-        loadChapterContent(currentBookId, currentChapterId, versionId, verseId);
+        loadChapterContent(currentBookId, currentChapterId, versionId, verseId)
       })
     })
 }
@@ -2002,19 +2002,26 @@ function saveVerse (verseId) {
 
 // Listen for clicks on the Profile tab to run our loadSavedVerses()
 // ------------------------------------------------------------------
+// document.addEventListener('DOMContentLoaded', function () {
+//   document
+//     .querySelector('button[onclick="openTab(\'profile\')"]')
+//     .addEventListener('click', function () {
+//       if (iqbible_ajax.isUserLoggedIn == '1') {
+//         // is logged in
+//         loadSavedVerses()
+//       }
+//     })
+// })
+
 document.addEventListener('DOMContentLoaded', function () {
   document
-    .querySelector('button[onclick="openTab(\'profile\')"]')
-    .addEventListener('click', function () {
+    .querySelector('.iqbible-tab-button[title="My Profile"]')
+    ?.addEventListener('click', function () {
       if (iqbible_ajax.isUserLoggedIn == '1') {
-        // is logged in
-        loadSavedVerses()
+        loadSavedVerses();
       }
-    })
-})
-
-
-
+    });
+});
 
 
 // Updated JavaScript for loading, sorting, and deleting verses
@@ -2090,21 +2097,19 @@ function loadSavedVerses () {
   )
 }
 
-
 // Parse verseId helper function
-function parseVerseId(verseId) {
-  const idStr = verseId.toString().replace(/[^\d]/g, '');
-  const bookId = idStr.slice(0, 2);
-  const chapter = idStr.slice(2, 5).replace(/^0+/, '') || '0';
-  const verseNumber = idStr.slice(5, 8).replace(/^0+/, '') || '0';
+function parseVerseId (verseId) {
+  const idStr = verseId.toString().replace(/[^\d]/g, '')
+  const bookId = idStr.slice(0, 2)
+  const chapter = idStr.slice(2, 5).replace(/^0+/, '') || '0'
+  const verseNumber = idStr.slice(5, 8).replace(/^0+/, '') || '0'
 
   return {
     bookId: parseInt(bookId, 10),
     chapter: parseInt(chapter, 10),
     verseNumber: parseInt(verseNumber, 10)
-  };
+  }
 }
-
 
 function displayVerses (sortOrder) {
   var verses = window.savedVerses
@@ -2176,53 +2181,52 @@ function displayVerses (sortOrder) {
   //   versesContainer.appendChild(verseElement)
   // })
 
-
   verses.forEach(function (verse) {
-  const verseElement = document.createElement('div');
-  verseElement.className = 'iqbible-saved-verse';
-  verseElement.dataset.verseId = verse.verseId;
+    const verseElement = document.createElement('div')
+    verseElement.className = 'iqbible-saved-verse'
+    verseElement.dataset.verseId = verse.verseId
 
-  const contentDiv = document.createElement('div');
-  contentDiv.className = 'iqbible-verse-content';
+    const contentDiv = document.createElement('div')
+    contentDiv.className = 'iqbible-verse-content'
 
-  const textDiv = document.createElement('div');
-  textDiv.className = 'iqbible-verse-text';
+    const textDiv = document.createElement('div')
+    textDiv.className = 'iqbible-verse-text'
 
-  // 👉 Parse it here
-  const parsed = parseVerseId(verse.verseId);
+    // 👉 Parse it here
+    const parsed = parseVerseId(verse.verseId)
 
-  textDiv.textContent = `${verse.verseText} - ${escapeHTML(verse.bookName)} ${parsed.chapter}:${parsed.verseNumber} `;
+    textDiv.textContent = `${verse.verseText} - ${escapeHTML(verse.bookName)} ${
+      parsed.chapter
+    }:${parsed.verseNumber} `
 
-  const versionSpan = document.createElement('span');
-  versionSpan.className = 'version-id';
-  versionSpan.textContent = `(${escapeHTML(verse.versionId.toUpperCase())})`;
-  textDiv.appendChild(versionSpan);
+    const versionSpan = document.createElement('span')
+    versionSpan.className = 'version-id'
+    versionSpan.textContent = `(${escapeHTML(verse.versionId.toUpperCase())})`
+    textDiv.appendChild(versionSpan)
 
-  const dateDiv = document.createElement('div');
-  dateDiv.className = 'saved-date';
-  const dateSmall = document.createElement('small');
-  const formattedDate = new Date(verse.savedAt).toLocaleDateString();
-  dateSmall.textContent = `${iqbible_ajax.i18n.savedOn} ${formattedDate}`;
-  dateDiv.appendChild(dateSmall);
+    const dateDiv = document.createElement('div')
+    dateDiv.className = 'saved-date'
+    const dateSmall = document.createElement('small')
+    const formattedDate = new Date(verse.savedAt).toLocaleDateString()
+    dateSmall.textContent = `${iqbible_ajax.i18n.savedOn} ${formattedDate}`
+    dateDiv.appendChild(dateSmall)
 
-  const deleteButton = document.createElement('button');
-  deleteButton.className = 'delete-verse';
-  deleteButton.textContent = iqbible_ajax.i18n.remove;
-  deleteButton.addEventListener('click', function () {
-    deleteVerse(verse.verseId);
-  });
+    const deleteButton = document.createElement('button')
+    deleteButton.className = 'delete-verse'
+    deleteButton.textContent = iqbible_ajax.i18n.remove
+    deleteButton.addEventListener('click', function () {
+      deleteVerse(verse.verseId)
+    })
 
-  const paragraphBreak = document.createElement('p');
+    const paragraphBreak = document.createElement('p')
 
-  contentDiv.appendChild(textDiv);
-  contentDiv.appendChild(dateDiv);
-  contentDiv.appendChild(deleteButton);
-  contentDiv.appendChild(paragraphBreak);
-  verseElement.appendChild(contentDiv);
-  versesContainer.appendChild(verseElement);
-});
-
-
+    contentDiv.appendChild(textDiv)
+    contentDiv.appendChild(dateDiv)
+    contentDiv.appendChild(deleteButton)
+    contentDiv.appendChild(paragraphBreak)
+    verseElement.appendChild(contentDiv)
+    versesContainer.appendChild(verseElement)
+  })
 }
 
 // Simple HTML escaping helper function for JavaScript
