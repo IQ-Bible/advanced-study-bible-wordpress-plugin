@@ -3,7 +3,7 @@
 Plugin Name:    IQBible Advanced Study Bible
 Plugin URI:     https://iqbible.com
 Description:    A WordPress plugin to display an Advanced Study Bible and other features via the IQBible API. Use the shortcode [iqbible_advanced] to display on any page. For settings, go to Settings > IQBible.
-Version:        1.0.0-beta-20
+Version:        1.0.0-beta-21
 Requires at least: 6.0
 Tested up to:   6.8
 Requires PHP:   7.4
