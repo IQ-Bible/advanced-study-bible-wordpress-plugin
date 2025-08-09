@@ -149,3 +149,12 @@ function iq_bible_enqueue_admin_assets($hook_suffix)
 add_action('wp_enqueue_scripts', 'iq_bible_api_enqueue_assets');
 add_action('admin_enqueue_scripts', 'iq_bible_enqueue_admin_assets');
 add_action('wp_enqueue_scripts', 'iqbible_enqueue_dashicons');
+
+
+
+add_filter('script_loader_tag', function($tag, $handle) {
+    if ($handle === 'iqbible-script') {
+        return str_replace(' src', ' data-cfasync="false" src', $tag);
+    }
+    return $tag;
+}, 10, 2);
