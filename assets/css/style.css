@@ -823,7 +823,7 @@ input:checked+.iqbible-slider:before {
 font-size: 0.7em;
     color: gray;
     margin-top: 10px;
-    text-align: right;
+    text-align: center;
     border-top: 1px solid #dee2e6;
     padding-top: 15px;
 }

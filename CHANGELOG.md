@@ -12,6 +12,7 @@ The shortcode for this plugin is [iqbible_advanced].
 - Caching issues with chapter content not loading
 ### Added
 - Down arrowhead ⌄ to Book and Version to indicate they are clickable
+- Beta notice to version number (if version contains 'beta')
 
 ## [1.0.0-beta-23] - 2025-08-09
 ### Fixed

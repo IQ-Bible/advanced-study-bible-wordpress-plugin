@@ -14,6 +14,19 @@ if (!defined('ABSPATH')) {
 // instance of [x.x.x] and return it.
 // It ignores the first as this should be [Unreleased].
 // Adheres to semantic versioning.
+// function iqbible_get_latest_plugin_version() {
+//     $changelog_path = plugin_dir_path( dirname( __FILE__ ) ) . 'CHANGELOG.md';
+
+//     if ( file_exists( $changelog_path ) ) {
+//         $subject = file_get_contents( $changelog_path );
+//         preg_match_all( '/\[.*?\]/', $subject, $matches );
+//         if ( isset( $matches[0][1] ) ) {
+//             return 'v' . str_replace( array( '[', ']' ), '', $matches[0][1] );
+//         }
+//     }
+//     return 'Unknown';
+// }
+
 function iqbible_get_latest_plugin_version() {
     $changelog_path = plugin_dir_path( dirname( __FILE__ ) ) . 'CHANGELOG.md';
 
@@ -21,11 +34,19 @@ function iqbible_get_latest_plugin_version() {
         $subject = file_get_contents( $changelog_path );
         preg_match_all( '/\[.*?\]/', $subject, $matches );
         if ( isset( $matches[0][1] ) ) {
-            return 'v' . str_replace( array( '[', ']' ), '', $matches[0][1] );
+            $version = str_replace( array( '[', ']' ), '', $matches[0][1] );
+            $output  = 'v' . $version;
+
+            // Add disclaimer if 'beta' is in the version string
+            if ( stripos( $version, 'beta' ) !== false ) {
+                $output .= ' - Please note that this is a beta version of the IQ Bible WordPress plugin which is still undergoing final testing before its official release.';
+            }
+            return $output;
         }
     }
     return 'Unknown';
 }
+
 
 
 // Book icons
