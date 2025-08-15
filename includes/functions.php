@@ -14,33 +14,24 @@ if (!defined('ABSPATH')) {
 // instance of [x.x.x] and return it.
 // It ignores the first as this should be [Unreleased].
 // Adheres to semantic versioning.
-// function iqbible_get_latest_plugin_version() {
-//     $changelog_path = plugin_dir_path( dirname( __FILE__ ) ) . 'CHANGELOG.md';
+function iqbible_get_latest_plugin_version()
+{
+    $changelog_path = plugin_dir_path(dirname(__FILE__)) . 'CHANGELOG.md';
 
-//     if ( file_exists( $changelog_path ) ) {
-//         $subject = file_get_contents( $changelog_path );
-//         preg_match_all( '/\[.*?\]/', $subject, $matches );
-//         if ( isset( $matches[0][1] ) ) {
-//             return 'v' . str_replace( array( '[', ']' ), '', $matches[0][1] );
-//         }
-//     }
-//     return 'Unknown';
-// }
-
-function iqbible_get_latest_plugin_version() {
-    $changelog_path = plugin_dir_path( dirname( __FILE__ ) ) . 'CHANGELOG.md';
-
-    if ( file_exists( $changelog_path ) ) {
-        $subject = file_get_contents( $changelog_path );
-        preg_match_all( '/\[.*?\]/', $subject, $matches );
-        if ( isset( $matches[0][1] ) ) {
-            $version = str_replace( array( '[', ']' ), '', $matches[0][1] );
+    if (file_exists($changelog_path)) {
+        $subject = file_get_contents($changelog_path);
+        preg_match_all('/\[.*?\]/', $subject, $matches);
+        if (isset($matches[0][1])) {
+            $version = str_replace(array('[', ']'), '', $matches[0][1]);
             $output  = 'v' . $version;
 
             // Add disclaimer if 'beta' is in the version string
-            if ( stripos( $version, 'beta' ) !== false ) {
-                $output .= ' - Please note that this is a beta version of the IQ Bible WordPress plugin which is still undergoing final testing before its official release.';
+            $beta_notice = __(' — Please note that this is a beta version of the IQ Bible WordPress plugin which is still undergoing final testing before its official release.', 'iq-bible');
+
+            if (stripos($version, 'beta') !== false) {
+                $output .= $beta_notice;
             }
+
             return $output;
         }
     }
@@ -72,17 +63,16 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
 
 
     // Cache the response using the Transients API if caching is enabled
-if ($cache_enabled && $cache_duration > 0) {
+    if ($cache_enabled && $cache_duration > 0) {
 
-    // Check if the response is valid (non-empty array)
-    if ( ! empty($decoded_response) && is_array($decoded_response) ) {
-        set_transient($transient_key, $decoded_response, $cache_duration);
-    } else {
-        // Short cache empty/error results so we retry soon
-        set_transient($transient_key, $decoded_response, 30); // 30 seconds
+        // Check if the response is valid (non-empty array)
+        if (! empty($decoded_response) && is_array($decoded_response)) {
+            set_transient($transient_key, $decoded_response, $cache_duration);
+        } else {
+            // Short cache empty/error results so we retry soon
+            set_transient($transient_key, $decoded_response, 30); // 30 seconds
+        }
     }
-
-}
 
     // Build the base API URL
     $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
@@ -98,7 +88,7 @@ if ($cache_enabled && $cache_duration > 0) {
         'timeout' => 15
     );
 
-    
+
     $response = wp_remote_get($url_with_params, $args);
 
 
@@ -631,7 +621,7 @@ function iq_bible_plans_ajax_handler()
                 // Use book map safely with null coalescing operator ??
                 $bookName  = $book_map[$bookId] ?? __('Unknown Book', 'iqbible');
 
-                
+
                 $readings_html[] = sprintf(
                     '<label class="chapter-checkbox-label" style="display: inline-flex; align-items: center; gap: 5px; margin-right: 10px; white-space: nowrap;">
                     <input type="checkbox" class="chapter-checkbox" data-reading-ref="%s">
@@ -643,7 +633,6 @@ function iq_bible_plans_ajax_handler()
                     esc_html($bookName),
                     esc_html($chapterId)
                 );
-
             } // End foreach $id
 
             // Only implode if there's something to implode
@@ -732,7 +721,7 @@ function iq_bible_topics_ajax_handler()
                     esc_attr($bookId),
                     esc_attr($chapterId),
                     esc_attr($firstVerseId),
-                    esc_html($entry['citation'])                    
+                    esc_html($entry['citation'])
                 );
             }
         }
