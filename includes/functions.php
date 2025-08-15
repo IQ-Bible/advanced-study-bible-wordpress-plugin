@@ -49,19 +49,25 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
     // Generate a unique transient key based on the endpoint and parameters
     $transient_key = 'iqbible_' . md5($endpoint . json_encode($params));
 
-    // Check if cached data exists and caching is enabled
-    if ($cache_enabled && $cache_duration > 0) {
-        $cached_response = get_transient($transient_key);
-        if ($cached_response !== false) {
-            error_log('Returning cached response for ' . $transient_key);
-            return $cached_response; // Return cached data if available
-        }
+
+    // Cache the response using the Transients API if caching is enabled
+if ($cache_enabled && $cache_duration > 0) {
+
+    // Check if the response is valid (non-empty array)
+    if ( ! empty($decoded_response) && is_array($decoded_response) ) {
+        set_transient($transient_key, $decoded_response, $cache_duration);
+    } else {
+        // Short cache empty/error results so we retry soon
+        set_transient($transient_key, $decoded_response, 30); // 30 seconds
     }
 
+}
 
     // Build the base API URL
     $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
+
     $url_with_params = add_query_arg($params, $base_url);
+
     error_log('Requesting URL: ' . $url_with_params);
     $args = array(
         'headers' => array(
@@ -70,6 +76,8 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
         ),
         'timeout' => 15
     );
+
+    
     $response = wp_remote_get($url_with_params, $args);
 
 

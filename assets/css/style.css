@@ -819,7 +819,14 @@ input:checked+.iqbible-slider:before {
 }
 
 
-
+#iqbible-footer-version {
+font-size: 0.7em;
+    color: gray;
+    margin-top: 10px;
+    text-align: right;
+    border-top: 1px solid #dee2e6;
+    padding-top: 15px;
+}
 
 /**
 *

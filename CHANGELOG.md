@@ -7,6 +7,12 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
+## [1.0.0-beta-24] - 2025-08-15
+### Fixed
+- Caching issues with chapter content not loading
+### Added
+- Down arrowhead ⌄ to Book and Version to indicate they are clickable
+
 ## [1.0.0-beta-23] - 2025-08-09
 ### Fixed
 - Mixed media (w/ old theme fonts)

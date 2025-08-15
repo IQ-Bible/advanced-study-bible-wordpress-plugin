@@ -9,7 +9,8 @@ if (!defined('ABSPATH')) {
 
     <div id="iqbible-header-container">
 
-        <?php //echo esc_html($bookName); ?>
+        <?php //echo esc_html($bookName); 
+        ?>
 
         <h2 title="Change book or chapter" id="iqbible-fetch-books-header"></h2>
 
@@ -35,4 +36,8 @@ if (!defined('ABSPATH')) {
     <span id="iqbible-prev-chapter">
         < <?php esc_html_e('prev', 'iqbible'); ?> </span> |
             <span id="iqbible-next-chapter"> <?php esc_html_e('next', 'iqbible'); ?> > </span>
+</div>
+
+<div id="iqbible-footer-version">
+    <?php echo esc_html(iqbible_get_latest_plugin_version()); ?>
 </div>

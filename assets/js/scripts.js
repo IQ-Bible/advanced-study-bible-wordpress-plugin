@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function showLoaderWithDelay () {
     // Clear any existing timeout first
     clearTimeout(loaderTimeout)
-    loaderTimeout = setTimeout(showLoadingDialog, 1000)
+    loaderTimeout = setTimeout(showLoadingDialog, 2000)
   }
 
   function showLoadingDialog () {
@@ -339,10 +339,21 @@ function loadChapterContent (
         headerElement.appendChild(img)
         headerElement.appendChild(bookNameTextNode)
         headerElement.appendChild(chapterTextNode)
+
+
+
+        // Add smaller clickable arrow ▼
+const arrowSpan = document.createElement('span')
+arrowSpan.textContent = '  ⌄'
+arrowSpan.style.fontSize = '0.6em'
+arrowSpan.style.cursor = 'pointer'
+arrowSpan.style.verticalAlign = 'middle'
+headerElement.appendChild(arrowSpan)
+        
       } else {
         // Fallback or error logging
         if (headerElement) {
-          headerElement.textContent = (bookName || 'Book') + ' ' + chapterNum // Fallback includes book name
+          headerElement.textContent = (bookName || 'Book') + ' ' + chapterNum
         }
         if (!headerElement)
           console.error('Element "#iqbible-fetch-books-header" not found.')
@@ -352,7 +363,7 @@ function loadChapterContent (
       }
 
       document.getElementById('iqbible-fetch-books-header-version').innerText =
-        ' (' + version.toUpperCase() + ')'
+        ' (' + version.toUpperCase() + ') ⌄'
 
       // Set text direction based on version
       const mainContent = document.getElementById(
@@ -1404,7 +1415,6 @@ document.addEventListener('DOMContentLoaded', function () {
             currentBookId = bookId // Update current book
 
             // Add event listener to load the chapter content when clicked
-            // Add event listener to load the chapter content when clicked
             button.addEventListener('click', function () {
               var chapterId = this.getAttribute('iqbible-data-chapter-id')
 
@@ -2014,19 +2024,19 @@ function saveVerse (verseId) {
 // })
 
 document.addEventListener('DOMContentLoaded', function () {
-  const profileBtn = document.querySelector('.iqbible-tab-button[title="My Profile"]');
+  const profileBtn = document.querySelector(
+    '.iqbible-tab-button[title="My Profile"]'
+  )
   if (profileBtn) {
     profileBtn.addEventListener('click', function () {
       if (iqbible_ajax.isUserLoggedIn === '1') {
-        loadSavedVerses();
+        loadSavedVerses()
       }
-    });
+    })
   } else {
-    console.error('Profile button not found');
+    console.error('Profile button not found')
   }
-});
-
-
+})
 
 // Updated JavaScript for loading, sorting, and deleting verses
 function loadSavedVerses () {
