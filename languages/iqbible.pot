@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: IQBible Advanced Study Bible 1.0.0-beta-16\n"
+"Project-Id-Version: IQBible Advanced Study Bible 1.0.0-beta-24\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/iqbible-advanced-study-bible-wordpress-plugin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-08T01:06:21+02:00\n"
+"POT-Creation-Date: 2025-08-15T16:21:40+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: iqbible\n"
@@ -140,11 +140,11 @@ msgstr ""
 msgid "IQBible Settings"
 msgstr ""
 
-#: includes/bible.php:36
+#: includes/bible.php:37
 msgid "prev"
 msgstr ""
 
-#: includes/bible.php:37
+#: includes/bible.php:38
 msgid "next"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgid "Verse saved successfully!"
 msgstr ""
 
 #: includes/enqueue.php:76
-#: includes/functions.php:1447
+#: includes/functions.php:1466
 msgid "Verse already saved."
 msgstr ""
 
@@ -352,432 +352,436 @@ msgstr ""
 msgid "Extra Biblical"
 msgstr ""
 
-#: includes/functions.php:120
+#: includes/functions.php:18
+msgid "— Please note that this is a beta version of the IQ Bible WordPress plugin which is still undergoing final testing before its official release."
+msgstr ""
+
+#: includes/functions.php:140
 msgid "Search Results for "
 msgstr ""
 
-#: includes/functions.php:138
+#: includes/functions.php:158
 msgid "Unknown Book Name"
 msgstr ""
 
 #. translators: %s: The user's search query.
-#: includes/functions.php:168
+#: includes/functions.php:188
 msgid "No results found for: '%s'."
 msgstr ""
 
 #. translators: %s: The abbreviation of the Bible version being used (e.g., KJV).
-#: includes/functions.php:171
+#: includes/functions.php:191
 msgid "Remember, you are using the %s version. Check your spelling for the appropriate version!"
 msgstr ""
 
-#: includes/functions.php:194
+#: includes/functions.php:214
 msgid "Please enter a biblical word to define."
 msgstr ""
 
-#: includes/functions.php:200
+#: includes/functions.php:220
 msgid "Smith's Bible Dictionary"
 msgstr ""
 
-#: includes/functions.php:209
+#: includes/functions.php:229
 msgid "From %s:"
 msgstr ""
 
 #. translators: %s: The word the user tried to define.
-#: includes/functions.php:231
+#: includes/functions.php:251
 msgid "No biblical definition found for %s."
 msgstr ""
 
-#: includes/functions.php:252
-#: includes/functions.php:679
+#: includes/functions.php:272
+#: includes/functions.php:698
 msgid "Invalid input."
 msgstr ""
 
-#: includes/functions.php:263
-#: includes/functions.php:413
-#: includes/functions.php:419
+#: includes/functions.php:283
+#: includes/functions.php:433
+#: includes/functions.php:439
 msgid "Strong's ID:"
 msgstr ""
 
-#: includes/functions.php:269
+#: includes/functions.php:289
 msgid "No concordance results found."
 msgstr ""
 
-#: includes/functions.php:285
+#: includes/functions.php:305
 msgid "Verse ID is required."
 msgstr ""
 
-#: includes/functions.php:310
-#: includes/functions.php:603
-#: includes/functions.php:1596
+#: includes/functions.php:330
+#: includes/functions.php:623
+#: includes/functions.php:1615
 msgid "Unknown Book"
 msgstr ""
 
-#: includes/functions.php:336
+#: includes/functions.php:356
 msgid "No cross references found."
 msgstr ""
 
-#: includes/functions.php:356
-#: includes/functions.php:1430
-#: includes/functions.php:1619
+#: includes/functions.php:376
+#: includes/functions.php:1449
+#: includes/functions.php:1638
 msgid "Invalid verse ID."
 msgstr ""
 
-#: includes/functions.php:364
+#: includes/functions.php:384
 msgid "No original text found for the specified verse ID."
 msgstr ""
 
-#: includes/functions.php:374
+#: includes/functions.php:394
 msgid "Hebrew"
 msgstr ""
 
-#: includes/functions.php:375
+#: includes/functions.php:395
 msgid "Original Hebrew is read from right to left &larr;"
 msgstr ""
 
-#: includes/functions.php:377
+#: includes/functions.php:397
 msgid "Greek"
 msgstr ""
 
-#: includes/functions.php:406
-#: includes/functions.php:417
+#: includes/functions.php:426
+#: includes/functions.php:437
 msgid "#%d:"
 msgstr ""
 
-#: includes/functions.php:412
-#: includes/functions.php:418
+#: includes/functions.php:432
+#: includes/functions.php:438
 msgid "Pronunciation:"
 msgstr ""
 
-#: includes/functions.php:414
-#: includes/functions.php:420
+#: includes/functions.php:434
+#: includes/functions.php:440
 msgid "Strong's Glossary:"
 msgstr ""
 
-#: includes/functions.php:458
+#: includes/functions.php:478
 msgid "Default Plan"
 msgstr ""
 
-#: includes/functions.php:466
+#: includes/functions.php:486
 msgid "Invalid number of days."
 msgstr ""
 
-#: includes/functions.php:492
+#: includes/functions.php:512
 msgid "Invalid plan data received from API. Please try again."
 msgstr ""
 
-#: includes/functions.php:509
+#: includes/functions.php:529
 msgid "Error processing plan dates."
 msgstr ""
 
-#: includes/functions.php:519
+#: includes/functions.php:539
 msgid "Bible Reading Plan"
 msgstr ""
 
-#: includes/functions.php:521
+#: includes/functions.php:541
 #: includes/plans.php:30
 msgid "Start Date:"
 msgstr ""
 
-#: includes/functions.php:522
+#: includes/functions.php:542
 msgid "End Date:"
 msgstr ""
 
 #. translators: %d: The number of days in the reading plan duration.
-#: includes/functions.php:524
+#: includes/functions.php:544
 #: includes/plans.php:18
 msgid "Duration:"
 msgstr ""
 
 #. translators: %d: The number of days in the reading plan duration.
-#: includes/functions.php:524
+#: includes/functions.php:544
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/functions.php:529
+#: includes/functions.php:549
 msgid "Print / Save as PDF"
 msgstr ""
 
-#: includes/functions.php:625
+#: includes/functions.php:644
 msgid "No valid readings found for this day."
 msgstr ""
 
-#: includes/functions.php:629
+#: includes/functions.php:648
 msgid "No reading assigned for this day."
 msgstr ""
 
-#: includes/functions.php:651
+#: includes/functions.php:670
 msgid "Failed to generate plan content."
 msgstr ""
 
-#: includes/functions.php:716
+#: includes/functions.php:735
 msgid "No results found for this topic."
 msgstr ""
 
-#: includes/functions.php:736
+#: includes/functions.php:755
 msgid "Invalid book ID or chapter ID."
 msgstr ""
 
-#: includes/functions.php:810
+#: includes/functions.php:829
 msgid "Saved Verse Icon"
 msgstr ""
 
-#: includes/functions.php:810
+#: includes/functions.php:829
 msgid "Saved Verse"
 msgstr ""
 
-#: includes/functions.php:877
+#: includes/functions.php:896
 msgid "Copy Icon"
 msgstr ""
 
-#: includes/functions.php:878
+#: includes/functions.php:897
 msgid "Copy"
 msgstr ""
 
-#: includes/functions.php:880
+#: includes/functions.php:899
 msgid "Original Text Icon"
 msgstr ""
 
-#: includes/functions.php:881
+#: includes/functions.php:900
 #: includes/shortcodes.php:252
 msgid "Original Text"
 msgstr ""
 
-#: includes/functions.php:883
+#: includes/functions.php:902
 msgid "Commentary Icon"
 msgstr ""
 
-#: includes/functions.php:884
+#: includes/functions.php:903
 #: includes/help.php:20
 #: includes/shortcodes.php:288
 msgid "Commentary"
 msgstr ""
 
-#: includes/functions.php:886
+#: includes/functions.php:905
 msgid "Cross References Icon"
 msgstr ""
 
-#: includes/functions.php:887
+#: includes/functions.php:906
 #: includes/help.php:19
 #: includes/shortcodes.php:242
 msgid "Cross References"
 msgstr ""
 
-#: includes/functions.php:890
+#: includes/functions.php:909
 msgid "Share Icon"
 msgstr ""
 
-#: includes/functions.php:891
+#: includes/functions.php:910
 #: includes/help.php:21
 msgid "Share"
 msgstr ""
 
-#: includes/functions.php:893
+#: includes/functions.php:912
 msgid "Bookmark Icon"
 msgstr ""
 
-#: includes/functions.php:894
+#: includes/functions.php:913
 #: includes/help.php:22
 msgid "Bookmark"
 msgstr ""
 
-#: includes/functions.php:902
+#: includes/functions.php:921
 msgid "No chapter content results found."
 msgstr ""
 
-#: includes/functions.php:940
+#: includes/functions.php:959
 msgid "Invalid book ID."
 msgstr ""
 
-#: includes/functions.php:1057
+#: includes/functions.php:1076
 #: includes/plans.php:39
 msgid "Old Testament"
 msgstr ""
 
-#: includes/functions.php:1067
+#: includes/functions.php:1086
 #: includes/plans.php:40
 msgid "New Testament"
 msgstr ""
 
-#: includes/functions.php:1118
+#: includes/functions.php:1137
 msgid "You do not have sufficient permissions to perform this action."
 msgstr ""
 
-#: includes/functions.php:1163
+#: includes/functions.php:1182
 msgid "No versions found"
 msgstr ""
 
-#: includes/functions.php:1224
-#: includes/functions.php:1268
-#: includes/functions.php:1316
-#: includes/functions.php:1354
+#: includes/functions.php:1243
+#: includes/functions.php:1287
+#: includes/functions.php:1335
+#: includes/functions.php:1373
 msgid "User not logged in"
 msgstr ""
 
-#: includes/functions.php:1231
+#: includes/functions.php:1250
 msgid "Note content is empty."
 msgstr ""
 
-#: includes/functions.php:1252
+#: includes/functions.php:1271
 msgid "Failed to save the note."
 msgstr ""
 
-#: includes/functions.php:1277
+#: includes/functions.php:1296
 msgid "Invalid note ID or content."
 msgstr ""
 
-#: includes/functions.php:1298
+#: includes/functions.php:1317
 msgid "Failed to update note."
 msgstr ""
 
-#: includes/functions.php:1336
+#: includes/functions.php:1355
 msgid "No notes found!"
 msgstr ""
 
-#: includes/functions.php:1368
+#: includes/functions.php:1387
 msgid "Failed to delete note."
 msgstr ""
 
-#: includes/functions.php:1371
+#: includes/functions.php:1390
 msgid "Invalid note ID."
 msgstr ""
 
-#: includes/functions.php:1416
-#: includes/functions.php:1485
-#: includes/functions.php:1611
+#: includes/functions.php:1435
+#: includes/functions.php:1504
+#: includes/functions.php:1630
 msgid "User not logged in."
 msgstr ""
 
-#: includes/functions.php:1467
+#: includes/functions.php:1486
 msgid "Error saving verse."
 msgstr ""
 
-#: includes/functions.php:1638
+#: includes/functions.php:1657
 msgid "Error deleting verse."
 msgstr ""
 
-#: includes/functions.php:1651
-#: includes/functions.php:1798
+#: includes/functions.php:1670
+#: includes/functions.php:1817
 msgid "You are already logged in."
 msgstr ""
 
-#: includes/functions.php:1661
-#: includes/functions.php:1805
+#: includes/functions.php:1680
+#: includes/functions.php:1824
 msgid "Username"
 msgstr ""
 
-#: includes/functions.php:1665
-#: includes/functions.php:1741
+#: includes/functions.php:1684
+#: includes/functions.php:1760
 msgid "Email"
 msgstr ""
 
-#: includes/functions.php:1669
-#: includes/functions.php:1809
+#: includes/functions.php:1688
+#: includes/functions.php:1828
 msgid "Password"
 msgstr ""
 
-#: includes/functions.php:1673
+#: includes/functions.php:1692
 msgid "Register"
 msgstr ""
 
-#: includes/functions.php:1698
+#: includes/functions.php:1717
 msgid "Username or email already exists"
 msgstr ""
 
-#: includes/functions.php:1701
+#: includes/functions.php:1720
 msgid "Please fill in all required fields"
 msgstr ""
 
-#: includes/functions.php:1715
+#: includes/functions.php:1734
 msgid "Error creating user: "
 msgstr ""
 
-#: includes/functions.php:1731
+#: includes/functions.php:1750
 msgid "You need to be logged in to view your profile."
 msgstr ""
 
-#: includes/functions.php:1731
+#: includes/functions.php:1750
 msgid "Log in here"
 msgstr ""
 
-#: includes/functions.php:1738
+#: includes/functions.php:1757
 msgid "Your Profile"
 msgstr ""
 
-#: includes/functions.php:1745
+#: includes/functions.php:1764
 msgid "First Name"
 msgstr ""
 
-#: includes/functions.php:1749
+#: includes/functions.php:1768
 msgid "Last Name"
 msgstr ""
 
-#: includes/functions.php:1756
+#: includes/functions.php:1775
 msgid "Update Profile"
 msgstr ""
 
-#: includes/functions.php:1774
+#: includes/functions.php:1793
 msgid "Profile updated successfully!"
 msgstr ""
 
-#: includes/functions.php:1787
+#: includes/functions.php:1806
 msgid "Logout"
 msgstr ""
 
-#: includes/functions.php:1789
+#: includes/functions.php:1808
 msgid "You are not logged in."
 msgstr ""
 
-#: includes/functions.php:1798
+#: includes/functions.php:1817
 msgid "Go to homepage"
 msgstr ""
 
-#: includes/functions.php:1813
+#: includes/functions.php:1832
 msgid "Log In"
 msgstr ""
 
-#: includes/functions.php:1839
+#: includes/functions.php:1858
 msgid "Error: No book ID provided."
 msgstr ""
 
-#: includes/functions.php:1858
+#: includes/functions.php:1877
 msgid "Introduction"
 msgstr ""
 
-#: includes/functions.php:1864
+#: includes/functions.php:1883
 msgid "Long Introduction"
 msgstr ""
 
-#: includes/functions.php:1870
+#: includes/functions.php:1889
 msgid "Author"
 msgstr ""
 
-#: includes/functions.php:1876
+#: includes/functions.php:1895
 msgid "Date"
 msgstr ""
 
-#: includes/functions.php:1882
+#: includes/functions.php:1901
 msgid "Word Origin"
 msgstr ""
 
-#: includes/functions.php:1888
+#: includes/functions.php:1907
 msgid "Genre"
 msgstr ""
 
-#: includes/functions.php:1894
+#: includes/functions.php:1913
 msgid "Theological Introduction"
 msgstr ""
 
-#: includes/functions.php:1924
+#: includes/functions.php:1943
 msgid "No introduction found for this book."
 msgstr ""
 
-#: includes/functions.php:1940
+#: includes/functions.php:1959
 msgid "Language not provided."
 msgstr ""
 
-#: includes/functions.php:1955
+#: includes/functions.php:1974
 msgid "Language updated and cache cleared."
 msgstr ""
 
@@ -1046,7 +1050,7 @@ msgstr ""
 msgid "My Profile"
 msgstr ""
 
-#: includes/profile.php:31
+#: includes/profile.php:30
 msgid "My Saved Verses"
 msgstr ""
 
