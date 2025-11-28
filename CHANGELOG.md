@@ -7,8 +7,8 @@ The shortcode for this plugin is [iqbible_advanced].
 - Parables
 - Prophecies
 
-## [1.0.0-beta-25] - 2025-11-27
-- API admin access
+## [1.0.0-beta-25] - 2025-11-27 - 2025-11-28
+- Bypass RapidAPI abiity for local installations, see q_bible_api_get_data()
 
 ## [1.0.0-beta-24] - 2025-08-15
 ### Fixed

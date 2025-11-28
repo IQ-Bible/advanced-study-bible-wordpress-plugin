@@ -71,12 +71,35 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
             set_transient($transient_key, $decoded_response, $cache_duration);
         } else {
             // Short cache empty/error results so we retry soon
-            set_transient($transient_key, $decoded_response, 30); // 30 seconds
+            set_transient($transient_key, $decoded_response, 30); 
         }
     }
 
-    // Build the base API URL
-    $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
+
+
+        // Build the base API URL
+    // Toggle between RapidAPI and direct server
+    $use_rapidapi = false; // Set to false to use direct server
+
+
+    if ($use_rapidapi) {
+        $base_url = 'https://iq-bible.p.rapidapi.com/' . $endpoint;
+        $args = array(
+            'headers' => array(
+                'x-rapidapi-host' => 'iq-bible.p.rapidapi.com',
+                'x-rapidapi-key' => $api_key
+            ),
+            'timeout' => 15
+        );
+} else {
+        $base_url = 'http://2-us.com/apis/iqbible-api/v1/' . $endpoint;
+        $args = array(
+            'timeout' => 15
+            // No headers needed for your own server
+        );
+    }
+    
+
 
     $url_with_params = add_query_arg($params, $base_url);
 
@@ -119,6 +142,10 @@ function iq_bible_api_get_data($endpoint, $params = array(), $cache_duration = 3
     // Return the fresh data
     return $decoded_response;
 }
+
+
+
+
 
 
 
